@@ -11,7 +11,7 @@ setup(
     keywords=["data",  "helper", ],
     python_requires=">=3.11",
     zip_safe=False,
-    url="https://github.com/leekh4232/hossam_data_helper",
+    url="https://github.com/hyk2202/helper",
     install_requires=[
         "tabulate",
         "pandas",
