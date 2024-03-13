@@ -1,6 +1,6 @@
 # hossam-data-util
 
-이광호 강사 데이터 분석 유틸리티 
+데이터 분석 유틸리티 
 
 
 ![Generic badge](https://img.shields.io/badge/version-0.0.1-critical.svg?style=flat-square&logo=appveyor) &nbsp;
@@ -13,12 +13,9 @@
 
 ## Hello World
 
-이 자료는 메가스터디IT아카데미에서 진행중인 산대특 빅데이터 분석 과정의 수업 자료로 사용되기 위해 작성된 소스코드 입니다.
-
-학생 배포 용이를 위해 공개저장소 형태로 배포되지만 사용 과정에서의 질문은 오프라인 수업을 통해서만 받습니다.
+이 자료는 메가스터디IT아카데미에서 진행중인 산대특 빅데이터 분석 과정의 수업 자료로 사용한 소스코드 입니다.
 
 MIT 라이센스를 따릅니다.
-
 
 ## Installation
 
@@ -54,7 +51,7 @@ pip install --upgrade /path/to/your/project/
 ## Uninstallation
 
 ```shell
-pip uninstall -y hossam
+pip uninstall -y helper
 ```
 
 ## How to use
@@ -78,13 +75,13 @@ from helper.classification import *
 ### 변경후
 
 ```Python
-from hossam.util import *
-from hossam.plot import *
-from hossam.analysis import *
-from hossam.classification import *
+from helper.util import *
+from helper.plot import *
+from helper.analysis import *
+from helper.classification import *
 ```
 
 
-## Documentation
+<!-- ## Documentation
 
-[Documentation](https://leekh4232.github.io/hossam-data-helper/hossam)
+[Documentation](https://leekh4232.github.io/hossam-data-helper/hossam) -->
