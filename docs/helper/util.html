@@ -1,0 +1,1899 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>helper.util API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>helper.util</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from os.path import exists
+from os import mkdir
+import numpy as np
+from tabulate import tabulate
+from pandas import DataFrame, read_excel, get_dummies, read_csv, Series, DatetimeIndex
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, PolynomialFeatures
+from sklearn.impute import SimpleImputer
+from scipy.stats import normaltest
+
+from imblearn.over_sampling import SMOTE, RandomOverSampler
+from imblearn.under_sampling import RandomUnderSampler
+
+
+def my_normalize_data(
+    mean: float, std: float, size: int = 100, round: int = 2
+) -&gt; np.ndarray:
+    &#34;&#34;&#34;정규분포를 따르는 데이터를 생성한다.
+
+    Args:
+        mean (float): 평균
+        std (float): 표준편차
+        size (int, optional): 데이터 크기. Defaults to 1000.
+
+    Returns:
+        np.ndarray: 정규분포를 따르는 데이터
+    &#34;&#34;&#34;
+    p = 0
+    x = []
+    while p &lt; 0.05:
+        x = np.random.normal(mean, std, size).round(round)
+        _, p = normaltest(x)
+
+    return x
+
+
+def my_normalize_df(
+    means: list = [0, 0, 0],
+    stds: list = [1, 1, 1],
+    sizes: list = [100, 100, 100],
+    rounds: int = 2,
+) -&gt; DataFrame:
+    &#34;&#34;&#34;정규분포를 따르는 데이터프레임을 생성한다.
+
+    Args:
+        means (list): 평균 목록
+        stds (list): 표준편차 목록
+        sizes (list, optional): 데이터 크기 목록. Defaults to [100, 100, 100].
+        rounds (int, optional): 반올림 자리수. Defaults to 2.
+
+    Returns:
+        DataFrame: 정규분포를 따르는 데이터프레임
+    &#34;&#34;&#34;
+    data = {}
+    for i in range(0, len(means)):
+        data[f&#34;X{i+1}&#34;] = my_normalize_data(means[i], stds[i], sizes[i], rounds)
+
+    return DataFrame(data)
+
+
+def my_pretty_table(data: DataFrame) -&gt; None:
+    print(
+        tabulate(
+            data, headers=&#34;keys&#34;, tablefmt=&#34;psql&#34;, showindex=True, numalign=&#34;right&#34;
+        )
+    )
+
+
+def my_read_excel(
+    path: str,
+    index_col: str = None,
+    info: bool = True,
+    categories: list = None,
+    save: bool = False,
+    timeindex: bool = False,
+) -&gt; DataFrame:
+    &#34;&#34;&#34;엑셀 파일을 데이터프레임으로 로드하고 정보를 출력한다.
+
+    Args:
+        path (str): 엑셀 파일의 경로(혹은 URL)
+        index_col (str, optional): 인덱스 필드의 이름. Defaults to None.
+        info (bool, optional): True일 경우 정보 출력. Defaults to True.
+        timeindex (bool, optional): True일 경우 인덱스를 시계열로 설정. Defaults to False.
+        categories (list, optional): 카테고리로 지정할 필드 목록. Defaults to None.
+        save (bool, optional) : True일 경우 데이터프레임 저장. Defaults to False.
+    Returns:
+        DataFrame: 데이터프레임 객체
+    &#34;&#34;&#34;
+
+    try:
+        if index_col:
+            data: DataFrame = read_excel(path, index_col=index_col)
+        else:
+            data: DataFrame = read_excel(path)
+    except Exception as e:
+        print(&#34;\x1b[31m데이터를 로드하는데 실패했습니다.\x1b[0m&#34;)
+        print(f&#34;\x1b[31m{e}\x1b[0m&#34;)
+        return None
+    if save:
+        if not exists(&#34;res&#34;):
+            mkdir(&#34;res&#34;)
+        data.to_excel(f&#39;./res/{path[1+path.rfind(&#34;/&#34;):]}&#39;)
+    if timeindex:
+        data.index = DatetimeIndex(data.index)
+    if categories:
+        data = my_set_category(data, *categories)
+
+    if info:
+        print(data.info())
+
+        print(&#34;\n데이터프레임 상위 5개 행&#34;)
+        my_pretty_table(data.head())
+
+        print(&#34;\n데이터프레임 하위 5개 행&#34;)
+        my_pretty_table(data.tail())
+
+        print(&#34;\n기술통계&#34;)
+        desc = data.describe().T
+        desc[&#34;nan&#34;] = data.isnull().sum()
+        my_pretty_table(desc)
+
+        if categories:
+            print(&#34;\n카테고리 정보&#34;)
+            for c in categories:
+                my_pretty_table(DataFrame({&#34;count&#34;: data[c].value_counts()}))
+
+    return data
+
+
+def my_read_csv(
+    path: str,
+    index_col: str = None,
+    info: bool = True,
+    categories: list = None,
+    save: bool = False,
+) -&gt; DataFrame:
+    &#34;&#34;&#34;csv 파일을 데이터프레임으로 로드하고 정보를 출력한다.
+
+    Args:
+        path (str): 엑셀 파일의 경로(혹은 URL)
+        index_col (str, optional): 인덱스 필드의 이름. Defaults to None.
+        info (bool, optional): True일 경우 정보 출력. Defaults to True.
+        categories (list, optional): 카테고리로 지정할 필드 목록. Defaults to None.
+        save (bool, optional) : True일 경우 데이터프레임 저장. Defaults to False.
+    Returns:
+        DataFrame: 데이터프레임 객체
+    &#34;&#34;&#34;
+
+    try:
+        if index_col:
+            data: DataFrame = read_csv(path, index_col=index_col)
+        else:
+            data: DataFrame = read_csv(path)
+    except:
+        try:
+            if index_col:
+                data: DataFrame = read_csv(
+                    path,
+                    index_col=index_col,
+                    encoding=&#34;cp949&#34;,
+                    encoding_errors=&#34;ignore&#34;,
+                )
+            else:
+                data: DataFrame = read_csv(
+                    path, encoding=&#34;cp949&#34;, encoding_errors=&#34;ignore&#34;
+                )
+        except Exception as e:
+            print(&#34;\x1b[31m데이터를 로드하는데 실패했습니다.\x1b[0m&#34;)
+            print(f&#34;\x1b[31m{e}\x1b[0m&#34;)
+            return None
+    if save:
+        if not exists(&#34;res&#34;):
+            mkdir(&#34;res&#34;)
+        data.to_excel(f&#39;./res/{path[1+path.rfind(&#34;/&#34;):]}&#39;)
+    if categories:
+        data = my_set_category(data, *categories)
+
+    if info:
+        print(data.info())
+
+        print(&#34;\n데이터프레임 상위 5개 행&#34;)
+        my_pretty_table(data.head())
+
+        print(&#34;\n데이터프레임 하위 5개 행&#34;)
+        my_pretty_table(data.tail())
+
+        print(&#34;\n기술통계&#34;)
+        desc = data.describe().T
+        desc[&#34;nan&#34;] = data.isnull().sum()
+        my_pretty_table(desc)
+
+    if categories:
+        print(&#34;\n카테고리 정보&#34;)
+        for c in categories:
+            my_pretty_table(DataFrame(data[c].value_counts(), columns=[c]))
+
+    return data
+
+
+def my_read_data(
+    path: str,
+    index_col: str = None,
+    info: bool = True,
+    categories: list = None,
+    save: bool = False,
+    timeindex: bool = False,
+) -&gt; DataFrame:
+    &#34;&#34;&#34;파일을 데이터 프레임으로 로드하고 정보를 출력한다
+
+    Args:
+        path (str): 파일의 경로 (혹은 URL)
+        index_col (str, optional) : 인덱스 필드의 이름. Defaults to None.
+        info (bool, optional) : True일 경우 정보 출력. Defaults to True.
+        save (bool, optional) : True일 경우 데이터프레임 저장. Defaults to False.
+    Returns:
+        DataFrame : 데이터프레임 객체
+    &#34;&#34;&#34;
+    type = path[path.rfind(&#34;.&#34;) + 1 :]
+    if type == &#34;csv&#34;:
+        return my_read_csv(
+            path=path, index_col=index_col, info=info, categories=categories, save=save
+        )
+    elif type in [&#34;xlsx&#34;, &#34;xls&#34;]:
+        return my_read_excel(
+            path=path,
+            index_col=index_col,
+            info=info,
+            categories=categories,
+            save=save,
+            timeindex=timeindex,
+        )
+
+
+def my_standard_scaler(data: DataFrame, yname: str = None) -&gt; DataFrame:
+    &#34;&#34;&#34;데이터프레임의 연속형 변수에 대해 표준화를 수행한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        yname (str, optional): 종속변수의 컬럼명. Defaults to None.
+
+    Returns:
+        DataFrame: 표준화된 데이터프레임
+    &#34;&#34;&#34;
+    # 원본 데이터 프레임 복사
+    df = data.copy()
+
+    # 종속변수만 별도로 분리
+    if yname:
+        y = df[yname]
+        df = df.drop(yname, axis=1)
+
+    # 카테고리 타입만 골라냄
+    category_fields = []
+    for f in df.columns:
+        if df[f].dtypes not in [&#34;int&#34;, &#34;int32&#34;, &#34;int64&#34;, &#34;float&#34;, &#34;float32&#34;, &#34;float64&#34;]:
+            category_fields.append(f)
+
+    cate = df[category_fields]
+    df = df.drop(category_fields, axis=1)
+
+    # 표준화 수행
+    scaler = StandardScaler()
+    std_df = DataFrame(scaler.fit_transform(df), index=data.index, columns=df.columns)
+
+    # 분리했던 명목형 변수를 다시 결합
+    if category_fields:
+        std_df[category_fields] = cate
+
+    # 분리했던 종속변수 결합
+    if yname:
+        std_df[yname] = y
+
+    return std_df
+
+
+def my_train_test_split(
+    data: DataFrame,
+    yname: str = &#34;y&#34;,
+    test_size: float = 0.3,
+    random_state: int = 123,
+    scalling: bool = False,
+) -&gt; tuple:
+    &#34;&#34;&#34;데이터프레임을 학습용 데이터와 테스트용 데이터로 나눈다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        yname (str, optional): 종속변수의 컬럼명. Defaults to &#39;y&#39;.
+        test_size (float, optional): 검증 데이터의 비율(0~1). Defaults to 0.3.
+        random_state (int, optional): 난수 시드. Defaults to 123.
+        scalling (bool, optional): True일 경우 표준화를 수행한다. Defaults to False.
+
+    Returns:
+        tuple: x_train, x_test, y_train, y_test
+
+    &#34;&#34;&#34;
+
+    x = data.drop(yname, axis=1)
+    y = data[yname]
+    x_train, x_test, y_train, y_test = train_test_split(
+        x, y, test_size=test_size, random_state=random_state
+    )
+
+    if scalling:
+        scaler = StandardScaler()
+        x_train = DataFrame(
+            scaler.fit_transform(x_train), index=x_train.index, columns=x_train.columns
+        )
+        x_test = DataFrame(
+            scaler.transform(x_test), index=x_test.index, columns=x_test.columns
+        )
+
+    return (x_train, x_test, y_train, y_test)
+
+
+def my_set_category(data: DataFrame, *args: str) -&gt; DataFrame:
+    &#34;&#34;&#34;카테고리 데이터를 설정한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        *args (str): 컬럼명 목록
+
+    Returns:
+        DataFrame: 카테고리 설정된 데이터프레임
+    &#34;&#34;&#34;
+    df = data.copy()
+
+    if not args:
+        args = []
+        for f in data.columns:
+            if data[f].dtypes not in [
+                &#34;int&#34;,
+                &#34;int32&#34;,
+                &#34;int64&#34;,
+                &#34;float&#34;,
+                &#34;float32&#34;,
+                &#34;float64&#34;,
+            ]:
+                args.append(f)
+
+    for k in args:
+        df[k] = df[k].astype(&#34;category&#34;)
+
+    return df
+
+
+def my_unmelt(
+    data: DataFrame, id_vars: str = &#34;class&#34;, value_vars: str = &#34;values&#34;
+) -&gt; DataFrame:
+    &#34;&#34;&#34;두 개의 컬럼으로 구성된 데이터프레임에서 하나는 명목형, 나머지는 연속형일 경우
+    명목형 변수의 값에 따라 고유한 변수를 갖는 데이터프레임으로 변환한다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        id_vars (str, optional): 명목형 변수의 컬럼명. Defaults to &#39;class&#39;.
+        value_vars (str, optional): 연속형 변수의 컬럼명. Defaults to &#39;values&#39;.
+
+    Returns:
+        DataFrame: 변환된 데이터프레임
+    &#34;&#34;&#34;
+    result = data.groupby(id_vars)[value_vars].apply(list)
+    mydict = {}
+
+    for i in result.index:
+        mydict[i] = result[i]
+
+    return DataFrame(mydict)
+
+
+def my_replace_missing_value(
+    data: DataFrame, strategy: str = &#34;mean&#34;, fill_value: any = None
+) -&gt; DataFrame:
+    &#34;&#34;&#34;결측치를 대체하여 데이터프레임을 재구성한다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        strategy ([&#34;median&#34;, &#34;mean&#34;, &#34;most_frequent&#34;, &#34;constant&#34;], optional): 대체방법. Defaults to &#39;mean&#39;.
+        fill_value (str or numerical value): 상수로 대체할 경우 지정할 값.Defaults to &#39;None&#39;
+
+    Returns:
+        DataFrame: _description_
+    &#34;&#34;&#34;
+    # 결측치 처리 규칙 생성
+    imr = SimpleImputer(missing_values=np.nan, strategy=strategy, fill_value=fill_value)
+
+    # 결측치 처리 규칙 적용 --&gt; 2차원 배열로 반환됨
+    df_imr = imr.fit_transform(data.values)
+
+    # 2차원 배열을 데이터프레임으로 변환 후 리턴
+    return DataFrame(df_imr, index=data.index, columns=data.columns)
+
+
+def my_outlier_table(data: DataFrame, *fields: str) -&gt; DataFrame:
+    &#34;&#34;&#34;데이터프레임의 사분위수와 결측치 경계값을 구한다.
+    함수 호출 전 상자그림을 통해 결측치가 확인된 필드에 대해서만 처리하는 것이 좋다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        *fields (str): 컬럼명 목록
+
+    Returns:
+        DataFrame: IQ
+    &#34;&#34;&#34;
+    if not fields:
+        fields = data.columns
+
+    result = []
+    for f in fields:
+        # 숫자 타입이 아니라면 건너뜀
+        if data[f].dtypes not in [
+            &#34;int&#34;,
+            &#34;int32&#34;,
+            &#34;int64&#34;,
+            &#34;float&#34;,
+            &#34;float32&#34;,
+            &#34;float64&#34;,
+        ]:
+            continue
+
+        # 사분위수
+        q1 = data[f].quantile(q=0.25)
+        q2 = data[f].quantile(q=0.5)
+        q3 = data[f].quantile(q=0.75)
+
+        # 결측치 경계
+        iqr = q3 - q1
+        down = q1 - 1.5 * iqr
+        up = q3 + 1.5 * iqr
+
+        iq = {
+            &#34;FIELD&#34;: f,
+            &#34;Q1&#34;: q1,
+            &#34;Q2&#34;: q2,
+            &#34;Q3&#34;: q3,
+            &#34;IQR&#34;: iqr,
+            &#34;UP&#34;: up,
+            &#34;DOWN&#34;: down,
+        }
+
+        result.append(iq)
+
+    return DataFrame(result).set_index(&#34;FIELD&#34;)
+
+
+def my_replace_outliner(data: DataFrame, *fields: str) -&gt; DataFrame:
+    &#34;&#34;&#34;이상치 경계값을 넘어가는 데이터를 경계값으로 대체한다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        *fields (str): 컬럼명 목록
+
+    Returns:
+        DataFrame: 이상치가 경계값으로 대체된 데이터 프레임
+    &#34;&#34;&#34;
+
+    # 원본 데이터 프레임 복사
+    df = data.copy()
+
+    # 카테고리 타입만 골라냄
+    category_fields = []
+    for f in df.columns:
+        if df[f].dtypes not in [&#34;int&#34;, &#34;int32&#34;, &#34;int64&#34;, &#34;float&#34;, &#34;float32&#34;, &#34;float64&#34;]:
+            category_fields.append(f)
+
+    cate = df[category_fields]
+    df = df.drop(category_fields, axis=1)
+
+    # 이상치 경계값을 구한다.
+    outliner_table = my_outlier_table(df, *fields)
+
+    # 이상치가 발견된 필드에 대해서만 처리
+    for f in outliner_table.index:
+        df.loc[df[f] &lt; outliner_table.loc[f, &#34;DOWN&#34;], f] = outliner_table.loc[f, &#34;DOWN&#34;]
+        df.loc[df[f] &gt; outliner_table.loc[f, &#34;UP&#34;], f] = outliner_table.loc[f, &#34;UP&#34;]
+
+    # 분리했던 카테고리 타입을 다시 병합
+    if category_fields:
+        df[category_fields] = cate
+
+    return df
+
+
+def my_replace_outliner_to_nan(data: DataFrame, *fields: str) -&gt; DataFrame:
+    &#34;&#34;&#34;이상치를 결측치로 대체한다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        *fields (str): 컬럼명 목록
+
+    Returns:
+        DataFrame: 이상치가 결측치로 대체된 데이터프레임
+    &#34;&#34;&#34;
+
+    # 원본 데이터 프레임 복사
+    df = data.copy()
+
+    # 카테고리 타입만 골라냄
+    category_fields = []
+    for f in df.columns:
+        if df[f].dtypes not in [&#34;int&#34;, &#34;int32&#34;, &#34;int64&#34;, &#34;float&#34;, &#34;float32&#34;, &#34;float64&#34;]:
+            category_fields.append(f)
+
+    cate = df[category_fields]
+    df = df.drop(category_fields, axis=1)
+
+    # 이상치 경계값을 구한다.
+    outliner_table = my_outlier_table(df, *fields)
+
+    # 이상치가 발견된 필드에 대해서만 처리
+    for f in outliner_table.index:
+        df.loc[df[f] &lt; outliner_table.loc[f, &#34;DOWN&#34;], f] = np.nan
+        df.loc[df[f] &gt; outliner_table.loc[f, &#34;UP&#34;], f] = np.nan
+
+    # 분리했던 카테고리 타입을 다시 병합
+    if category_fields:
+        df[category_fields] = cate
+
+    return df
+
+
+def my_replace_outliner_to_mean(data: DataFrame, *fields: str) -&gt; DataFrame:
+    &#34;&#34;&#34;이상치를 평균값으로 대체한다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        *fields (str): 컬럼명 목록
+
+    Returns:
+        DataFrame: 이상치가 평균값으로 대체된 데이터프레임
+    &#34;&#34;&#34;
+    # 원본 데이터 프레임 복사
+    df = data.copy()
+
+    # 카테고리 타입만 골라냄
+    category_fields = []
+    for f in df.columns:
+        if df[f].dtypes not in [&#34;int&#34;, &#34;int32&#34;, &#34;int64&#34;, &#34;float&#34;, &#34;float32&#34;, &#34;float64&#34;]:
+            category_fields.append(f)
+
+    cate = df[category_fields]
+    df = df.drop(category_fields, axis=1)
+
+    # 이상치를 결측치로 대체한다.
+    if not fields:
+        fields = df.columns
+
+    df2 = my_replace_outliner_to_nan(df, *fields)
+
+    # 결측치를 평균값으로 대체한다.
+    df3 = my_replace_missing_value(df2, &#34;mean&#34;)
+
+    # 분리했던 카테고리 타입을 다시 병합
+    if category_fields:
+        df3[category_fields] = cate
+
+    return df3
+
+
+def my_dummies(data: DataFrame, *args: str) -&gt; DataFrame:
+    &#34;&#34;&#34;명목형 변수를 더미 변수로 변환한다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        *args (str): 명목형 컬럼 목록
+
+    Returns:
+        DataFrame: 더미 변수로 변환된 데이터프레임
+    &#34;&#34;&#34;
+    if not args:
+        args = [x for x in data.columns if data[x].dtypes == &#34;category&#34;]
+    else:
+        args = list(args)
+
+    return get_dummies(data, columns=args, drop_first=True, dtype=&#34;int&#34;)
+
+
+def my_trend(x: any, y: any, degree: int = 2, value_count=100) -&gt; tuple:
+    &#34;&#34;&#34;x, y 데이터에 대한 추세선을 구한다.
+
+    Args:
+        x : 산점도 그래프에 대한 x 데이터
+        y : 산점도 그래프에 대한 y 데이터
+        degree (int, optional): 추세선 방정식의 차수. Defaults to 2.
+        value_count (int, optional): x 데이터의 범위 안에서 간격 수. Defaults to 100.
+
+    Returns:
+        tuple: (v_trend, t_trend)
+    &#34;&#34;&#34;
+    # [ a, b, c ] ==&gt; ax^2 + bx + c
+    coeff = np.polyfit(x, y, degree)
+
+    if type(x) == &#34;list&#34;:
+        minx = min(x)
+        maxx = max(x)
+    else:
+        minx = x.min()
+        maxx = x.max()
+
+    v_trend = np.linspace(minx, maxx, value_count)
+
+    t_trend = coeff[-1]
+    for i in range(0, degree):
+        t_trend += coeff[i] * v_trend ** (degree - i)
+
+    return (v_trend, t_trend)
+
+
+def my_poly_features(
+    data: DataFrame, columns: list = [], ignore: list = [], degree: int = 2
+) -&gt; DataFrame:
+    &#34;&#34;&#34;전달된 데이터프레임에 대해서 2차항을 추가한 새로온 데이터프레임을 리턴한다.
+
+    Args:
+        data (DataFrame): 원본 데이터 프레임
+        columns (list, optional): 2차항을 생성할 필드 목록. 전달되지 않을 경우 전체 필드에 대해 처리 Default to [].
+        ignore (list, optional): 2차항을 생성하지 않을 필드 목록. Default to [].
+        degree (int, optional): 차수. Default to 2
+
+    Returns:
+        DataFrame: 2차항이 추가된 새로운 데이터 프레임
+    &#34;&#34;&#34;
+    df = data.copy()
+
+    if not columns:
+        columns = df.columns
+
+    ignore_df = None
+    if ignore:
+        ignore_df = df[ignore]
+        df.drop(ignore, axis=1, inplace=True)
+        columns = [c for c in columns if c not in ignore]
+
+    poly = PolynomialFeatures(degree=degree, include_bias=False)
+    poly_fit = poly.fit_transform(df[columns])
+    poly_df = DataFrame(poly_fit, columns=poly.get_feature_names_out(), index=df.index)
+
+    df[poly_df.columns] = poly_df[poly_df.columns]
+
+    if ignore_df is not None:
+        df[ignore] = ignore_df
+
+    return df
+
+
+def my_labelling(data: DataFrame, *fields) -&gt; DataFrame:
+    &#34;&#34;&#34;명목형 변수를 라벨링한다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        *fields (str): 명목형 컬럼 목록
+
+    Returns:
+        DataFrame: 라벨링된 데이터프레임
+    &#34;&#34;&#34;
+    df = data.copy()
+
+    for f in fields:
+        vc = sorted(list(df[f].unique()))
+        label = {v: i for i, v in enumerate(vc)}
+        df[f] = df[f].map(label).astype(&#34;int&#34;)
+
+    return df
+
+
+def my_balance(xdata: DataFrame, ydata: Series, method: str = &#34;smote&#34;) -&gt; DataFrame:
+    &#34;&#34;&#34;불균형 데이터를 균형 데이터로 변환한다.
+
+    Args:
+        xdata (DataFrame): 독립변수 데이터 프레임
+        ydata (Series): 종속변수 데이터 시리즈
+        method (str, optional): 균형화 방법 [smote, over, under]. Defaults to &#39;smote&#39;.
+
+    Returns:
+        DataFrame: _description_
+    &#34;&#34;&#34;
+
+    if method == &#34;smote&#34;:
+        smote = SMOTE(random_state=0)
+        xdata, ydata = smote.fit_resample(xdata, ydata)
+    elif method == &#34;over&#34;:
+        ros = RandomOverSampler(random_state=0)
+        xdata, ydata = ros.fit_resample(xdata, ydata)
+    elif method == &#34;under&#34;:
+        rus = RandomUnderSampler(random_state=0)
+        xdata, ydata = rus.fit_resample(xdata, ydata)
+    else:
+        raise Exception(
+            f&#34;\x1b[31m지원하지 않는 방법입니다.(smote, over, under중 하나를 지정해야 합니다.) ({method})\x1b[0m&#34;
+        )
+
+    return xdata, ydata</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="helper.util.my_balance"><code class="name flex">
+<span>def <span class="ident">my_balance</span></span>(<span>xdata: pandas.core.frame.DataFrame, ydata: pandas.core.series.Series, method: str = 'smote') ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>불균형 데이터를 균형 데이터로 변환한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>xdata</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>독립변수 데이터 프레임</dd>
+<dt><strong><code>ydata</code></strong> :&ensp;<code>Series</code></dt>
+<dd>종속변수 데이터 시리즈</dd>
+<dt><strong><code>method</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>균형화 방법 [smote, over, under]. Defaults to 'smote'.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>DataFrame</code></dt>
+<dd><em>description</em></dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_balance(xdata: DataFrame, ydata: Series, method: str = &#34;smote&#34;) -&gt; DataFrame:
+    &#34;&#34;&#34;불균형 데이터를 균형 데이터로 변환한다.
+
+    Args:
+        xdata (DataFrame): 독립변수 데이터 프레임
+        ydata (Series): 종속변수 데이터 시리즈
+        method (str, optional): 균형화 방법 [smote, over, under]. Defaults to &#39;smote&#39;.
+
+    Returns:
+        DataFrame: _description_
+    &#34;&#34;&#34;
+
+    if method == &#34;smote&#34;:
+        smote = SMOTE(random_state=0)
+        xdata, ydata = smote.fit_resample(xdata, ydata)
+    elif method == &#34;over&#34;:
+        ros = RandomOverSampler(random_state=0)
+        xdata, ydata = ros.fit_resample(xdata, ydata)
+    elif method == &#34;under&#34;:
+        rus = RandomUnderSampler(random_state=0)
+        xdata, ydata = rus.fit_resample(xdata, ydata)
+    else:
+        raise Exception(
+            f&#34;\x1b[31m지원하지 않는 방법입니다.(smote, over, under중 하나를 지정해야 합니다.) ({method})\x1b[0m&#34;
+        )
+
+    return xdata, ydata</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_dummies"><code class="name flex">
+<span>def <span class="ident">my_dummies</span></span>(<span>data: pandas.core.frame.DataFrame, *args: str) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>명목형 변수를 더미 변수로 변환한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임</dd>
+<dt><strong><code>*args</code></strong> :&ensp;<code>str</code></dt>
+<dd>명목형 컬럼 목록</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>DataFrame</code></dt>
+<dd>더미 변수로 변환된 데이터프레임</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_dummies(data: DataFrame, *args: str) -&gt; DataFrame:
+    &#34;&#34;&#34;명목형 변수를 더미 변수로 변환한다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        *args (str): 명목형 컬럼 목록
+
+    Returns:
+        DataFrame: 더미 변수로 변환된 데이터프레임
+    &#34;&#34;&#34;
+    if not args:
+        args = [x for x in data.columns if data[x].dtypes == &#34;category&#34;]
+    else:
+        args = list(args)
+
+    return get_dummies(data, columns=args, drop_first=True, dtype=&#34;int&#34;)</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_labelling"><code class="name flex">
+<span>def <span class="ident">my_labelling</span></span>(<span>data: pandas.core.frame.DataFrame, *fields) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>명목형 변수를 라벨링한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임</dd>
+<dt><strong><code>*fields</code></strong> :&ensp;<code>str</code></dt>
+<dd>명목형 컬럼 목록</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>DataFrame</code></dt>
+<dd>라벨링된 데이터프레임</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_labelling(data: DataFrame, *fields) -&gt; DataFrame:
+    &#34;&#34;&#34;명목형 변수를 라벨링한다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        *fields (str): 명목형 컬럼 목록
+
+    Returns:
+        DataFrame: 라벨링된 데이터프레임
+    &#34;&#34;&#34;
+    df = data.copy()
+
+    for f in fields:
+        vc = sorted(list(df[f].unique()))
+        label = {v: i for i, v in enumerate(vc)}
+        df[f] = df[f].map(label).astype(&#34;int&#34;)
+
+    return df</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_normalize_data"><code class="name flex">
+<span>def <span class="ident">my_normalize_data</span></span>(<span>mean: float, std: float, size: int = 100, round: int = 2) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>정규분포를 따르는 데이터를 생성한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>mean</code></strong> :&ensp;<code>float</code></dt>
+<dd>평균</dd>
+<dt><strong><code>std</code></strong> :&ensp;<code>float</code></dt>
+<dd>표준편차</dd>
+<dt><strong><code>size</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>데이터 크기. Defaults to 1000.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>np.ndarray</code></dt>
+<dd>정규분포를 따르는 데이터</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_normalize_data(
+    mean: float, std: float, size: int = 100, round: int = 2
+) -&gt; np.ndarray:
+    &#34;&#34;&#34;정규분포를 따르는 데이터를 생성한다.
+
+    Args:
+        mean (float): 평균
+        std (float): 표준편차
+        size (int, optional): 데이터 크기. Defaults to 1000.
+
+    Returns:
+        np.ndarray: 정규분포를 따르는 데이터
+    &#34;&#34;&#34;
+    p = 0
+    x = []
+    while p &lt; 0.05:
+        x = np.random.normal(mean, std, size).round(round)
+        _, p = normaltest(x)
+
+    return x</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_normalize_df"><code class="name flex">
+<span>def <span class="ident">my_normalize_df</span></span>(<span>means: list = [0, 0, 0], stds: list = [1, 1, 1], sizes: list = [100, 100, 100], rounds: int = 2) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>정규분포를 따르는 데이터프레임을 생성한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>means</code></strong> :&ensp;<code>list</code></dt>
+<dd>평균 목록</dd>
+<dt><strong><code>stds</code></strong> :&ensp;<code>list</code></dt>
+<dd>표준편차 목록</dd>
+<dt><strong><code>sizes</code></strong> :&ensp;<code>list</code>, optional</dt>
+<dd>데이터 크기 목록. Defaults to [100, 100, 100].</dd>
+<dt><strong><code>rounds</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>반올림 자리수. Defaults to 2.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>DataFrame</code></dt>
+<dd>정규분포를 따르는 데이터프레임</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_normalize_df(
+    means: list = [0, 0, 0],
+    stds: list = [1, 1, 1],
+    sizes: list = [100, 100, 100],
+    rounds: int = 2,
+) -&gt; DataFrame:
+    &#34;&#34;&#34;정규분포를 따르는 데이터프레임을 생성한다.
+
+    Args:
+        means (list): 평균 목록
+        stds (list): 표준편차 목록
+        sizes (list, optional): 데이터 크기 목록. Defaults to [100, 100, 100].
+        rounds (int, optional): 반올림 자리수. Defaults to 2.
+
+    Returns:
+        DataFrame: 정규분포를 따르는 데이터프레임
+    &#34;&#34;&#34;
+    data = {}
+    for i in range(0, len(means)):
+        data[f&#34;X{i+1}&#34;] = my_normalize_data(means[i], stds[i], sizes[i], rounds)
+
+    return DataFrame(data)</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_outlier_table"><code class="name flex">
+<span>def <span class="ident">my_outlier_table</span></span>(<span>data: pandas.core.frame.DataFrame, *fields: str) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임의 사분위수와 결측치 경계값을 구한다.
+함수 호출 전 상자그림을 통해 결측치가 확인된 필드에 대해서만 처리하는 것이 좋다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임</dd>
+<dt><strong><code>*fields</code></strong> :&ensp;<code>str</code></dt>
+<dd>컬럼명 목록</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>DataFrame</code></dt>
+<dd>IQ</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_outlier_table(data: DataFrame, *fields: str) -&gt; DataFrame:
+    &#34;&#34;&#34;데이터프레임의 사분위수와 결측치 경계값을 구한다.
+    함수 호출 전 상자그림을 통해 결측치가 확인된 필드에 대해서만 처리하는 것이 좋다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        *fields (str): 컬럼명 목록
+
+    Returns:
+        DataFrame: IQ
+    &#34;&#34;&#34;
+    if not fields:
+        fields = data.columns
+
+    result = []
+    for f in fields:
+        # 숫자 타입이 아니라면 건너뜀
+        if data[f].dtypes not in [
+            &#34;int&#34;,
+            &#34;int32&#34;,
+            &#34;int64&#34;,
+            &#34;float&#34;,
+            &#34;float32&#34;,
+            &#34;float64&#34;,
+        ]:
+            continue
+
+        # 사분위수
+        q1 = data[f].quantile(q=0.25)
+        q2 = data[f].quantile(q=0.5)
+        q3 = data[f].quantile(q=0.75)
+
+        # 결측치 경계
+        iqr = q3 - q1
+        down = q1 - 1.5 * iqr
+        up = q3 + 1.5 * iqr
+
+        iq = {
+            &#34;FIELD&#34;: f,
+            &#34;Q1&#34;: q1,
+            &#34;Q2&#34;: q2,
+            &#34;Q3&#34;: q3,
+            &#34;IQR&#34;: iqr,
+            &#34;UP&#34;: up,
+            &#34;DOWN&#34;: down,
+        }
+
+        result.append(iq)
+
+    return DataFrame(result).set_index(&#34;FIELD&#34;)</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_poly_features"><code class="name flex">
+<span>def <span class="ident">my_poly_features</span></span>(<span>data: pandas.core.frame.DataFrame, columns: list = [], ignore: list = [], degree: int = 2) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>전달된 데이터프레임에 대해서 2차항을 추가한 새로온 데이터프레임을 리턴한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>원본 데이터 프레임</dd>
+<dt><strong><code>columns</code></strong> :&ensp;<code>list</code>, optional</dt>
+<dd>2차항을 생성할 필드 목록. 전달되지 않을 경우 전체 필드에 대해 처리 Default to [].</dd>
+<dt><strong><code>ignore</code></strong> :&ensp;<code>list</code>, optional</dt>
+<dd>2차항을 생성하지 않을 필드 목록. Default to [].</dd>
+<dt><strong><code>degree</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>차수. Default to 2</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>DataFrame</code></dt>
+<dd>2차항이 추가된 새로운 데이터 프레임</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_poly_features(
+    data: DataFrame, columns: list = [], ignore: list = [], degree: int = 2
+) -&gt; DataFrame:
+    &#34;&#34;&#34;전달된 데이터프레임에 대해서 2차항을 추가한 새로온 데이터프레임을 리턴한다.
+
+    Args:
+        data (DataFrame): 원본 데이터 프레임
+        columns (list, optional): 2차항을 생성할 필드 목록. 전달되지 않을 경우 전체 필드에 대해 처리 Default to [].
+        ignore (list, optional): 2차항을 생성하지 않을 필드 목록. Default to [].
+        degree (int, optional): 차수. Default to 2
+
+    Returns:
+        DataFrame: 2차항이 추가된 새로운 데이터 프레임
+    &#34;&#34;&#34;
+    df = data.copy()
+
+    if not columns:
+        columns = df.columns
+
+    ignore_df = None
+    if ignore:
+        ignore_df = df[ignore]
+        df.drop(ignore, axis=1, inplace=True)
+        columns = [c for c in columns if c not in ignore]
+
+    poly = PolynomialFeatures(degree=degree, include_bias=False)
+    poly_fit = poly.fit_transform(df[columns])
+    poly_df = DataFrame(poly_fit, columns=poly.get_feature_names_out(), index=df.index)
+
+    df[poly_df.columns] = poly_df[poly_df.columns]
+
+    if ignore_df is not None:
+        df[ignore] = ignore_df
+
+    return df</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_pretty_table"><code class="name flex">
+<span>def <span class="ident">my_pretty_table</span></span>(<span>data: pandas.core.frame.DataFrame) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_pretty_table(data: DataFrame) -&gt; None:
+    print(
+        tabulate(
+            data, headers=&#34;keys&#34;, tablefmt=&#34;psql&#34;, showindex=True, numalign=&#34;right&#34;
+        )
+    )</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_read_csv"><code class="name flex">
+<span>def <span class="ident">my_read_csv</span></span>(<span>path: str, index_col: str = None, info: bool = True, categories: list = None, save: bool = False) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>csv 파일을 데이터프레임으로 로드하고 정보를 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>path</code></strong> :&ensp;<code>str</code></dt>
+<dd>엑셀 파일의 경로(혹은 URL)</dd>
+<dt><strong><code>index_col</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>인덱스 필드의 이름. Defaults to None.</dd>
+<dt><strong><code>info</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>True일 경우 정보 출력. Defaults to True.</dd>
+<dt><strong><code>categories</code></strong> :&ensp;<code>list</code>, optional</dt>
+<dd>카테고리로 지정할 필드 목록. Defaults to None.</dd>
+</dl>
+<p>save (bool, optional) : True일 경우 데이터프레임 저장. Defaults to False.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_read_csv(
+    path: str,
+    index_col: str = None,
+    info: bool = True,
+    categories: list = None,
+    save: bool = False,
+) -&gt; DataFrame:
+    &#34;&#34;&#34;csv 파일을 데이터프레임으로 로드하고 정보를 출력한다.
+
+    Args:
+        path (str): 엑셀 파일의 경로(혹은 URL)
+        index_col (str, optional): 인덱스 필드의 이름. Defaults to None.
+        info (bool, optional): True일 경우 정보 출력. Defaults to True.
+        categories (list, optional): 카테고리로 지정할 필드 목록. Defaults to None.
+        save (bool, optional) : True일 경우 데이터프레임 저장. Defaults to False.
+    Returns:
+        DataFrame: 데이터프레임 객체
+    &#34;&#34;&#34;
+
+    try:
+        if index_col:
+            data: DataFrame = read_csv(path, index_col=index_col)
+        else:
+            data: DataFrame = read_csv(path)
+    except:
+        try:
+            if index_col:
+                data: DataFrame = read_csv(
+                    path,
+                    index_col=index_col,
+                    encoding=&#34;cp949&#34;,
+                    encoding_errors=&#34;ignore&#34;,
+                )
+            else:
+                data: DataFrame = read_csv(
+                    path, encoding=&#34;cp949&#34;, encoding_errors=&#34;ignore&#34;
+                )
+        except Exception as e:
+            print(&#34;\x1b[31m데이터를 로드하는데 실패했습니다.\x1b[0m&#34;)
+            print(f&#34;\x1b[31m{e}\x1b[0m&#34;)
+            return None
+    if save:
+        if not exists(&#34;res&#34;):
+            mkdir(&#34;res&#34;)
+        data.to_excel(f&#39;./res/{path[1+path.rfind(&#34;/&#34;):]}&#39;)
+    if categories:
+        data = my_set_category(data, *categories)
+
+    if info:
+        print(data.info())
+
+        print(&#34;\n데이터프레임 상위 5개 행&#34;)
+        my_pretty_table(data.head())
+
+        print(&#34;\n데이터프레임 하위 5개 행&#34;)
+        my_pretty_table(data.tail())
+
+        print(&#34;\n기술통계&#34;)
+        desc = data.describe().T
+        desc[&#34;nan&#34;] = data.isnull().sum()
+        my_pretty_table(desc)
+
+    if categories:
+        print(&#34;\n카테고리 정보&#34;)
+        for c in categories:
+            my_pretty_table(DataFrame(data[c].value_counts(), columns=[c]))
+
+    return data</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_read_data"><code class="name flex">
+<span>def <span class="ident">my_read_data</span></span>(<span>path: str, index_col: str = None, info: bool = True, categories: list = None, save: bool = False, timeindex: bool = False) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>파일을 데이터 프레임으로 로드하고 정보를 출력한다</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>path</code></strong> :&ensp;<code>str</code></dt>
+<dd>파일의 경로 (혹은 URL)</dd>
+</dl>
+<p>index_col (str, optional) : 인덱스 필드의 이름. Defaults to None.
+info (bool, optional) : True일 경우 정보 출력. Defaults to True.
+save (bool, optional) : True일 경우 데이터프레임 저장. Defaults to False.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>DataFrame </code></dt>
+<dd>데이터프레임 객체</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_read_data(
+    path: str,
+    index_col: str = None,
+    info: bool = True,
+    categories: list = None,
+    save: bool = False,
+    timeindex: bool = False,
+) -&gt; DataFrame:
+    &#34;&#34;&#34;파일을 데이터 프레임으로 로드하고 정보를 출력한다
+
+    Args:
+        path (str): 파일의 경로 (혹은 URL)
+        index_col (str, optional) : 인덱스 필드의 이름. Defaults to None.
+        info (bool, optional) : True일 경우 정보 출력. Defaults to True.
+        save (bool, optional) : True일 경우 데이터프레임 저장. Defaults to False.
+    Returns:
+        DataFrame : 데이터프레임 객체
+    &#34;&#34;&#34;
+    type = path[path.rfind(&#34;.&#34;) + 1 :]
+    if type == &#34;csv&#34;:
+        return my_read_csv(
+            path=path, index_col=index_col, info=info, categories=categories, save=save
+        )
+    elif type in [&#34;xlsx&#34;, &#34;xls&#34;]:
+        return my_read_excel(
+            path=path,
+            index_col=index_col,
+            info=info,
+            categories=categories,
+            save=save,
+            timeindex=timeindex,
+        )</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_read_excel"><code class="name flex">
+<span>def <span class="ident">my_read_excel</span></span>(<span>path: str, index_col: str = None, info: bool = True, categories: list = None, save: bool = False, timeindex: bool = False) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>엑셀 파일을 데이터프레임으로 로드하고 정보를 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>path</code></strong> :&ensp;<code>str</code></dt>
+<dd>엑셀 파일의 경로(혹은 URL)</dd>
+<dt><strong><code>index_col</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>인덱스 필드의 이름. Defaults to None.</dd>
+<dt><strong><code>info</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>True일 경우 정보 출력. Defaults to True.</dd>
+<dt><strong><code>timeindex</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>True일 경우 인덱스를 시계열로 설정. Defaults to False.</dd>
+<dt><strong><code>categories</code></strong> :&ensp;<code>list</code>, optional</dt>
+<dd>카테고리로 지정할 필드 목록. Defaults to None.</dd>
+</dl>
+<p>save (bool, optional) : True일 경우 데이터프레임 저장. Defaults to False.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_read_excel(
+    path: str,
+    index_col: str = None,
+    info: bool = True,
+    categories: list = None,
+    save: bool = False,
+    timeindex: bool = False,
+) -&gt; DataFrame:
+    &#34;&#34;&#34;엑셀 파일을 데이터프레임으로 로드하고 정보를 출력한다.
+
+    Args:
+        path (str): 엑셀 파일의 경로(혹은 URL)
+        index_col (str, optional): 인덱스 필드의 이름. Defaults to None.
+        info (bool, optional): True일 경우 정보 출력. Defaults to True.
+        timeindex (bool, optional): True일 경우 인덱스를 시계열로 설정. Defaults to False.
+        categories (list, optional): 카테고리로 지정할 필드 목록. Defaults to None.
+        save (bool, optional) : True일 경우 데이터프레임 저장. Defaults to False.
+    Returns:
+        DataFrame: 데이터프레임 객체
+    &#34;&#34;&#34;
+
+    try:
+        if index_col:
+            data: DataFrame = read_excel(path, index_col=index_col)
+        else:
+            data: DataFrame = read_excel(path)
+    except Exception as e:
+        print(&#34;\x1b[31m데이터를 로드하는데 실패했습니다.\x1b[0m&#34;)
+        print(f&#34;\x1b[31m{e}\x1b[0m&#34;)
+        return None
+    if save:
+        if not exists(&#34;res&#34;):
+            mkdir(&#34;res&#34;)
+        data.to_excel(f&#39;./res/{path[1+path.rfind(&#34;/&#34;):]}&#39;)
+    if timeindex:
+        data.index = DatetimeIndex(data.index)
+    if categories:
+        data = my_set_category(data, *categories)
+
+    if info:
+        print(data.info())
+
+        print(&#34;\n데이터프레임 상위 5개 행&#34;)
+        my_pretty_table(data.head())
+
+        print(&#34;\n데이터프레임 하위 5개 행&#34;)
+        my_pretty_table(data.tail())
+
+        print(&#34;\n기술통계&#34;)
+        desc = data.describe().T
+        desc[&#34;nan&#34;] = data.isnull().sum()
+        my_pretty_table(desc)
+
+        if categories:
+            print(&#34;\n카테고리 정보&#34;)
+            for c in categories:
+                my_pretty_table(DataFrame({&#34;count&#34;: data[c].value_counts()}))
+
+    return data</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_replace_missing_value"><code class="name flex">
+<span>def <span class="ident">my_replace_missing_value</span></span>(<span>data: pandas.core.frame.DataFrame, strategy: str = 'mean', fill_value: <built-in function any> = None) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>결측치를 대체하여 데이터프레임을 재구성한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임</dd>
+<dt>strategy (["median", "mean", "most_frequent", "constant"], optional): 대체방법. Defaults to 'mean'.</dt>
+<dt><strong><code>fill_value</code></strong> :&ensp;<code>str</code> or <code>numerical value</code></dt>
+<dd>상수로 대체할 경우 지정할 값.Defaults to 'None'</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>DataFrame</code></dt>
+<dd><em>description</em></dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_replace_missing_value(
+    data: DataFrame, strategy: str = &#34;mean&#34;, fill_value: any = None
+) -&gt; DataFrame:
+    &#34;&#34;&#34;결측치를 대체하여 데이터프레임을 재구성한다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        strategy ([&#34;median&#34;, &#34;mean&#34;, &#34;most_frequent&#34;, &#34;constant&#34;], optional): 대체방법. Defaults to &#39;mean&#39;.
+        fill_value (str or numerical value): 상수로 대체할 경우 지정할 값.Defaults to &#39;None&#39;
+
+    Returns:
+        DataFrame: _description_
+    &#34;&#34;&#34;
+    # 결측치 처리 규칙 생성
+    imr = SimpleImputer(missing_values=np.nan, strategy=strategy, fill_value=fill_value)
+
+    # 결측치 처리 규칙 적용 --&gt; 2차원 배열로 반환됨
+    df_imr = imr.fit_transform(data.values)
+
+    # 2차원 배열을 데이터프레임으로 변환 후 리턴
+    return DataFrame(df_imr, index=data.index, columns=data.columns)</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_replace_outliner"><code class="name flex">
+<span>def <span class="ident">my_replace_outliner</span></span>(<span>data: pandas.core.frame.DataFrame, *fields: str) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>이상치 경계값을 넘어가는 데이터를 경계값으로 대체한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임</dd>
+<dt><strong><code>*fields</code></strong> :&ensp;<code>str</code></dt>
+<dd>컬럼명 목록</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>DataFrame</code></dt>
+<dd>이상치가 경계값으로 대체된 데이터 프레임</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_replace_outliner(data: DataFrame, *fields: str) -&gt; DataFrame:
+    &#34;&#34;&#34;이상치 경계값을 넘어가는 데이터를 경계값으로 대체한다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        *fields (str): 컬럼명 목록
+
+    Returns:
+        DataFrame: 이상치가 경계값으로 대체된 데이터 프레임
+    &#34;&#34;&#34;
+
+    # 원본 데이터 프레임 복사
+    df = data.copy()
+
+    # 카테고리 타입만 골라냄
+    category_fields = []
+    for f in df.columns:
+        if df[f].dtypes not in [&#34;int&#34;, &#34;int32&#34;, &#34;int64&#34;, &#34;float&#34;, &#34;float32&#34;, &#34;float64&#34;]:
+            category_fields.append(f)
+
+    cate = df[category_fields]
+    df = df.drop(category_fields, axis=1)
+
+    # 이상치 경계값을 구한다.
+    outliner_table = my_outlier_table(df, *fields)
+
+    # 이상치가 발견된 필드에 대해서만 처리
+    for f in outliner_table.index:
+        df.loc[df[f] &lt; outliner_table.loc[f, &#34;DOWN&#34;], f] = outliner_table.loc[f, &#34;DOWN&#34;]
+        df.loc[df[f] &gt; outliner_table.loc[f, &#34;UP&#34;], f] = outliner_table.loc[f, &#34;UP&#34;]
+
+    # 분리했던 카테고리 타입을 다시 병합
+    if category_fields:
+        df[category_fields] = cate
+
+    return df</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_replace_outliner_to_mean"><code class="name flex">
+<span>def <span class="ident">my_replace_outliner_to_mean</span></span>(<span>data: pandas.core.frame.DataFrame, *fields: str) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>이상치를 평균값으로 대체한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임</dd>
+<dt><strong><code>*fields</code></strong> :&ensp;<code>str</code></dt>
+<dd>컬럼명 목록</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>DataFrame</code></dt>
+<dd>이상치가 평균값으로 대체된 데이터프레임</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_replace_outliner_to_mean(data: DataFrame, *fields: str) -&gt; DataFrame:
+    &#34;&#34;&#34;이상치를 평균값으로 대체한다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        *fields (str): 컬럼명 목록
+
+    Returns:
+        DataFrame: 이상치가 평균값으로 대체된 데이터프레임
+    &#34;&#34;&#34;
+    # 원본 데이터 프레임 복사
+    df = data.copy()
+
+    # 카테고리 타입만 골라냄
+    category_fields = []
+    for f in df.columns:
+        if df[f].dtypes not in [&#34;int&#34;, &#34;int32&#34;, &#34;int64&#34;, &#34;float&#34;, &#34;float32&#34;, &#34;float64&#34;]:
+            category_fields.append(f)
+
+    cate = df[category_fields]
+    df = df.drop(category_fields, axis=1)
+
+    # 이상치를 결측치로 대체한다.
+    if not fields:
+        fields = df.columns
+
+    df2 = my_replace_outliner_to_nan(df, *fields)
+
+    # 결측치를 평균값으로 대체한다.
+    df3 = my_replace_missing_value(df2, &#34;mean&#34;)
+
+    # 분리했던 카테고리 타입을 다시 병합
+    if category_fields:
+        df3[category_fields] = cate
+
+    return df3</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_replace_outliner_to_nan"><code class="name flex">
+<span>def <span class="ident">my_replace_outliner_to_nan</span></span>(<span>data: pandas.core.frame.DataFrame, *fields: str) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>이상치를 결측치로 대체한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임</dd>
+<dt><strong><code>*fields</code></strong> :&ensp;<code>str</code></dt>
+<dd>컬럼명 목록</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>DataFrame</code></dt>
+<dd>이상치가 결측치로 대체된 데이터프레임</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_replace_outliner_to_nan(data: DataFrame, *fields: str) -&gt; DataFrame:
+    &#34;&#34;&#34;이상치를 결측치로 대체한다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        *fields (str): 컬럼명 목록
+
+    Returns:
+        DataFrame: 이상치가 결측치로 대체된 데이터프레임
+    &#34;&#34;&#34;
+
+    # 원본 데이터 프레임 복사
+    df = data.copy()
+
+    # 카테고리 타입만 골라냄
+    category_fields = []
+    for f in df.columns:
+        if df[f].dtypes not in [&#34;int&#34;, &#34;int32&#34;, &#34;int64&#34;, &#34;float&#34;, &#34;float32&#34;, &#34;float64&#34;]:
+            category_fields.append(f)
+
+    cate = df[category_fields]
+    df = df.drop(category_fields, axis=1)
+
+    # 이상치 경계값을 구한다.
+    outliner_table = my_outlier_table(df, *fields)
+
+    # 이상치가 발견된 필드에 대해서만 처리
+    for f in outliner_table.index:
+        df.loc[df[f] &lt; outliner_table.loc[f, &#34;DOWN&#34;], f] = np.nan
+        df.loc[df[f] &gt; outliner_table.loc[f, &#34;UP&#34;], f] = np.nan
+
+    # 분리했던 카테고리 타입을 다시 병합
+    if category_fields:
+        df[category_fields] = cate
+
+    return df</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_set_category"><code class="name flex">
+<span>def <span class="ident">my_set_category</span></span>(<span>data: pandas.core.frame.DataFrame, *args: str) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>카테고리 데이터를 설정한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>*args</code></strong> :&ensp;<code>str</code></dt>
+<dd>컬럼명 목록</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>DataFrame</code></dt>
+<dd>카테고리 설정된 데이터프레임</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_set_category(data: DataFrame, *args: str) -&gt; DataFrame:
+    &#34;&#34;&#34;카테고리 데이터를 설정한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        *args (str): 컬럼명 목록
+
+    Returns:
+        DataFrame: 카테고리 설정된 데이터프레임
+    &#34;&#34;&#34;
+    df = data.copy()
+
+    if not args:
+        args = []
+        for f in data.columns:
+            if data[f].dtypes not in [
+                &#34;int&#34;,
+                &#34;int32&#34;,
+                &#34;int64&#34;,
+                &#34;float&#34;,
+                &#34;float32&#34;,
+                &#34;float64&#34;,
+            ]:
+                args.append(f)
+
+    for k in args:
+        df[k] = df[k].astype(&#34;category&#34;)
+
+    return df</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_standard_scaler"><code class="name flex">
+<span>def <span class="ident">my_standard_scaler</span></span>(<span>data: pandas.core.frame.DataFrame, yname: str = None) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임의 연속형 변수에 대해 표준화를 수행한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>yname</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>종속변수의 컬럼명. Defaults to None.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>DataFrame</code></dt>
+<dd>표준화된 데이터프레임</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_standard_scaler(data: DataFrame, yname: str = None) -&gt; DataFrame:
+    &#34;&#34;&#34;데이터프레임의 연속형 변수에 대해 표준화를 수행한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        yname (str, optional): 종속변수의 컬럼명. Defaults to None.
+
+    Returns:
+        DataFrame: 표준화된 데이터프레임
+    &#34;&#34;&#34;
+    # 원본 데이터 프레임 복사
+    df = data.copy()
+
+    # 종속변수만 별도로 분리
+    if yname:
+        y = df[yname]
+        df = df.drop(yname, axis=1)
+
+    # 카테고리 타입만 골라냄
+    category_fields = []
+    for f in df.columns:
+        if df[f].dtypes not in [&#34;int&#34;, &#34;int32&#34;, &#34;int64&#34;, &#34;float&#34;, &#34;float32&#34;, &#34;float64&#34;]:
+            category_fields.append(f)
+
+    cate = df[category_fields]
+    df = df.drop(category_fields, axis=1)
+
+    # 표준화 수행
+    scaler = StandardScaler()
+    std_df = DataFrame(scaler.fit_transform(df), index=data.index, columns=df.columns)
+
+    # 분리했던 명목형 변수를 다시 결합
+    if category_fields:
+        std_df[category_fields] = cate
+
+    # 분리했던 종속변수 결합
+    if yname:
+        std_df[yname] = y
+
+    return std_df</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_train_test_split"><code class="name flex">
+<span>def <span class="ident">my_train_test_split</span></span>(<span>data: pandas.core.frame.DataFrame, yname: str = 'y', test_size: float = 0.3, random_state: int = 123, scalling: bool = False) ‑> tuple</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임을 학습용 데이터와 테스트용 데이터로 나눈다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>yname</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>종속변수의 컬럼명. Defaults to 'y'.</dd>
+<dt><strong><code>test_size</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>검증 데이터의 비율(0~1). Defaults to 0.3.</dd>
+<dt><strong><code>random_state</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>난수 시드. Defaults to 123.</dd>
+<dt><strong><code>scalling</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>True일 경우 표준화를 수행한다. Defaults to False.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple</code></dt>
+<dd>x_train, x_test, y_train, y_test</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_train_test_split(
+    data: DataFrame,
+    yname: str = &#34;y&#34;,
+    test_size: float = 0.3,
+    random_state: int = 123,
+    scalling: bool = False,
+) -&gt; tuple:
+    &#34;&#34;&#34;데이터프레임을 학습용 데이터와 테스트용 데이터로 나눈다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        yname (str, optional): 종속변수의 컬럼명. Defaults to &#39;y&#39;.
+        test_size (float, optional): 검증 데이터의 비율(0~1). Defaults to 0.3.
+        random_state (int, optional): 난수 시드. Defaults to 123.
+        scalling (bool, optional): True일 경우 표준화를 수행한다. Defaults to False.
+
+    Returns:
+        tuple: x_train, x_test, y_train, y_test
+
+    &#34;&#34;&#34;
+
+    x = data.drop(yname, axis=1)
+    y = data[yname]
+    x_train, x_test, y_train, y_test = train_test_split(
+        x, y, test_size=test_size, random_state=random_state
+    )
+
+    if scalling:
+        scaler = StandardScaler()
+        x_train = DataFrame(
+            scaler.fit_transform(x_train), index=x_train.index, columns=x_train.columns
+        )
+        x_test = DataFrame(
+            scaler.transform(x_test), index=x_test.index, columns=x_test.columns
+        )
+
+    return (x_train, x_test, y_train, y_test)</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_trend"><code class="name flex">
+<span>def <span class="ident">my_trend</span></span>(<span>x: <built-in function any>, y: <built-in function any>, degree: int = 2, value_count=100) ‑> tuple</span>
+</code></dt>
+<dd>
+<div class="desc"><p>x, y 데이터에 대한 추세선을 구한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt>x : 산점도 그래프에 대한 x 데이터</dt>
+<dt>y : 산점도 그래프에 대한 y 데이터</dt>
+<dt><strong><code>degree</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>추세선 방정식의 차수. Defaults to 2.</dd>
+<dt><strong><code>value_count</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>x 데이터의 범위 안에서 간격 수. Defaults to 100.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple</code></dt>
+<dd>(v_trend, t_trend)</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_trend(x: any, y: any, degree: int = 2, value_count=100) -&gt; tuple:
+    &#34;&#34;&#34;x, y 데이터에 대한 추세선을 구한다.
+
+    Args:
+        x : 산점도 그래프에 대한 x 데이터
+        y : 산점도 그래프에 대한 y 데이터
+        degree (int, optional): 추세선 방정식의 차수. Defaults to 2.
+        value_count (int, optional): x 데이터의 범위 안에서 간격 수. Defaults to 100.
+
+    Returns:
+        tuple: (v_trend, t_trend)
+    &#34;&#34;&#34;
+    # [ a, b, c ] ==&gt; ax^2 + bx + c
+    coeff = np.polyfit(x, y, degree)
+
+    if type(x) == &#34;list&#34;:
+        minx = min(x)
+        maxx = max(x)
+    else:
+        minx = x.min()
+        maxx = x.max()
+
+    v_trend = np.linspace(minx, maxx, value_count)
+
+    t_trend = coeff[-1]
+    for i in range(0, degree):
+        t_trend += coeff[i] * v_trend ** (degree - i)
+
+    return (v_trend, t_trend)</code></pre>
+</details>
+</dd>
+<dt id="helper.util.my_unmelt"><code class="name flex">
+<span>def <span class="ident">my_unmelt</span></span>(<span>data: pandas.core.frame.DataFrame, id_vars: str = 'class', value_vars: str = 'values') ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>두 개의 컬럼으로 구성된 데이터프레임에서 하나는 명목형, 나머지는 연속형일 경우
+명목형 변수의 값에 따라 고유한 변수를 갖는 데이터프레임으로 변환한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임</dd>
+<dt><strong><code>id_vars</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>명목형 변수의 컬럼명. Defaults to 'class'.</dd>
+<dt><strong><code>value_vars</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>연속형 변수의 컬럼명. Defaults to 'values'.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>DataFrame</code></dt>
+<dd>변환된 데이터프레임</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_unmelt(
+    data: DataFrame, id_vars: str = &#34;class&#34;, value_vars: str = &#34;values&#34;
+) -&gt; DataFrame:
+    &#34;&#34;&#34;두 개의 컬럼으로 구성된 데이터프레임에서 하나는 명목형, 나머지는 연속형일 경우
+    명목형 변수의 값에 따라 고유한 변수를 갖는 데이터프레임으로 변환한다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        id_vars (str, optional): 명목형 변수의 컬럼명. Defaults to &#39;class&#39;.
+        value_vars (str, optional): 연속형 변수의 컬럼명. Defaults to &#39;values&#39;.
+
+    Returns:
+        DataFrame: 변환된 데이터프레임
+    &#34;&#34;&#34;
+    result = data.groupby(id_vars)[value_vars].apply(list)
+    mydict = {}
+
+    for i in result.index:
+        mydict[i] = result[i]
+
+    return DataFrame(mydict)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="helper" href="index.html">helper</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="helper.util.my_balance" href="#helper.util.my_balance">my_balance</a></code></li>
+<li><code><a title="helper.util.my_dummies" href="#helper.util.my_dummies">my_dummies</a></code></li>
+<li><code><a title="helper.util.my_labelling" href="#helper.util.my_labelling">my_labelling</a></code></li>
+<li><code><a title="helper.util.my_normalize_data" href="#helper.util.my_normalize_data">my_normalize_data</a></code></li>
+<li><code><a title="helper.util.my_normalize_df" href="#helper.util.my_normalize_df">my_normalize_df</a></code></li>
+<li><code><a title="helper.util.my_outlier_table" href="#helper.util.my_outlier_table">my_outlier_table</a></code></li>
+<li><code><a title="helper.util.my_poly_features" href="#helper.util.my_poly_features">my_poly_features</a></code></li>
+<li><code><a title="helper.util.my_pretty_table" href="#helper.util.my_pretty_table">my_pretty_table</a></code></li>
+<li><code><a title="helper.util.my_read_csv" href="#helper.util.my_read_csv">my_read_csv</a></code></li>
+<li><code><a title="helper.util.my_read_data" href="#helper.util.my_read_data">my_read_data</a></code></li>
+<li><code><a title="helper.util.my_read_excel" href="#helper.util.my_read_excel">my_read_excel</a></code></li>
+<li><code><a title="helper.util.my_replace_missing_value" href="#helper.util.my_replace_missing_value">my_replace_missing_value</a></code></li>
+<li><code><a title="helper.util.my_replace_outliner" href="#helper.util.my_replace_outliner">my_replace_outliner</a></code></li>
+<li><code><a title="helper.util.my_replace_outliner_to_mean" href="#helper.util.my_replace_outliner_to_mean">my_replace_outliner_to_mean</a></code></li>
+<li><code><a title="helper.util.my_replace_outliner_to_nan" href="#helper.util.my_replace_outliner_to_nan">my_replace_outliner_to_nan</a></code></li>
+<li><code><a title="helper.util.my_set_category" href="#helper.util.my_set_category">my_set_category</a></code></li>
+<li><code><a title="helper.util.my_standard_scaler" href="#helper.util.my_standard_scaler">my_standard_scaler</a></code></li>
+<li><code><a title="helper.util.my_train_test_split" href="#helper.util.my_train_test_split">my_train_test_split</a></code></li>
+<li><code><a title="helper.util.my_trend" href="#helper.util.my_trend">my_trend</a></code></li>
+<li><code><a title="helper.util.my_unmelt" href="#helper.util.my_unmelt">my_unmelt</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

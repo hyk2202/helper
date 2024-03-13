@@ -82,6 +82,6 @@ from helper.classification import *
 ```
 
 
-<!-- ## Documentation
+## Documentation
 
-[Documentation](https://leekh4232.github.io/hossam-data-helper/hossam) -->
+[Documentation](https://leekh4232.github.io/hossam-data-helper/hossam)

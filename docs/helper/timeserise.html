@@ -1,0 +1,1093 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>helper.timeserise API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>helper.timeserise</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import seaborn as sb
+from pandas import DataFrame, Series
+from matplotlib import pyplot as plt
+
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from statsmodels.tsa.arima.model import ARIMA
+from pmdarima.arima import auto_arima
+
+from .util import my_pretty_table
+from .plot import my_lineplot
+
+
+def my_diff(
+    data: DataFrame,
+    yname: str,
+    plot: bool = True,
+    max_diff: int = None,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+) -&gt; None:
+    &#34;&#34;&#34;데이터의 정상성을 확인하고, 정상성을 충족하지 않을 경우 차분을 수행하여 정상성을 만족시킨다.
+    반드시 데이터 프레임의 인덱스가 타임시리즈 데이터여야 한다.
+
+    Args:
+        data (DataFrame): 데이터 프레임
+        yname (str): 차분을 수행할 데이터 컬럼명
+        plot (bool, optional): 차분 결과를 그래프로 표시할지 여부. Defaults to True.
+        max_diff (int, optional): 최대 차분 횟수. 지정되지 않을 경우 최대 반복. Defaults to None.
+        figsize (tuple, optional): 그래프 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프 해상도. Defaults to 100.
+    &#34;&#34;&#34;
+    df = data.copy()
+
+    # 데이터 정상성 여부
+    stationarity = False
+
+    # 반복 수행 횟수
+    count = 0
+
+    # 데이터가 정상성을 충족하지 않는 동안 반복
+    while not stationarity:
+        if count == 0:
+            print(&#34;=========== 원본 데이터 ===========&#34;)
+        else:
+            print(&#34;=========== %d차 차분 데이터 ===========&#34; % count)
+            # 차분 수행
+            df = df.diff().dropna()
+
+        if plot:
+            my_lineplot(df=df, yname=yname, xname=df.index, figsize=figsize, dpi=dpi)
+
+        # ADF Test
+        ar = adfuller(df[yname])
+
+        ardict = {
+            &#34;검정통계량(ADF Statistic)&#34;: [ar[0]],
+            &#34;유의수준(p-value)&#34;: [ar[1]],
+            &#34;최적차수(num of lags)&#34;: [ar[2]],
+            &#34;관측치 개수(num of observations)&#34;: [ar[3]],
+        }
+
+        for key, value in ar[4].items():
+            ardict[&#34;기각값(Critical Values) %s&#34; % key] = value
+
+        stationarity = ar[1] &lt;= 0.05
+        ardict[&#34;데이터 정상성 여부&#34;] = &#34;정상&#34; if stationarity else &#34;비정상&#34;
+
+        ardf = DataFrame(ardict, index=[&#34;ADF Test&#34;]).T
+        my_pretty_table(ardf)
+
+        # 반복회차 1 증가
+        count += 1
+
+        # 최대 차분 횟수가 지정되어 있고, 반복회차가 최대 차분 횟수에 도달하면 종료
+        if max_diff and count == max_diff:
+            break
+
+    return df
+
+
+def my_rolling(
+    data: Series,
+    window: int,
+    plot: bool = True,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+) -&gt; Series:
+    &#34;&#34;&#34;이동평균을 계산한다. 반드시 index가 datetime 형식이어야 한다.
+
+    Args:
+        data (Series): 시리즈 데이터
+        window (int): 이동평균 계산 기간
+        plot (bool, optional): 이동평균 그래프 표시 여부. Defaults to True.
+        figsize (tuple, optional): 그래프 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프 해상도. Defaults to 100.
+    Returns:
+        Series: 이동평균 데이터
+    &#34;&#34;&#34;
+    rolling = data.rolling(window=window).mean()
+
+    if plot:
+        df = DataFrame(
+            {
+                rolling.name: rolling,
+            },
+            index=rolling.index,
+        )
+        my_lineplot(
+            df=df,
+            yname=rolling.name,
+            xname=df.index,
+            figsize=figsize,
+            dpi=dpi,
+            callback=lambda ax: ax.set_title(f&#34;Rolling (window={window})&#34;),
+        )
+
+    return rolling
+
+
+def my_ewm(
+    data: Series, span: int, plot: bool = True, figsize: tuple = (10, 5), dpi: int = 100
+) -&gt; Series:
+    &#34;&#34;&#34;지수가중이동평균을 계산한다.
+
+    Args:
+        data (Series): 시리즈 데이터
+        span (int): 지수가중이동평균 계산 기간
+        plot (bool, optional): 지수가중이동평균 그래프 표시 여부. Defaults to True.
+        figsize (tuple, optional): 그래프 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프 해상도. Defaults to 100.
+
+    Returns:
+        Series: 지수가중이동평균 데이터
+    &#34;&#34;&#34;
+    ewm = data.ewm(span=span).mean()
+
+    if plot:
+        df = DataFrame(
+            {
+                ewm.name: ewm,
+            },
+            index=ewm.index,
+        )
+        my_lineplot(
+            df=df,
+            yname=ewm.name,
+            xname=df.index,
+            figsize=figsize,
+            dpi=dpi,
+            callback=lambda ax: ax.set_title(f&#34;Rolling (span={span})&#34;),
+        )
+
+    return ewm
+
+
+def my_seasonal_decompose(
+    data: Series,
+    model: str = &#34;additive&#34;,
+    plot: bool = True,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+):
+    &#34;&#34;&#34;시계열 데이터를 계절적, 추세적, 불규칙적 성분으로 분해한다.
+
+    Args:
+        data (Series): 시리즈 데이터
+        model (str, optional): 분해 모델. &#34;additive&#34; 또는 &#34;multiplicative&#34;. Defaults to &#34;additive&#34;.
+        plot (bool, optional): 분해 결과 그래프 표시 여부. Defaults to True.
+        figsize (tuple, optional): 그래프 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프 해상도. Defaults to 100.
+    &#34;&#34;&#34;
+
+    if model not in [&#34;additive&#34;, &#34;multiplicative&#34;]:
+        raise ValueError(&#39;model은 &#34;additive&#34;또는 &#34;multiplicative&#34;이어야 합니다.&#39;)
+
+    sd = seasonal_decompose(data, model=model)
+
+    sd_df = DataFrame(
+        {
+            &#34;original&#34;: sd.observed,
+            &#34;trend&#34;: sd.trend,
+            &#34;seasonal&#34;: sd.seasonal,
+            &#34;resid&#34;: sd.resid,
+        },
+        index=data.index,
+    )
+
+    if plot:
+        figure = sd.plot()
+        figure.set_size_inches((figsize[0], figsize[1] * 4))
+        figure.set_dpi(dpi)
+
+        fig, ax1, ax2, ax3, ax4 = figure.get_children()
+
+        ax1.set_ylabel(&#34;Original&#34;)
+        ax1.grid(True)
+        ax2.grid(True)
+        ax3.grid(True)
+        ax4.grid(True)
+
+        plt.show()
+        plt.close()
+
+    return sd_df
+
+
+def my_timeseries_split(data: DataFrame, test_size: float = 0.2) -&gt; tuple:
+    &#34;&#34;&#34;시계열 데이터를 학습 데이터와 테스트 데이터로 분할한다.
+
+    Args:
+        data (DataFrame): 시계열 데이터
+        test_size (float, optional): 테스트 데이터 비율. Defaults to 0.2.
+
+    Returns:
+        tuple: (학습 데이터, 테스트 데이터)
+    &#34;&#34;&#34;
+    train_size = 1 - test_size
+
+    # 처음부터 70% 위치 전까지 분할
+    train = data[: int(train_size * len(data))]
+
+    # 70% 위치부터 끝까지 분할
+    test = data[int(train_size * len(data)) :]
+
+    return (train, test)
+
+
+def my_acf_plot(
+    data: Series, figsize: tuple = (10, 5), dpi: int = 100, callback: any = None
+):
+    &#34;&#34;&#34;ACF 그래프를 그린다.
+
+    Args:
+        data (Series): 시리즈 데이터
+        figsize (tuple, optional): 그래프 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프 해상도. Defaults to 100.
+        callback (any, optional): 그래프에 추가할 콜백 함수. Defaults to None.
+    &#34;&#34;&#34;
+    fig = plt.figure(figsize=figsize, dpi=dpi)
+    ax = fig.gca()
+
+    plot_acf(data, ax=ax)
+    ax.grid()
+
+    if callback:
+        callback(ax)
+
+    plt.show()
+    plt.close()
+
+
+def my_pacf_plot(
+    data: Series, figsize: tuple = (10, 5), dpi: int = 100, callback: any = None
+):
+    &#34;&#34;&#34;PACF 그래프를 그린다.
+
+    Args:
+        data (Series): 시리즈 데이터
+        figsize (tuple, optional): 그래프 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프 해상도. Defaults to 100.
+        callback (any, optional): 그래프에 추가할 콜백 함수. Defaults to None.
+    &#34;&#34;&#34;
+    fig = plt.figure(figsize=figsize, dpi=dpi)
+    ax = fig.gca()
+
+    plot_pacf(data, ax=ax)
+    ax.grid()
+
+    if callback:
+        callback(ax)
+
+    plt.show()
+    plt.close()
+
+
+def my_acf_pacf_plot(
+    data: Series, figsize: tuple = (10, 5), dpi: int = 100, callback: any = None
+):
+    &#34;&#34;&#34;ACF 그래프와 PACF 그래프를 그린다.
+
+    Args:
+        data (Series): 시리즈 데이터
+        figsize (tuple, optional): 그래프 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프 해상도. Defaults to 100.
+        callback (any, optional): 그래프에 추가할 콜백 함수. Defaults to None.
+    &#34;&#34;&#34;
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(figsize[0], figsize[1] * 2), dpi=dpi)
+
+    plot_acf(data, ax=ax1)
+    ax1.grid()
+
+    plot_pacf(data, ax=ax2)
+    ax2.grid()
+
+    if callback:
+        callback(ax1, ax2)
+
+    plt.show()
+    plt.close()
+
+
+def my_arima(
+    train: Series,
+    test: Series,
+    auto: bool = False,
+    p: int = 3,
+    d: int = 3,
+    q: int = 3,
+    s: int = None,
+    periods: int = 0,
+    figsize: tuple = (15, 5),
+    dpi: int = 100,
+) -&gt; ARIMA:
+    &#34;&#34;&#34;ARIMA 모델을 생성한다.
+
+    Args:
+        train (Series): 학습 데이터
+        test (Series): 테스트 데이터
+        auto (bool, optional): 최적의 ARIMA 모델을 찾을지 여부. Defaults to False.
+        p (int, optional): AR 차수. Defaults to 0.
+        d (int, optional): 차분 차수. Defaults to 0.
+        q (int, optional): MA 차수. Defaults to 0.
+        s (int, optional): 계절성 주기. Defaults to None.
+        periods (int, optional): 예측 기간. Defaults to 0.
+        figsize (tuple, optional): 그래프 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프 해상도. Defaults to 100.
+
+    Returns:
+        ARIMA: ARIMA 모델
+    &#34;&#34;&#34;
+    model = None
+
+    if not auto:
+        if s:
+            model = ARIMA(train, order=(p, d, q), seasonal_order=(p, d, q, s))
+        else:
+            model = ARIMA(train, order=(p, d, q))
+
+        fit = model.fit()
+        print(fit.summary())
+
+        start_index = 0
+        end_index = len(train)
+        test_pred = fit.predict(start=start_index, end=end_index)
+        pred = fit.forecast(len(test) + periods)
+    else:
+        # 최적의 ARIMA 모델을 찾는다.
+        if s:
+            model = auto_arima(
+                y=train,  # 모델링하려는 시계열 데이터 또는 배열
+                start_p=0,  # p의 시작점
+                max_p=p,  # p의 최대값
+                d=d,  # 차분 횟수
+                start_q=0,  # q의 시작점
+                max_q=q,  # q의 최대값
+                seasonal=True,  # 계절성 사용 여부
+                m=s,  # 계절성 주기
+                start_P=0,  # P의 시작점
+                max_P=p,  # P의 최대값
+                D=d,  # 계절성 차분 횟수
+                start_Q=0,  # Q의 시작점
+                max_Q=q,  # Q의 최대값
+                trace=True,  # 학습 과정 표시 여부
+            )
+        else:
+            model = auto_arima(
+                y=train,  # 모델링하려는 시계열 데이터 또는 배열
+                start_p=0,  # p의 시작점
+                max_p=p,  # p의 최대값
+                d=d,  # 차분 횟수
+                start_q=0,  # q의 시작점
+                max_q=q,  # q의 최대값
+                seasonal=False,  # 계절성 사용 여부
+                trace=True,  # 학습 과정 표시 여부
+            )
+
+        print(model.summary())
+        pred = model.predict(n_periods=int(len(test)) + periods)
+        pd = None
+
+    # 예측 결과 그래프
+    fig = plt.figure(figsize=figsize, dpi=dpi)
+    ax = fig.gca()
+
+    sb.lineplot(data=train, x=train.index, y=train.columns[0], label=&#34;Train&#34;, ax=ax)
+    sb.lineplot(data=test, x=test.index, y=test.columns[0], label=&#34;Test&#34;, ax=ax)
+
+    if auto:
+        sb.lineplot(
+            x=pred.index, y=pred.values, label=&#34;Prediction&#34;, linestyle=&#34;--&#34;, ax=ax
+        )
+    else:
+        sb.lineplot(
+            x=test_pred.index, y=test_pred, label=&#34;Prediction&#34;, linestyle=&#34;--&#34;, ax=ax
+        )
+        sb.lineplot(x=pred.index, y=pred, label=&#34;Forecast&#34;, linestyle=&#34;--&#34;, ax=ax)
+
+    ax.grid()
+    ax.legend()
+
+    plt.show()
+    plt.close()
+
+    return model</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="helper.timeserise.my_acf_pacf_plot"><code class="name flex">
+<span>def <span class="ident">my_acf_pacf_plot</span></span>(<span>data: pandas.core.series.Series, figsize: tuple = (10, 5), dpi: int = 100, callback: <built-in function any> = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ACF 그래프와 PACF 그래프를 그린다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>Series</code></dt>
+<dd>시리즈 데이터</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프 크기. Defaults to (10, 5).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프 해상도. Defaults to 100.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>그래프에 추가할 콜백 함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_acf_pacf_plot(
+    data: Series, figsize: tuple = (10, 5), dpi: int = 100, callback: any = None
+):
+    &#34;&#34;&#34;ACF 그래프와 PACF 그래프를 그린다.
+
+    Args:
+        data (Series): 시리즈 데이터
+        figsize (tuple, optional): 그래프 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프 해상도. Defaults to 100.
+        callback (any, optional): 그래프에 추가할 콜백 함수. Defaults to None.
+    &#34;&#34;&#34;
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(figsize[0], figsize[1] * 2), dpi=dpi)
+
+    plot_acf(data, ax=ax1)
+    ax1.grid()
+
+    plot_pacf(data, ax=ax2)
+    ax2.grid()
+
+    if callback:
+        callback(ax1, ax2)
+
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.timeserise.my_acf_plot"><code class="name flex">
+<span>def <span class="ident">my_acf_plot</span></span>(<span>data: pandas.core.series.Series, figsize: tuple = (10, 5), dpi: int = 100, callback: <built-in function any> = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ACF 그래프를 그린다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>Series</code></dt>
+<dd>시리즈 데이터</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프 크기. Defaults to (10, 5).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프 해상도. Defaults to 100.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>그래프에 추가할 콜백 함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_acf_plot(
+    data: Series, figsize: tuple = (10, 5), dpi: int = 100, callback: any = None
+):
+    &#34;&#34;&#34;ACF 그래프를 그린다.
+
+    Args:
+        data (Series): 시리즈 데이터
+        figsize (tuple, optional): 그래프 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프 해상도. Defaults to 100.
+        callback (any, optional): 그래프에 추가할 콜백 함수. Defaults to None.
+    &#34;&#34;&#34;
+    fig = plt.figure(figsize=figsize, dpi=dpi)
+    ax = fig.gca()
+
+    plot_acf(data, ax=ax)
+    ax.grid()
+
+    if callback:
+        callback(ax)
+
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.timeserise.my_arima"><code class="name flex">
+<span>def <span class="ident">my_arima</span></span>(<span>train: pandas.core.series.Series, test: pandas.core.series.Series, auto: bool = False, p: int = 3, d: int = 3, q: int = 3, s: int = None, periods: int = 0, figsize: tuple = (15, 5), dpi: int = 100) ‑> statsmodels.tsa.arima.model.ARIMA</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ARIMA 모델을 생성한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>train</code></strong> :&ensp;<code>Series</code></dt>
+<dd>학습 데이터</dd>
+<dt><strong><code>test</code></strong> :&ensp;<code>Series</code></dt>
+<dd>테스트 데이터</dd>
+<dt><strong><code>auto</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>최적의 ARIMA 모델을 찾을지 여부. Defaults to False.</dd>
+<dt><strong><code>p</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>AR 차수. Defaults to 0.</dd>
+<dt><strong><code>d</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>차분 차수. Defaults to 0.</dd>
+<dt><strong><code>q</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>MA 차수. Defaults to 0.</dd>
+<dt><strong><code>s</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>계절성 주기. Defaults to None.</dd>
+<dt><strong><code>periods</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>예측 기간. Defaults to 0.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프 크기. Defaults to (10, 5).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프 해상도. Defaults to 100.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>ARIMA</code></dt>
+<dd>ARIMA 모델</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_arima(
+    train: Series,
+    test: Series,
+    auto: bool = False,
+    p: int = 3,
+    d: int = 3,
+    q: int = 3,
+    s: int = None,
+    periods: int = 0,
+    figsize: tuple = (15, 5),
+    dpi: int = 100,
+) -&gt; ARIMA:
+    &#34;&#34;&#34;ARIMA 모델을 생성한다.
+
+    Args:
+        train (Series): 학습 데이터
+        test (Series): 테스트 데이터
+        auto (bool, optional): 최적의 ARIMA 모델을 찾을지 여부. Defaults to False.
+        p (int, optional): AR 차수. Defaults to 0.
+        d (int, optional): 차분 차수. Defaults to 0.
+        q (int, optional): MA 차수. Defaults to 0.
+        s (int, optional): 계절성 주기. Defaults to None.
+        periods (int, optional): 예측 기간. Defaults to 0.
+        figsize (tuple, optional): 그래프 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프 해상도. Defaults to 100.
+
+    Returns:
+        ARIMA: ARIMA 모델
+    &#34;&#34;&#34;
+    model = None
+
+    if not auto:
+        if s:
+            model = ARIMA(train, order=(p, d, q), seasonal_order=(p, d, q, s))
+        else:
+            model = ARIMA(train, order=(p, d, q))
+
+        fit = model.fit()
+        print(fit.summary())
+
+        start_index = 0
+        end_index = len(train)
+        test_pred = fit.predict(start=start_index, end=end_index)
+        pred = fit.forecast(len(test) + periods)
+    else:
+        # 최적의 ARIMA 모델을 찾는다.
+        if s:
+            model = auto_arima(
+                y=train,  # 모델링하려는 시계열 데이터 또는 배열
+                start_p=0,  # p의 시작점
+                max_p=p,  # p의 최대값
+                d=d,  # 차분 횟수
+                start_q=0,  # q의 시작점
+                max_q=q,  # q의 최대값
+                seasonal=True,  # 계절성 사용 여부
+                m=s,  # 계절성 주기
+                start_P=0,  # P의 시작점
+                max_P=p,  # P의 최대값
+                D=d,  # 계절성 차분 횟수
+                start_Q=0,  # Q의 시작점
+                max_Q=q,  # Q의 최대값
+                trace=True,  # 학습 과정 표시 여부
+            )
+        else:
+            model = auto_arima(
+                y=train,  # 모델링하려는 시계열 데이터 또는 배열
+                start_p=0,  # p의 시작점
+                max_p=p,  # p의 최대값
+                d=d,  # 차분 횟수
+                start_q=0,  # q의 시작점
+                max_q=q,  # q의 최대값
+                seasonal=False,  # 계절성 사용 여부
+                trace=True,  # 학습 과정 표시 여부
+            )
+
+        print(model.summary())
+        pred = model.predict(n_periods=int(len(test)) + periods)
+        pd = None
+
+    # 예측 결과 그래프
+    fig = plt.figure(figsize=figsize, dpi=dpi)
+    ax = fig.gca()
+
+    sb.lineplot(data=train, x=train.index, y=train.columns[0], label=&#34;Train&#34;, ax=ax)
+    sb.lineplot(data=test, x=test.index, y=test.columns[0], label=&#34;Test&#34;, ax=ax)
+
+    if auto:
+        sb.lineplot(
+            x=pred.index, y=pred.values, label=&#34;Prediction&#34;, linestyle=&#34;--&#34;, ax=ax
+        )
+    else:
+        sb.lineplot(
+            x=test_pred.index, y=test_pred, label=&#34;Prediction&#34;, linestyle=&#34;--&#34;, ax=ax
+        )
+        sb.lineplot(x=pred.index, y=pred, label=&#34;Forecast&#34;, linestyle=&#34;--&#34;, ax=ax)
+
+    ax.grid()
+    ax.legend()
+
+    plt.show()
+    plt.close()
+
+    return model</code></pre>
+</details>
+</dd>
+<dt id="helper.timeserise.my_diff"><code class="name flex">
+<span>def <span class="ident">my_diff</span></span>(<span>data: pandas.core.frame.DataFrame, yname: str, plot: bool = True, max_diff: int = None, figsize: tuple = (10, 5), dpi: int = 100) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터의 정상성을 확인하고, 정상성을 충족하지 않을 경우 차분을 수행하여 정상성을 만족시킨다.
+반드시 데이터 프레임의 인덱스가 타임시리즈 데이터여야 한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터 프레임</dd>
+<dt><strong><code>yname</code></strong> :&ensp;<code>str</code></dt>
+<dd>차분을 수행할 데이터 컬럼명</dd>
+<dt><strong><code>plot</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>차분 결과를 그래프로 표시할지 여부. Defaults to True.</dd>
+<dt><strong><code>max_diff</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>최대 차분 횟수. 지정되지 않을 경우 최대 반복. Defaults to None.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프 크기. Defaults to (10, 5).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프 해상도. Defaults to 100.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_diff(
+    data: DataFrame,
+    yname: str,
+    plot: bool = True,
+    max_diff: int = None,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+) -&gt; None:
+    &#34;&#34;&#34;데이터의 정상성을 확인하고, 정상성을 충족하지 않을 경우 차분을 수행하여 정상성을 만족시킨다.
+    반드시 데이터 프레임의 인덱스가 타임시리즈 데이터여야 한다.
+
+    Args:
+        data (DataFrame): 데이터 프레임
+        yname (str): 차분을 수행할 데이터 컬럼명
+        plot (bool, optional): 차분 결과를 그래프로 표시할지 여부. Defaults to True.
+        max_diff (int, optional): 최대 차분 횟수. 지정되지 않을 경우 최대 반복. Defaults to None.
+        figsize (tuple, optional): 그래프 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프 해상도. Defaults to 100.
+    &#34;&#34;&#34;
+    df = data.copy()
+
+    # 데이터 정상성 여부
+    stationarity = False
+
+    # 반복 수행 횟수
+    count = 0
+
+    # 데이터가 정상성을 충족하지 않는 동안 반복
+    while not stationarity:
+        if count == 0:
+            print(&#34;=========== 원본 데이터 ===========&#34;)
+        else:
+            print(&#34;=========== %d차 차분 데이터 ===========&#34; % count)
+            # 차분 수행
+            df = df.diff().dropna()
+
+        if plot:
+            my_lineplot(df=df, yname=yname, xname=df.index, figsize=figsize, dpi=dpi)
+
+        # ADF Test
+        ar = adfuller(df[yname])
+
+        ardict = {
+            &#34;검정통계량(ADF Statistic)&#34;: [ar[0]],
+            &#34;유의수준(p-value)&#34;: [ar[1]],
+            &#34;최적차수(num of lags)&#34;: [ar[2]],
+            &#34;관측치 개수(num of observations)&#34;: [ar[3]],
+        }
+
+        for key, value in ar[4].items():
+            ardict[&#34;기각값(Critical Values) %s&#34; % key] = value
+
+        stationarity = ar[1] &lt;= 0.05
+        ardict[&#34;데이터 정상성 여부&#34;] = &#34;정상&#34; if stationarity else &#34;비정상&#34;
+
+        ardf = DataFrame(ardict, index=[&#34;ADF Test&#34;]).T
+        my_pretty_table(ardf)
+
+        # 반복회차 1 증가
+        count += 1
+
+        # 최대 차분 횟수가 지정되어 있고, 반복회차가 최대 차분 횟수에 도달하면 종료
+        if max_diff and count == max_diff:
+            break
+
+    return df</code></pre>
+</details>
+</dd>
+<dt id="helper.timeserise.my_ewm"><code class="name flex">
+<span>def <span class="ident">my_ewm</span></span>(<span>data: pandas.core.series.Series, span: int, plot: bool = True, figsize: tuple = (10, 5), dpi: int = 100) ‑> pandas.core.series.Series</span>
+</code></dt>
+<dd>
+<div class="desc"><p>지수가중이동평균을 계산한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>Series</code></dt>
+<dd>시리즈 데이터</dd>
+<dt><strong><code>span</code></strong> :&ensp;<code>int</code></dt>
+<dd>지수가중이동평균 계산 기간</dd>
+<dt><strong><code>plot</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>지수가중이동평균 그래프 표시 여부. Defaults to True.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프 크기. Defaults to (10, 5).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프 해상도. Defaults to 100.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Series</code></dt>
+<dd>지수가중이동평균 데이터</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_ewm(
+    data: Series, span: int, plot: bool = True, figsize: tuple = (10, 5), dpi: int = 100
+) -&gt; Series:
+    &#34;&#34;&#34;지수가중이동평균을 계산한다.
+
+    Args:
+        data (Series): 시리즈 데이터
+        span (int): 지수가중이동평균 계산 기간
+        plot (bool, optional): 지수가중이동평균 그래프 표시 여부. Defaults to True.
+        figsize (tuple, optional): 그래프 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프 해상도. Defaults to 100.
+
+    Returns:
+        Series: 지수가중이동평균 데이터
+    &#34;&#34;&#34;
+    ewm = data.ewm(span=span).mean()
+
+    if plot:
+        df = DataFrame(
+            {
+                ewm.name: ewm,
+            },
+            index=ewm.index,
+        )
+        my_lineplot(
+            df=df,
+            yname=ewm.name,
+            xname=df.index,
+            figsize=figsize,
+            dpi=dpi,
+            callback=lambda ax: ax.set_title(f&#34;Rolling (span={span})&#34;),
+        )
+
+    return ewm</code></pre>
+</details>
+</dd>
+<dt id="helper.timeserise.my_pacf_plot"><code class="name flex">
+<span>def <span class="ident">my_pacf_plot</span></span>(<span>data: pandas.core.series.Series, figsize: tuple = (10, 5), dpi: int = 100, callback: <built-in function any> = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>PACF 그래프를 그린다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>Series</code></dt>
+<dd>시리즈 데이터</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프 크기. Defaults to (10, 5).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프 해상도. Defaults to 100.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>그래프에 추가할 콜백 함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_pacf_plot(
+    data: Series, figsize: tuple = (10, 5), dpi: int = 100, callback: any = None
+):
+    &#34;&#34;&#34;PACF 그래프를 그린다.
+
+    Args:
+        data (Series): 시리즈 데이터
+        figsize (tuple, optional): 그래프 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프 해상도. Defaults to 100.
+        callback (any, optional): 그래프에 추가할 콜백 함수. Defaults to None.
+    &#34;&#34;&#34;
+    fig = plt.figure(figsize=figsize, dpi=dpi)
+    ax = fig.gca()
+
+    plot_pacf(data, ax=ax)
+    ax.grid()
+
+    if callback:
+        callback(ax)
+
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.timeserise.my_rolling"><code class="name flex">
+<span>def <span class="ident">my_rolling</span></span>(<span>data: pandas.core.series.Series, window: int, plot: bool = True, figsize: tuple = (10, 5), dpi: int = 100) ‑> pandas.core.series.Series</span>
+</code></dt>
+<dd>
+<div class="desc"><p>이동평균을 계산한다. 반드시 index가 datetime 형식이어야 한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>Series</code></dt>
+<dd>시리즈 데이터</dd>
+<dt><strong><code>window</code></strong> :&ensp;<code>int</code></dt>
+<dd>이동평균 계산 기간</dd>
+<dt><strong><code>plot</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>이동평균 그래프 표시 여부. Defaults to True.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프 크기. Defaults to (10, 5).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프 해상도. Defaults to 100.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Series</code></dt>
+<dd>이동평균 데이터</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_rolling(
+    data: Series,
+    window: int,
+    plot: bool = True,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+) -&gt; Series:
+    &#34;&#34;&#34;이동평균을 계산한다. 반드시 index가 datetime 형식이어야 한다.
+
+    Args:
+        data (Series): 시리즈 데이터
+        window (int): 이동평균 계산 기간
+        plot (bool, optional): 이동평균 그래프 표시 여부. Defaults to True.
+        figsize (tuple, optional): 그래프 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프 해상도. Defaults to 100.
+    Returns:
+        Series: 이동평균 데이터
+    &#34;&#34;&#34;
+    rolling = data.rolling(window=window).mean()
+
+    if plot:
+        df = DataFrame(
+            {
+                rolling.name: rolling,
+            },
+            index=rolling.index,
+        )
+        my_lineplot(
+            df=df,
+            yname=rolling.name,
+            xname=df.index,
+            figsize=figsize,
+            dpi=dpi,
+            callback=lambda ax: ax.set_title(f&#34;Rolling (window={window})&#34;),
+        )
+
+    return rolling</code></pre>
+</details>
+</dd>
+<dt id="helper.timeserise.my_seasonal_decompose"><code class="name flex">
+<span>def <span class="ident">my_seasonal_decompose</span></span>(<span>data: pandas.core.series.Series, model: str = 'additive', plot: bool = True, figsize: tuple = (10, 5), dpi: int = 100)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>시계열 데이터를 계절적, 추세적, 불규칙적 성분으로 분해한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>Series</code></dt>
+<dd>시리즈 데이터</dd>
+<dt><strong><code>model</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>분해 모델. "additive" 또는 "multiplicative". Defaults to "additive".</dd>
+<dt><strong><code>plot</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>분해 결과 그래프 표시 여부. Defaults to True.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프 크기. Defaults to (10, 5).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프 해상도. Defaults to 100.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_seasonal_decompose(
+    data: Series,
+    model: str = &#34;additive&#34;,
+    plot: bool = True,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+):
+    &#34;&#34;&#34;시계열 데이터를 계절적, 추세적, 불규칙적 성분으로 분해한다.
+
+    Args:
+        data (Series): 시리즈 데이터
+        model (str, optional): 분해 모델. &#34;additive&#34; 또는 &#34;multiplicative&#34;. Defaults to &#34;additive&#34;.
+        plot (bool, optional): 분해 결과 그래프 표시 여부. Defaults to True.
+        figsize (tuple, optional): 그래프 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프 해상도. Defaults to 100.
+    &#34;&#34;&#34;
+
+    if model not in [&#34;additive&#34;, &#34;multiplicative&#34;]:
+        raise ValueError(&#39;model은 &#34;additive&#34;또는 &#34;multiplicative&#34;이어야 합니다.&#39;)
+
+    sd = seasonal_decompose(data, model=model)
+
+    sd_df = DataFrame(
+        {
+            &#34;original&#34;: sd.observed,
+            &#34;trend&#34;: sd.trend,
+            &#34;seasonal&#34;: sd.seasonal,
+            &#34;resid&#34;: sd.resid,
+        },
+        index=data.index,
+    )
+
+    if plot:
+        figure = sd.plot()
+        figure.set_size_inches((figsize[0], figsize[1] * 4))
+        figure.set_dpi(dpi)
+
+        fig, ax1, ax2, ax3, ax4 = figure.get_children()
+
+        ax1.set_ylabel(&#34;Original&#34;)
+        ax1.grid(True)
+        ax2.grid(True)
+        ax3.grid(True)
+        ax4.grid(True)
+
+        plt.show()
+        plt.close()
+
+    return sd_df</code></pre>
+</details>
+</dd>
+<dt id="helper.timeserise.my_timeseries_split"><code class="name flex">
+<span>def <span class="ident">my_timeseries_split</span></span>(<span>data: pandas.core.frame.DataFrame, test_size: float = 0.2) ‑> tuple</span>
+</code></dt>
+<dd>
+<div class="desc"><p>시계열 데이터를 학습 데이터와 테스트 데이터로 분할한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>시계열 데이터</dd>
+<dt><strong><code>test_size</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>테스트 데이터 비율. Defaults to 0.2.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple</code></dt>
+<dd>(학습 데이터, 테스트 데이터)</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_timeseries_split(data: DataFrame, test_size: float = 0.2) -&gt; tuple:
+    &#34;&#34;&#34;시계열 데이터를 학습 데이터와 테스트 데이터로 분할한다.
+
+    Args:
+        data (DataFrame): 시계열 데이터
+        test_size (float, optional): 테스트 데이터 비율. Defaults to 0.2.
+
+    Returns:
+        tuple: (학습 데이터, 테스트 데이터)
+    &#34;&#34;&#34;
+    train_size = 1 - test_size
+
+    # 처음부터 70% 위치 전까지 분할
+    train = data[: int(train_size * len(data))]
+
+    # 70% 위치부터 끝까지 분할
+    test = data[int(train_size * len(data)) :]
+
+    return (train, test)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="helper" href="index.html">helper</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="helper.timeserise.my_acf_pacf_plot" href="#helper.timeserise.my_acf_pacf_plot">my_acf_pacf_plot</a></code></li>
+<li><code><a title="helper.timeserise.my_acf_plot" href="#helper.timeserise.my_acf_plot">my_acf_plot</a></code></li>
+<li><code><a title="helper.timeserise.my_arima" href="#helper.timeserise.my_arima">my_arima</a></code></li>
+<li><code><a title="helper.timeserise.my_diff" href="#helper.timeserise.my_diff">my_diff</a></code></li>
+<li><code><a title="helper.timeserise.my_ewm" href="#helper.timeserise.my_ewm">my_ewm</a></code></li>
+<li><code><a title="helper.timeserise.my_pacf_plot" href="#helper.timeserise.my_pacf_plot">my_pacf_plot</a></code></li>
+<li><code><a title="helper.timeserise.my_rolling" href="#helper.timeserise.my_rolling">my_rolling</a></code></li>
+<li><code><a title="helper.timeserise.my_seasonal_decompose" href="#helper.timeserise.my_seasonal_decompose">my_seasonal_decompose</a></code></li>
+<li><code><a title="helper.timeserise.my_timeseries_split" href="#helper.timeserise.my_timeseries_split">my_timeseries_split</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,3808 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>helper.plot API documentation</title>
+<meta name="description" content="def example(a, b=None, c=&#34;w&#34; , d=[], *e, **f):
+print(a,b,c,d,e,f)
+함수 정의시
+positional parameter(기본값 미지정) -&gt; optional parameter(기본값 지정) -&gt; …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>helper.plot</code></h1>
+</header>
+<section id="section-intro">
+<p>def example(a, b=None, c="w" , d=[], <em>e, </em><em>f):
+print(a,b,c,d,e,f)
+함수 정의시<br>
+positional parameter(기본값 미지정) -&gt; optional parameter(기본값 지정) -&gt; keyword-only(</em>) / var-keyword parameter(<strong>)
+또는
+keyword-only(*) / var-keyword parameter(</strong>) -&gt; positional parameter(기본값 미지정) -&gt; optional parameter(기본값 지정)
+로 파라미터를 셋팅해야한다.
+위 순서를 지키지 않고 만들고 싶으면 바뀌어지는 사이에 '<em>' 을 추가하여 해결한다.
+'</em>' 이후에 오는 파라미터는 반드시 함수 호출시 명시해야한다.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+def example(a, b=None, c=&#34;w&#34; , d=[], *e, **f):
+    print(a,b,c,d,e,f)
+함수 정의시  
+positional parameter(기본값 미지정) -&gt; optional parameter(기본값 지정) -&gt; keyword-only(*) / var-keyword parameter(**)
+또는
+keyword-only(*) / var-keyword parameter(**) -&gt; positional parameter(기본값 미지정) -&gt; optional parameter(기본값 지정) 
+로 파라미터를 셋팅해야한다.
+위 순서를 지키지 않고 만들고 싶으면 바뀌어지는 사이에 &#39;*&#39; 을 추가하여 해결한다.
+&#39;*&#39; 이후에 오는 파라미터는 반드시 함수 호출시 명시해야한다.
+&#34;&#34;&#34;
+
+import numpy as np
+import seaborn as sb
+import matplotlib.pyplot as plt
+from math import sqrt
+from scipy.stats import t
+from pandas import DataFrame, Series
+from scipy.spatial import ConvexHull
+from statannotations.Annotator import Annotator
+from scipy.stats import zscore, probplot
+from sklearn.metrics import (
+    mean_squared_error,
+    ConfusionMatrixDisplay,
+    roc_curve,
+    roc_auc_score,
+    precision_recall_curve,
+)
+from sklearn.model_selection import learning_curve
+from sklearn.preprocessing import StandardScaler
+
+
+def my_boxplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    orient: str = &#34;v&#34;,
+    hue=None,
+    palette: str = None,
+    figsize: tuple = (10, 4),
+    dpi: int = 150,
+    plt_title: str = None,
+    plt_grid: bool = True,
+    plt_xlabel: str = None,
+    plt_ylabel: str = None,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 모든 컬럼에 대해 상자그림을 그려서 분포를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str, optional): x축에 사용할 컬럼명. Defaults to None.
+        yname (str, optional): y축에 사용할 컬럼명. Defaults to None.
+        orient(&#39;v&#39;,&#39;x&#39; or &#39;h&#39;,&#39;y&#39;, optional): 박스플롯의 축을 결정. Defaults to &#39;v&#39;
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        palette (str, optional): 색상 팔레트. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional) : ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defailts to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    if xname != None and yname != None:
+        sb.boxplot(data=df, x=xname, y=yname, orient=orient, palette=palette, ax=ax)
+    else:
+        sb.boxplot(data=df, orient=orient, palette=palette, ax=ax)
+    ax.grid(plt_grid)
+    if callback:
+        callback(ax)
+    if plt_title:
+        ax.set_title(plt_title)
+    if plt_xlabel:
+        ax.set_xlabel(plt_xlabel)
+    ax.set_ylabel(plt_ylabel)
+    plt.show()
+    plt.close()
+
+
+def my_lineplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue: str = None,
+    palette: str = None,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+    plt_title: str = None,
+    plt_grid: bool = True,
+    plt_xlabel: str = None,
+    plt_ylabel: str = None,
+    callback: any = None,
+) -&gt; None:
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+
+    sb.lineplot(data=df, x=xname, y=yname, hue=hue, palette=palette, ax=ax)
+    ax.grid(plt_grid)
+    if plt_title:
+        ax.set_title(plt_title)
+    if plt_xlabel:
+        ax.set_xlabel(plt_xlabel)
+    if plt_ylabel:
+        ax.set_ylabel(plt_ylabel)
+    if callback:
+        callback(ax)
+
+    plt.tight_layout()
+    plt.show()
+    plt.close()
+
+
+def my_kdeplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue: str = None,
+    palette: str = None,
+    fill: bool = False,
+    plt_grid: bool = False,
+    fill_alpha: float = 0.3,
+    linewidth: float = 1,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 커널밀도추정을 그려서 분포를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str, optional): x축에 사용할 컬럼명. Defaults to None.
+        yname (str, optional): y축에 사용할 컬럼명. Defaults to None.
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        palette (str, optional): 색상 팔레트. Defaults to None.
+        fill (bool, optional): 채우기 여부. Defaults to False.
+        fill_alpha (float, optional): 채우기의 투명도. Defaults to 0.3.
+        linewidth (float, optional): 선의 두께. Defaults to 0.5.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 200.
+        callback (any, optional) : ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defailts to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    if fill:
+        sb.kdeplot(
+            data=df,
+            x=xname,
+            y=yname,
+            hue=hue,
+            palette=palette,
+            fill=fill,
+            alpha=fill_alpha,
+            linewidth=linewidth,
+            ax=ax,
+        )
+    else:
+        sb.kdeplot(
+            data=df,
+            x=xname,
+            y=yname,
+            hue=hue,
+            palette=palette,
+            fill=fill,
+            linewidth=linewidth,
+            ax=ax,
+        )
+    ax.grid(plt_grid)
+    if callback:
+        callback(ax)
+    # plt.tight_layout()
+    plt.show()
+    plt.close()
+
+
+def my_histplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue: str = None,
+    bins=&#34;auto&#34;,
+    palette: str = None,
+    kde: bool = True,
+    figsize: tuple = (10, 4),
+    plt_title: str = None,
+    plt_xlabel: str = None,
+    plt_ylabel: str = None,
+    plt_grid: bool = True,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 히스토그램을 그려서 분포를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명 x,y 두 축중 하나만 사용
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        bins (int or list ,optional): 히스토그램의 구간 수 혹은 리스트. Defaults to auto.
+        palette (str, optional): 색상 팔레트. Defaults to None.
+        kde (bool, optional): 커널밀도추정을 함께 출력할지 여부. Defaults to True.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional) : ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defailts to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.histplot(
+        data=df, x=xname, y=yname, hue=hue, kde=True, bins=bins, palette=palette, ax=ax
+    )
+
+    ax.grid(plt_grid)
+    if plt_title:
+        ax.set_title(plt_title)
+    if plt_xlabel:
+        ax.set_xlabel(plt_xlabel)
+    ax.set_ylabel(plt_ylabel)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()
+
+
+def my_stackplot(
+    df: DataFrame,
+    xname: str,
+    hue: str,
+    palette: str = None,
+    figsize: tuple = (10, 5),
+    dpi: int = 150,
+    plt_title: str = None,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;hue로 구분되는 막대 그래프를 비율로 표시한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        kde (bool, optional): 커널밀도추정을 함께 출력할지 여부. Defaults to True.
+        multiple (str, optional): hue가 있을 경우 전체의 비율을 어떻게 표시할지 여부. Deafults to layer
+        palette (str, optional): 색상 팔레트. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional) : ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defailts to None.
+    &#34;&#34;&#34;
+    df2 = df[[xname, hue]]
+    df2[xname] = df2[xname].astype(str)
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+
+    sb.histplot(
+        data=df,
+        x=xname,
+        hue=hue,
+        palette=palette,
+        linewidth=0.5,
+        stat=&#34;probability&#34;,  # 전체에서의 비율로 그리기
+        multiple=&#34;fill&#34;,  # 전체를 100%로 그리기
+        shrink=0.8,
+        ax=ax,
+    )  # 막대의 폭
+
+    # 그래프의 x축 항목 수 만큼 반복
+    for p in ax.patches:
+        # 각 막대의 위치, 넓이, 높이
+        left, bottom, width, height = p.get_bbox().bounds
+        # 막대의 중앙에 글자 표시하기
+        ax.annotate(
+            &#34;%0.1f%%&#34; % (height * 100),
+            xy=(left + width / 2, bottom + height / 2),
+            ha=&#34;center&#34;,
+            va=&#34;center&#34;,
+        )
+
+    if str(df[xname].dtype) in [&#34;int&#34;, &#34;int32&#34;, &#34;int64&#34;, &#34;float&#34;, &#34;float32&#34;, &#34;float64&#34;]:
+        xticks = list(df[xname].unique())
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(xticks)
+    if plt_title:
+        ax.set_title(plt_title)
+    if callback:
+        callback(ax)
+
+    plt.tight_layout()
+    plt.show()
+    plt.close()
+
+
+def my_scatterplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue=None,
+    figsize: tuple = (10, 4),
+    plt_title: str = None,
+    plt_grid: bool = True,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 두 컬럼에 대해 산점도를 그려서 관계를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.scatterplot(data=df, x=xname, y=yname, hue=hue, ax=ax)
+    ax.grid(plt_grid)
+    if plt_title:
+        ax.set_title(plt_title)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()
+
+
+def my_regplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    palette: str = None,
+    figsize: tuple = (10, 4),
+    ci: int = 95,
+    plt_title: str = None,
+    plt_grid: bool = True,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 회귀선을 포함한 산점도를 그려서 관계를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명
+        palette (str, optional) : 색상 팔레트. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        ci (int in [0,100] or None, optional) : 신뢰구간설정
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.regplot(data=df, x=xname, y=yname, ci=ci, color=palette, ax=ax)
+    ax.grid(plt_grid)
+    if plt_title:
+        ax.set_title(plt_title)
+    if callback:
+        callback(ax)
+
+    plt.show()
+    plt.close()
+
+
+def my_lmplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue: str = None,
+    figsize: tuple = (10, 4),
+    plt_title: str = None,
+    plt_grid: bool = True,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 회귀선을 포함한 산점도를 그려서 관계를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+    &#34;&#34;&#34;
+    g = sb.lmplot(data=df, x=xname, y=yname, hue=hue)
+    g.fig.set_figwidth(figsize[0])
+    g.fig.set_figheight(figsize[1])
+    g.fig.set_dpi(dpi)
+    if callback:
+        callback(g)
+    plt.grid(plt_grid)
+    plt.title(plt_title)
+    plt.show()
+    plt.close()
+
+
+def my_pairplot(
+    df: DataFrame,
+    diag_kind: str = &#34;auto&#34;,
+    hue=None,
+    figsize: tuple = (10, 4),
+    kind: str = &#34;scatter&#34;,
+    plt_title: str = None,
+    dpi: int = 150,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 모든 컬럼에 대해 쌍별 관계를 시각화한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        diag_kind ( [&#39;auto&#39;, &#39;hist&#39;, &#39;kde&#39;, None], optional) : 대각그래프에 들어갈 그래프 설정
+        kind ([&#39;scatter&#39;, &#39;kde&#39;, &#39;hist&#39;, &#39;reg&#39;], optional ): 그 외 그래프 설정
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+    &#34;&#34;&#34;
+    sb.pairplot(df, hue=hue, diag_kind=diag_kind, kind=kind)
+    if plt_title:
+        plt.title(plt_title)
+    plt.show()
+    plt.close()
+
+
+def my_countplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue=None,
+    figsize: tuple = (10, 4),
+    plt_title: str = None,
+    plt_xlabel: str = None,
+    plt_grid: bool = True,
+    plt_ylabel: str = None,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 카운트플롯을 그려서 분포를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.countplot(data=df, x=xname, y=yname, hue=hue, ax=ax)
+    ax.grid(plt_grid)
+    if plt_title:
+        ax.set_title(plt_title)
+    if plt_xlabel:
+        ax.set_xlabel(plt_xlabel)
+    if plt.ylabel:
+        ax.set_ylabel(plt_ylabel)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()
+
+
+def my_barplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue=None,
+    figsize: tuple = (10, 4),
+    plt_title: str = None,
+    plt_grid: bool = True,
+    plt_xlabel: str = None,
+    plt_ylabel: str = None,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 바플롯을 그려서 분포를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.barplot(data=df, x=xname, y=yname, hue=hue, ax=ax)
+    ax.grid(plt_grid)
+    if plt_title:
+        ax.set_title(plt_title)
+    if plt_xlabel:
+        ax.set_xlabel(plt_xlabel)
+    if plt.ylabel:
+        ax.set_ylabel(plt_ylabel)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()
+
+
+def my_boxenplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue=None,
+    figsize: tuple = (10, 4),
+    plt_title: str = None,
+    plt_grid: bool = True,
+    plt_xlabel: str = None,
+    plt_ylabel: str = None,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 박슨플롯을 그려서 분포를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.boxenplot(data=df, x=xname, y=yname, hue=hue, ax=ax)
+    ax.grid(plt_grid)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()
+
+
+def my_violinplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue=None,
+    figsize: tuple = (10, 4),
+    plt_grid: bool = True,
+    plt_title: str = None,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 바이올린플롯(상자그림+커널밀도)을 그려서 분포를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.violinplot(data=df, x=xname, y=yname, hue=hue, ax=ax)
+    ax.grid(plt_grid)
+    if plt_title:
+        ax.set_title(plt_title)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()
+
+
+def my_pointplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue=None,
+    figsize: tuple = (10, 4),
+    plt_grid: bool = True,
+    plt_title: str = None,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 포인트플롯을 그려서 분포를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.pointplot(data=df, x=xname, y=yname, hue=hue, ax=ax)
+    ax.grid(plt_grid)
+    ax.set_title(plt_title)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()
+
+
+def my_jointplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue=None,
+    figsize: tuple = (10, 4),
+    plt_title: str = None,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 산점도와 히스토그램을 함께 그려서 관계를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    g = sb.jointplot(data=df, x=xname, y=yname, hue=hue)
+    g.fig.set_figwidth(figsize[0])
+    g.fig.set_figheight(figsize[1])
+    g.fig.set_dpi(dpi)
+    if plt_title:
+        plt.title(plt_title)
+    if callback:
+        callback(g)
+
+    plt.show()
+    plt.close()
+
+
+def my_heatmap(
+    data: DataFrame,
+    cmap=&#34;coolwarm&#34;,
+    figsize: tuple = (10, 4),
+    plt_title: str = None,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 히트맵을 그려서 관계를 확인한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        cmap (str, optional): 칼라맵. Defaults to &#39;coolwarm&#39;.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.heatmap(data, annot=True, cmap=cmap, fmt=&#34;.2g&#34;, ax=ax)
+    if plt_title:
+        ax.set_title(plt_title)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()
+
+
+def my_convex_hull(
+    data: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    *,
+    hue: str,
+    cmap: str = &#34;coolwarm&#34;,
+    plt_grid: bool = True,
+    plt_title: str = None,
+    figsize: tuple = (10, 4),
+    dpi: int = 150,
+    callback: any = None,
+):
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 외곽선을 그려서 군집을 확인한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명
+        hue (str): 색상을 구분할 기준이 되는 컬럼명
+        cmap (str, optional): 칼라맵. Defaults to &#39;coolwarm&#39;.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    # 군집별 값의 종류별로 반복 수행
+    for c in data[hue].unique():
+        # 한 종류만 필터링한 결과에서 두 변수만 선택
+        df_c = data.loc[data[hue] == c, [xname, yname]]
+
+        # 외각선 좌표 계산
+        hull = ConvexHull(df_c)
+
+        # 마지막 좌표 이후에 첫 번째 좌표를 연결
+        points = np.append(hull.vertices, hull.vertices[0])
+
+        plt.plot(
+            df_c.iloc[points, 0],
+            df_c.iloc[points, 1],
+            linewidth=1,
+            linestyle=&#34;:&#34;,
+            ax=ax,
+        )
+        plt.fill(df_c.iloc[points, 0], df_c.iloc[points, 1], alpha=0.1, ax=ax)
+
+    sb.scatterplot(data=data, x=xname, y=yname, hue=hue, palette=cmap, ax=ax)
+
+    ax.grid(plt_grid)
+    ax.set_title(plt_title)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()
+
+
+def my_kde_confidence_interval(
+    data: DataFrame,
+    clevel=0.95,
+    figsize: tuple = (10, 4),
+    plt_grid: bool = True,
+    plt_title: str = None,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;커널밀도추정을 이용하여 신뢰구간을 그려서 분포를 확인한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        clevel (float, optional): 신뢰수준. Defaults to 0.95.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    # 데이터 프레임의 컬럼이 여러 개인 경우 처리
+    for c in data.columns:
+        column = data[c]
+        # print(column)
+        max = column.max()  # 최대값
+        dof = len(column) - 1  # 자유도
+        sample_mean = column.mean()  # 표본평균
+        sample_std = column.std(ddof=1)  # 표본표준편차
+        sample_std_error = sample_std / sqrt(len(column))  # 표본표준오차
+        # print(max, dof, sample_mean, sample_std, sample_std_error)
+
+        # 신뢰구간
+        cmin, cmax = t.interval(clevel, dof, loc=sample_mean, scale=sample_std_error)
+
+        # 현재 컬럼에 대한 커널밀도추정
+        sb.kdeplot(data=column, ax=ax)
+
+        # 그래프 축의 범위
+        xmin, xmax, ymin, ymax = ax.axis()
+
+        # 신뢰구간 그리기
+        plt.plot([cmin, cmin], [ymin, ymax], linestyle=&#34;:&#34;, ax=ax)
+        plt.plot([cmax, cmax], [ymin, ymax], linestyle=&#34;:&#34;, ax=ax)
+        ax.fill_between([cmin, cmax], y1=ymin, y2=ymax, alpha=0.1)
+
+        # 평균 그리기
+        plt.plot(
+            [sample_mean, sample_mean], [0, ymax], linestyle=&#34;--&#34;, linewidth=2, ax=ax
+        )
+
+        plt.text(
+            x=(cmax - cmin) / 2 + cmin,
+            y=ymax,
+            s=&#34;[%s] %0.1f ~ %0.1f&#34; % (column.name, cmin, cmax),
+            horizontalalignment=&#34;center&#34;,
+            verticalalignment=&#34;bottom&#34;,
+            fontdict={&#34;size&#34;: 10, &#34;color&#34;: &#34;red&#34;},
+            ax=ax,
+        )
+
+    ax.set_ylim(ymin, ymax * 1.1)
+    ax.grid(plt_grid)
+    if plt_title:
+        ax.set_title(plt_title)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()
+
+
+def my_pvalue_anotation(
+    data: DataFrame,
+    target: str,
+    hue: str,
+    pairs: list,
+    test: str = &#34;t-test_ind&#34;,
+    text_format: str = &#34;star&#34;,
+    loc: str = &#34;outside&#34;,
+    figsize: tuple = (10, 4),
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 상자그림을 그리고 p-value를 함께 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        target (str): 종속변수에 대한 컬럼명
+        hue (str): 명목형 변수에 대한 컬럼명
+        pairs (list, optional): 비교할 그룹의 목록. 명목형 변수에 포함된 값 중에서 비교 대상을 [(&#34;A&#34;,&#34;B&#34;)] 형태로 선정한다.
+        test (str, optional): 검정방법. Defaults to &#34;t-test_ind&#34;.
+            - t-test_ind(독립,등분산), t-test_welch(독립,이분산)
+            - t-test_paired(대응,등분산), Mann-Whitney(대응,이분산), Mann-Whitney-gt, Mann-Whitney-ls
+            - Levene(분산분석), Wilcoxon, Kruskal
+        text_format (str, optional): 출력형식(full, simple, star). Defaults to &#34;star&#34;.
+        loc (str, optional): 출력위치(inside, outside). Defaults to &#34;outside&#34;.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.boxplot(data=data, x=hue, y=target, ax=ax)
+
+    annotator = Annotator(ax, data=data, x=hue, y=target, pairs=pairs)
+    annotator.configure(test=test, text_format=text_format, loc=loc)
+    annotator.apply_and_annotate()
+
+    sb.despine()
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()
+
+
+def my_resid_histplot(
+    y: np.ndarray,
+    y_pred: np.ndarray,
+    bins=&#34;auto&#34;,
+    kde: bool = True,
+    palette: str = None,
+    figsize: tuple = (10, 4),
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;예측값과 잔차를 히스토그램으로 출력한다.
+
+    Args:
+        y (np.ndarray): 종속변수에 대한 관측치
+        y_pred (np.ndarray): 종속변수에 대한 예측치
+        bins (_type_, optional): 히스토그램의 구간 수 혹은 리스트. Defaults to auto.
+        kde (bool, optional): 커널밀도추정을 함께 출력할지 여부. Defaults to True.
+        palette (str, optional): 색상 팔레트. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    resid = y - y_pred
+    resid_df = DataFrame({&#34;resid&#34;: resid}).reset_index(drop=True)
+    my_histplot(
+        resid_df, xname=&#34;resid&#34;, bins=bins, figsize=figsize, dpi=dpi, callback=callback
+    )
+
+
+def my_residplot(
+    y,
+    y_pred,
+    lowess: bool = False,
+    mse: bool = False,
+    figsize: tuple = (10, 4),
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;예측값과 잔차를 그래프로 출력한다.
+
+    Args:
+        y (_type_): 종속변수에 대한 관측치
+        y_pred (_type_): 종속변수에 대한 예측치
+        lowess (bool, optional): 로우에스티메이션을 사용할지 여부(잔차의 선형성 확인). Defaults to False.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+
+    &#34;&#34;&#34;
+    resid = y - y_pred
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.residplot(
+        x=y_pred,
+        y=resid,
+        lowess=lowess,
+        line_kws={&#34;color&#34;: &#34;red&#34;, &#34;linewidth&#34;: 1},
+        scatter_kws={&#34;edgecolor&#34;: &#34;white&#34;, &#34;alpha&#34;: 0.7},
+        ax=ax,
+    )
+
+    if mse:
+        mse = mean_squared_error(y, y_pred)
+        mse_sq = np.sqrt(mse)
+
+        r1 = resid[(resid &gt; -mse_sq) &amp; (resid &lt; mse_sq)].count() / resid.count() * 100
+        r2 = (
+            resid[(resid &gt; -2 * mse_sq) &amp; (resid &lt; 2 * mse_sq)].count()
+            / resid.count()
+            * 100
+        )
+        r3 = (
+            resid[(resid &gt; -3 * mse_sq) &amp; (resid &lt; 3 * mse_sq)].count()
+            / resid.count()
+            * 100
+        )
+
+        mse_r = [r1, r2, r3]
+
+        for i, c in enumerate([&#34;red&#34;, &#34;green&#34;, &#34;black&#34;]):
+            ax.axhline(mse_sq * (i + 1), color=c, linestyle=&#34;--&#34;, linewidth=0.5)
+            ax.axhline(mse_sq * (-(i + 1)), color=c, linestyle=&#34;--&#34;, linewidth=0.5)
+
+        # 현재 표시되는 그래프의 x축 범위를 가져온다.
+        xmin, xmax = ax.get_xlim()
+
+        target = [68, 95, 99]
+        for i, c in enumerate([&#34;red&#34;, &#34;green&#34;, &#34;black&#34;]):
+            if i:
+                plt.text(
+                    s=f&#34;{i+1}&#34;
+                    r&#34;${}\sqrt{MSE}$ = %.2f%% (%.2f%%)&#34;
+                    % (mse_r[i], mse_r[i] - target[i]),
+                    x=xmax + 0.2,
+                    y=(i + 1) * mse_sq,
+                    color=c,
+                    ax=ax,
+                )
+                plt.text(
+                    s=f&#34;-{i+1}&#34;
+                    r&#34;${}\sqrt{MSE}$ = %.2f%% (%.2f%%)&#34;
+                    % (mse_r[i], mse_r[i] - target[i]),
+                    x=xmax + 0.2,
+                    y=-(i + 1) * mse_sq,
+                    color=c,
+                    ax=ax,
+                )
+            else:
+                plt.text(
+                    s=r&#34;${}\sqrt{MSE}$ = %.2f%% (%.2f%%)&#34;
+                    % (mse_r[i], mse_r[i] - target[i]),
+                    x=xmax + 0.2,
+                    y=(i + 1) * mse_sq,
+                    color=c,
+                    ax=ax,
+                )
+                plt.text(
+                    s=&#34;-&#34;
+                    r&#34;${}\sqrt{MSE}$ = %.2f%% (%.2f%%)&#34;
+                    % (mse_r[i], mse_r[i] - target[i]),
+                    x=xmax + 0.2,
+                    y=-(i + 1) * mse_sq,
+                    color=c,
+                    ax=ax,
+                )
+    else:
+        ax.grid()
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()
+
+
+def my_qqplot(
+    y_pred: np.ndarray, figsize: tuple = (10, 4), dpi: int = 150, callback: any = None
+) -&gt; None:
+    &#34;&#34;&#34;QQ플롯을 출력한다.
+
+    Args:
+        y_pred (np.ndarray): 종속변수에 대한 예측치
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    (x, y), _ = probplot(zscore(y_pred))
+    k = (max(x) + 0.5).round()
+
+    sb.scatterplot(x, y, ax=ax)
+    sb.lineplot(x=[-k, k], y=[-k, k], color=&#34;red&#34;, linestyle=&#34;--&#34;, ax=ax)
+
+    ax.grid()
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()
+
+
+def my_learing_curve(
+    estimator: any,
+    data: DataFrame,
+    yname: str = &#34;target&#34;,
+    scalling: bool = False,
+    cv: int = 10,
+    train_sizes: np.ndarray = np.linspace(0.01, 1.0, 10),
+    scoring: str = None,
+    figsize: tuple = (10, 5),
+    dpi: int = 150,
+    random_state: int = 123,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;학습곡선을 출력한다.
+
+    Args:
+        fit (_type_): 학습모델 객체
+        data (DataFrame): 독립변수
+        yname (Series): 종속변수
+        scaling (bool, optional): 스케일링 여부. Defaults to False.
+        cv (int, optional): 교차검증의 수. Defaults to 10.
+        train_sizes (np.ndarray, optional): 훈련 데이터의 비율. Defaults to np.linspace(0.1, 1.0, 10).
+        scoring (str, optional): 평가지표. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 200.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    if yname not in data.columns:
+        raise Exception(f&#34;\x1b[31m종속변수 {yname}가 존재하지 않습니다.\x1b[0m&#34;)
+
+    x = data.drop(yname, axis=1)
+    y = data[yname]
+    w = 1
+    if scalling:
+        scaler = StandardScaler()
+        x = DataFrame(scaler.fit_transform(x), index=x.index, columns=x.columns)
+
+    error_name = [&#34;MAE&#34;, &#34;MAPE&#34;, &#34;MSE&#34;, &#34;MSE_log&#34;, &#34;RMSE&#34;, &#34;RMSE_log&#34;, &#34;R2&#34;]
+
+    error_value = [
+        &#34;neg_mean_absolute_error&#34;,
+        &#34;neg_mean_absolute_percentage_error&#34;,
+        &#34;neg_mean_squared_error&#34;,
+        &#34;neg_mean_squared_log_error&#34;,
+        &#34;neg_root_mean_squared_error&#34;,
+        &#34;neg_root_mean_squared_log_error&#34;,
+        &#34;r2&#34;,
+    ]
+
+    # 평가지표가 없는 경우
+    if scoring == None:
+        train_sizes, train_scores, test_scores = learning_curve(
+            estimator,
+            x,
+            y,
+            cv=cv,
+            n_jobs=-1,
+            train_sizes=train_sizes,
+            random_state=random_state,
+        )
+
+        ylabel = &#34;Score&#34;
+
+    # 평가지표가 있는 경우
+    else:
+        ylabel = scoring
+        if scoring in error_name:
+            scoring = error_value[error_name.index(scoring)]
+        if scoring in (&#34;rmse&#34;, &#34;mse&#34;):
+            w = -1
+        scoring_list = [
+            &#34;r2&#34;,
+            &#34;max_error&#34;,
+            &#34;matthews_corrcoef&#34;,
+            &#34;neg_median_absolute_error&#34;,
+            &#34;neg_mean_absolute_error&#34;,
+            &#34;neg_mean_absolute_percentage_error&#34;,
+            &#34;neg_mean_squared_error&#34;,
+            &#34;neg_mean_squared_log_error&#34;,
+            &#34;neg_root_mean_squared_error&#34;,
+            &#34;neg_root_mean_squared_log_error&#34;,
+            &#34;neg_mean_poisson_deviance&#34;,
+            &#34;neg_mean_gamma_deviance&#34;,
+            &#34;accuracy&#34;,
+            &#34;top_k_accuracy&#34;,
+            &#34;roc_auc&#34;,
+            &#34;roc_auc_ovr&#34;,
+            &#34;roc_auc_ovo&#34;,
+            &#34;roc_auc_ovr_weighted&#34;,
+            &#34;roc_auc_ovo_weighted&#34;,
+            &#34;balanced_accuracy&#34;,
+            &#34;average_precision&#34;,
+            &#34;neg_log_loss&#34;,
+            &#34;neg_brier_score&#34;,
+            &#34;positive_likelihood_ratio&#34;,
+            &#34;neg_negative_likelihood_ratio&#34;,
+            &#34;adjusted_rand_score&#34;,
+            &#34;rand_score&#34;,
+            &#34;homogeneity_score&#34;,
+            &#34;completeness_score&#34;,
+            &#34;v_measure_score&#34;,
+            &#34;mutual_info_score&#34;,
+            &#34;adjusted_mutual_info_score&#34;,
+            &#34;normalized_mutual_info_score&#34;,
+            &#34;fowlkes_mallows_score&#34;,
+        ]
+
+        if scoring not in scoring_list:
+            raise Exception(f&#34;\x1b[31m평가지표 {scoring}가 존재하지 않습니다.\x1b[0m&#34;)
+
+        train_sizes, train_scores, test_scores = learning_curve(
+            estimator,
+            x,
+            y,
+            cv=cv,
+            n_jobs=-1,
+            train_sizes=train_sizes,
+            scoring=scoring,
+            random_state=random_state,
+        )
+
+    train_mean = w * np.mean(train_scores, axis=1)
+    train_std = w * np.std(train_scores, axis=1)
+    test_mean = w * np.mean(test_scores, axis=1)
+    test_std = w * np.std(test_scores, axis=1)
+
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    # 훈련 데이터 수에 따른 훈련 데이터의 score 평균
+    sb.lineplot(
+        x=train_sizes,
+        y=train_mean,
+        marker=&#34;o&#34;,
+        markersize=5,
+        label=&#34;훈련 데이터&#34;,
+        color=&#34;#ff2200&#34;,
+        ax=ax,
+    )
+    ax.fill_between(
+        train_sizes,
+        train_mean + train_std,
+        train_mean - train_std,
+        alpha=0.15,
+        color=&#34;#ff2200&#34;,
+    )
+
+    # 검증 데이터 수에 따른 검증 데이터의 score 평균
+    sb.lineplot(
+        x=train_sizes,
+        y=test_mean,
+        linestyle=&#34;--&#34;,
+        marker=&#34;s&#34;,
+        markersize=5,
+        label=&#34;검증 데이터&#34;,
+        color=&#34;#0066ff&#34;,
+        ax=ax,
+    )
+    ax.fill_between(
+        train_sizes,
+        test_mean + test_std,
+        test_mean - test_std,
+        alpha=0.15,
+        color=&#34;#0066ff&#34;,
+    )
+
+    ax.grid()
+    ax.set_xlabel(&#34;훈련 셋트 크기&#34;)
+    ax.set_ylabel(ylabel)
+    ax.legend()
+    if callback:
+        callback(ax)
+    # plt.tight_layout()
+    plt.show()
+    plt.close()
+
+
+def my_confusion_matrix(
+    y: np.ndarray,
+    y_pred: np.ndarray,
+    cmap: str = &#34;Blues&#34;,
+    figsize: tuple = (4, 3),
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;혼동행렬을 출력한다.
+
+    Args:
+        y_true (np.ndarray): 실제값
+        y_pred (np.ndarray): 예측값
+        cmap (str, optional): 칼라맵. Defaults to &#39;Blues&#39;.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (4, 3).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+
+    # 이진분류인지 다항분류인지 구분
+    labels = sorted(list(y.unique()))
+    is_binary = len(labels) == 2
+
+    if is_binary:
+        labels = [&#34;Negative&#34;, &#34;Positive&#34;]
+    else:
+        labels = None
+
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+
+    # 다중 로지스틱을 살펴볼 때 함수 파라미터 설정이 변경될 수 있다.
+    ConfusionMatrixDisplay.from_predictions(
+        y,  # 관측치
+        y_pred,  # 예측치
+        display_labels=labels,
+        cmap=cmap,
+        text_kw={&#34;fontsize&#34;: 24, &#34;weight&#34;: &#34;bold&#34;},
+        ax=ax,
+    )
+    if callback:
+        callback(ax)
+    # plt.tight_layout()
+    plt.show()
+    plt.close()
+
+
+def my_roc_curve(
+    y: Series, y_proba: Series, figsize: tuple = (8, 6), dpi=150, callback: any = None
+) -&gt; None:
+    &#34;&#34;&#34;ROC곡선을 출력한다.
+
+    Args:
+        y (Series): 실제값
+        y_proba (Series): 예측확률
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    # 두 번째 파라미터가 판정결과가 아닌 1로 판정할 확률값
+    labels = sorted(list(y.unique()))
+    is_binary = len(labels) == 2
+    if is_binary:
+        fpr, tpr, thresholds = roc_curve(y, y_proba)
+    else:
+        fpr, tpr, thresholds = roc_curve(y, y_proba, average=&#34;macro&#34;)
+
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.lineplot(x=fpr, y=tpr, color=&#34;red&#34;, linewidth=1, label=&#34;ROC Curve&#34;, ax=ax)
+
+    ax.fill_between(fpr, tpr, facecolor=&#34;blue&#34;, alpha=0.1)
+    sb.lineplot(x=[0, 1], y=[0, 1], color=&#34;black&#34;, linestyle=&#34;--&#34;, linewidth=0.7, ax=ax)
+    ax.set_xlabel(&#34;Fase Positive Rate&#34;)
+    ax.set_ylabel(&#34;True Positive Rate&#34;)
+    ax.set_xticks(np.round(np.arange(0, 1.1, 0.1), 2))
+    ax.set_xlim(-0.01, 1.01)
+    ax.set_ylim(-0.01, 1.01)
+    ax.text(
+        0.95,
+        0.05,
+        &#34;AUC=%0.3f&#34; % roc_auc_score(y, y_proba),
+        fontsize=16,
+        ha=&#34;right&#34;,
+        va=&#34;bottom&#34;,
+    )
+    ax.grid()
+    if callback:
+        callback(ax)
+    # plt.tight_layout()
+    plt.show()
+    plt.close()
+
+
+def my_pr_curve(
+    y: Series, y_proba: Series, figsize: tuple = (8, 6), dpi=150, callback: any = None
+) -&gt; None:
+    &#34;&#34;&#34;Precision-Recall 곡선을 출력한다.
+
+    Args:
+        y (Series): 실제값
+        y_proba (Series): 예측확률
+        figsize (tuple, optional): 그래프의 크기. Defaults to (8, 6).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+
+    labels = sorted(list(y.unique()))
+    is_binary = len(labels) == 2
+
+    precision, recall, thresholds = precision_recall_curve(
+        y_true=y, probas_pred=y_proba
+    )
+    y_test_mean = y.mean()
+
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.lineplot(
+        x=recall,
+        y=precision,
+        label=&#34;Precision / Recall Curve&#34;,
+        color=&#34;blue&#34;,
+        linewidth=1,
+        ax=ax,
+    )
+    sb.lineplot(
+        x=[0, 1],
+        y=[y_test_mean, y_test_mean],
+        color=&#34;black&#34;,
+        linewidth=0.7,
+        linestyle=&#34;--&#34;,
+        ax=ax,
+    )
+    ax.set_xlabel(&#34;Recall&#34;)
+    ax.set_ylabel(&#34;Precision&#34;)
+    ax.set_xticks(np.round(np.arange(0, 1.1, 0.1), 2))
+    ax.set_xlim(-0.01, 1.01)
+    ax.set_ylim(y_test_mean - 0.05, 1.01)
+    ax.grid()
+    # plt.tight_layout()
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()
+
+
+def my_roc_pr_curve(
+    y: Series, y_proba: Series, figsize: tuple = (16, 6), dpi=150, callback: any = None
+) -&gt; None:
+    &#34;&#34;&#34;ROC와 Precision-Recall 곡선을 출력한다.
+
+    Args:
+        y (Series): 실제값
+        y_proba (Series): 예측확률
+        figsize (tuple, optional): 그래프의 크기. Defaults to (16, 6).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    fig, ax = plt.subplots(1, 2, figsize=figsize, dpi=dpi)
+
+    # ROC Curve
+    fpr, tpr, thresholds = roc_curve(y, y_proba)
+    sb.lineplot(x=fpr, y=tpr, color=&#34;red&#34;, linewidth=1, label=&#34;ROC Curve&#34;, ax=ax[0])
+    ax[0].fill_between(fpr, tpr, facecolor=&#34;blue&#34;, alpha=0.1)
+    sb.lineplot(
+        x=[0, 1], y=[0, 1], color=&#34;black&#34;, linestyle=&#34;--&#34;, linewidth=0.7, ax=ax[0]
+    )
+    ax[0].set_xlabel(&#34;False Positive Rate&#34;)
+    ax[0].set_ylabel(&#34;True Positive Rate&#34;)
+    ax[0].set_xticks(np.round(np.arange(0, 1.1, 0.1), 2))
+    ax[0].set_xlim([-0.01, 1.01])
+    ax[0].set_ylim([-0.01, 1.01])
+    ax[0].text(
+        0.95,
+        0.05,
+        &#34;AUC=%0.3f&#34; % roc_auc_score(y, y_proba),
+        fontsize=16,
+        ha=&#34;right&#34;,
+        va=&#34;bottom&#34;,
+    )
+    ax[0].legend()
+    ax[0].grid()
+
+    # Precision-Recall Curve
+    precision, recall, thresholds = precision_recall_curve(y, y_proba)
+    y_mean = y.mean()
+
+    sb.lineplot(
+        x=recall,
+        y=precision,
+        label=&#34;Precision / Recall Curve&#34;,
+        color=&#34;blue&#34;,
+        linewidth=1,
+        ax=ax[1],
+    )
+    sb.lineplot(
+        x=[0, 1],
+        y=[y_mean, y_mean],
+        color=&#34;black&#34;,
+        linewidth=0.7,
+        linestyle=&#34;--&#34;,
+        ax=ax[1],
+    )
+    ax[1].set_xlabel(&#34;Recall&#34;)
+    ax[1].set_ylabel(&#34;Precision&#34;)
+    ax[1].set_xticks(np.round(np.arange(0, 1.1, 0.1), 2))
+    ax[1].set_xlim([-0.01, 1.01])
+    ax[1].set_ylim([y_mean - 0.05, 1.01])
+    ax[1].legend()
+    ax[1].grid()
+
+    # plt.tight_layout()
+    if callback:
+        callback(ax[0], ax[1])
+    plt.show()
+    plt.close()
+
+
+def my_distribution_by_class(
+    data: DataFrame,
+    xnames: list = None,
+    hue: str = None,
+    type: str = &#34;kde&#34;,
+    bins: any = 5,
+    palette: str = None,
+    fill: bool = False,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;클래스별로 독립변수의 분포를 출력한다.
+
+    Args:
+        data (DataFrame): 독립변수
+        xnames (list, optional): 독립변수의 이름. Defaults to None.
+        hue (str, optional): 클래스별로 구분할 변수. Defaults to None.
+        type (str, optional): 그래프 종류 (kde, hist, histkde). Defaults to &#34;kde&#34;.
+        bins (any, optional): 히스토그램의 구간 수. Defaults to 5.
+        palette (str, optional): 칼라맵. Defaults to None.
+        fill (bool, optional): kde 그래프의 채우기 여부. Defaults to False.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    if xnames == None:
+        xnames = data.columns
+
+    for i, v in enumerate(xnames):
+        # 종속변수이거나 숫자형이 아닌 경우는 제외
+        if v == hue or data[v].dtype not in [
+            &#34;int&#34;,
+            &#34;int32&#34;,
+            &#34;int64&#34;,
+            &#34;float&#34;,
+            &#34;float32&#34;,
+            &#34;float64&#34;,
+        ]:
+            continue
+        kde = False
+        if type == &#34;kde&#34;:
+            my_kdeplot(
+                data,
+                v,
+                hue=hue,
+                palette=palette,
+                fill=fill,
+                figsize=figsize,
+                dpi=dpi,
+                callback=callback,
+            )
+        else:
+            if &#34;kde&#34; in type:
+                kde = True
+            my_histplot(
+                data,
+                v,
+                hue=hue,
+                bins=bins,
+                kde=kde,
+                palette=palette,
+                figsize=figsize,
+                dpi=dpi,
+                callback=callback,
+            )
+
+
+def my_scatter_by_class(
+    data: DataFrame,
+    group: list = None,
+    hue: str = None,
+    palette: str = None,
+    outline: bool = False,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;클래스별로 독립변수의 산점도를 출력한다.
+
+    Args:
+        data (DataFrame): 독립변수
+        group (list, optional): 독립변수의 조합. Defaults to None.
+        hue (str, optional): 클래스별로 구분할 변수. Defaults to None.
+        palette (str, optional): 칼라맵. Defaults to None.
+        outline (bool, optional): 테두리 여부. Defaults to False.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    if group == None:
+        group = []
+
+        xnames = data.columns
+
+        for i, v in enumerate(xnames):
+            if v == hue or data[v].dtype not in [
+                &#34;int&#34;,
+                &#34;int32&#34;,
+                &#34;int64&#34;,
+                &#34;float&#34;,
+                &#34;float32&#34;,
+                &#34;float64&#34;,
+            ]:
+                continue
+
+            j = (i + 1) % len(xnames)
+            group.append([v, xnames[j]])
+
+    if outline:
+        for i, v in enumerate(group):
+            my_convex_hull(data, v[0], v[1], hue, palette, figsize, dpi, callback)
+    else:
+        for i, v in enumerate(group):
+            my_scatterplot(data, v[0], v[1], hue, palette, figsize, dpi, callback)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="helper.plot.my_barplot"><code class="name flex">
+<span>def <span class="ident">my_barplot</span></span>(<span>df: pandas.core.frame.DataFrame, xname: str = None, yname: str = None, hue=None, figsize: tuple = (10, 4), plt_title: str = None, plt_grid: bool = True, plt_xlabel: str = None, plt_ylabel: str = None, dpi: int = 150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내의 컬럼에 대해 바플롯을 그려서 분포를 확인한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>xname</code></strong> :&ensp;<code>str</code></dt>
+<dd>x축에 사용할 컬럼명</dd>
+<dt><strong><code>yname</code></strong> :&ensp;<code>str</code></dt>
+<dd>y축에 사용할 컬럼명</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>색상을 구분할 기준이 되는 컬럼명. Defaults to None.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_barplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue=None,
+    figsize: tuple = (10, 4),
+    plt_title: str = None,
+    plt_grid: bool = True,
+    plt_xlabel: str = None,
+    plt_ylabel: str = None,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 바플롯을 그려서 분포를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.barplot(data=df, x=xname, y=yname, hue=hue, ax=ax)
+    ax.grid(plt_grid)
+    if plt_title:
+        ax.set_title(plt_title)
+    if plt_xlabel:
+        ax.set_xlabel(plt_xlabel)
+    if plt.ylabel:
+        ax.set_ylabel(plt_ylabel)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_boxenplot"><code class="name flex">
+<span>def <span class="ident">my_boxenplot</span></span>(<span>df: pandas.core.frame.DataFrame, xname: str = None, yname: str = None, hue=None, figsize: tuple = (10, 4), plt_title: str = None, plt_grid: bool = True, plt_xlabel: str = None, plt_ylabel: str = None, dpi: int = 150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내의 컬럼에 대해 박슨플롯을 그려서 분포를 확인한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>xname</code></strong> :&ensp;<code>str</code></dt>
+<dd>x축에 사용할 컬럼명</dd>
+<dt><strong><code>yname</code></strong> :&ensp;<code>str</code></dt>
+<dd>y축에 사용할 컬럼명</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>색상을 구분할 기준이 되는 컬럼명. Defaults to None.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_boxenplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue=None,
+    figsize: tuple = (10, 4),
+    plt_title: str = None,
+    plt_grid: bool = True,
+    plt_xlabel: str = None,
+    plt_ylabel: str = None,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 박슨플롯을 그려서 분포를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.boxenplot(data=df, x=xname, y=yname, hue=hue, ax=ax)
+    ax.grid(plt_grid)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_boxplot"><code class="name flex">
+<span>def <span class="ident">my_boxplot</span></span>(<span>df: pandas.core.frame.DataFrame, xname: str = None, yname: str = None, orient: str = 'v', hue=None, palette: str = None, figsize: tuple = (10, 4), dpi: int = 150, plt_title: str = None, plt_grid: bool = True, plt_xlabel: str = None, plt_ylabel: str = None, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내의 모든 컬럼에 대해 상자그림을 그려서 분포를 확인한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>xname</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>x축에 사용할 컬럼명. Defaults to None.</dd>
+<dt><strong><code>yname</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>y축에 사용할 컬럼명. Defaults to None.</dd>
+<dt>orient('v','x' or 'h','y', optional): 박스플롯의 축을 결정. Defaults to 'v'</dt>
+<dt><strong><code>hue</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>색상을 구분할 기준이 되는 컬럼명. Defaults to None.</dd>
+<dt><strong><code>palette</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>색상 팔레트. Defaults to None.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+</dl>
+<p>callback (any, optional) : ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defailts to None.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_boxplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    orient: str = &#34;v&#34;,
+    hue=None,
+    palette: str = None,
+    figsize: tuple = (10, 4),
+    dpi: int = 150,
+    plt_title: str = None,
+    plt_grid: bool = True,
+    plt_xlabel: str = None,
+    plt_ylabel: str = None,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 모든 컬럼에 대해 상자그림을 그려서 분포를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str, optional): x축에 사용할 컬럼명. Defaults to None.
+        yname (str, optional): y축에 사용할 컬럼명. Defaults to None.
+        orient(&#39;v&#39;,&#39;x&#39; or &#39;h&#39;,&#39;y&#39;, optional): 박스플롯의 축을 결정. Defaults to &#39;v&#39;
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        palette (str, optional): 색상 팔레트. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional) : ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defailts to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    if xname != None and yname != None:
+        sb.boxplot(data=df, x=xname, y=yname, orient=orient, palette=palette, ax=ax)
+    else:
+        sb.boxplot(data=df, orient=orient, palette=palette, ax=ax)
+    ax.grid(plt_grid)
+    if callback:
+        callback(ax)
+    if plt_title:
+        ax.set_title(plt_title)
+    if plt_xlabel:
+        ax.set_xlabel(plt_xlabel)
+    ax.set_ylabel(plt_ylabel)
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_confusion_matrix"><code class="name flex">
+<span>def <span class="ident">my_confusion_matrix</span></span>(<span>y: numpy.ndarray, y_pred: numpy.ndarray, cmap: str = 'Blues', figsize: tuple = (4, 3), dpi: int = 150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>혼동행렬을 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>y_true</code></strong> :&ensp;<code>np.ndarray</code></dt>
+<dd>실제값</dd>
+<dt><strong><code>y_pred</code></strong> :&ensp;<code>np.ndarray</code></dt>
+<dd>예측값</dd>
+<dt><strong><code>cmap</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>칼라맵. Defaults to 'Blues'.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (4, 3).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_confusion_matrix(
+    y: np.ndarray,
+    y_pred: np.ndarray,
+    cmap: str = &#34;Blues&#34;,
+    figsize: tuple = (4, 3),
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;혼동행렬을 출력한다.
+
+    Args:
+        y_true (np.ndarray): 실제값
+        y_pred (np.ndarray): 예측값
+        cmap (str, optional): 칼라맵. Defaults to &#39;Blues&#39;.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (4, 3).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+
+    # 이진분류인지 다항분류인지 구분
+    labels = sorted(list(y.unique()))
+    is_binary = len(labels) == 2
+
+    if is_binary:
+        labels = [&#34;Negative&#34;, &#34;Positive&#34;]
+    else:
+        labels = None
+
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+
+    # 다중 로지스틱을 살펴볼 때 함수 파라미터 설정이 변경될 수 있다.
+    ConfusionMatrixDisplay.from_predictions(
+        y,  # 관측치
+        y_pred,  # 예측치
+        display_labels=labels,
+        cmap=cmap,
+        text_kw={&#34;fontsize&#34;: 24, &#34;weight&#34;: &#34;bold&#34;},
+        ax=ax,
+    )
+    if callback:
+        callback(ax)
+    # plt.tight_layout()
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_convex_hull"><code class="name flex">
+<span>def <span class="ident">my_convex_hull</span></span>(<span>data: pandas.core.frame.DataFrame, xname: str = None, yname: str = None, *, hue: str, cmap: str = 'coolwarm', plt_grid: bool = True, plt_title: str = None, figsize: tuple = (10, 4), dpi: int = 150, callback: <built-in function any> = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내의 컬럼에 대해 외곽선을 그려서 군집을 확인한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>xname</code></strong> :&ensp;<code>str</code></dt>
+<dd>x축에 사용할 컬럼명</dd>
+<dt><strong><code>yname</code></strong> :&ensp;<code>str</code></dt>
+<dd>y축에 사용할 컬럼명</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>str</code></dt>
+<dd>색상을 구분할 기준이 되는 컬럼명</dd>
+<dt><strong><code>cmap</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>칼라맵. Defaults to 'coolwarm'.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_convex_hull(
+    data: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    *,
+    hue: str,
+    cmap: str = &#34;coolwarm&#34;,
+    plt_grid: bool = True,
+    plt_title: str = None,
+    figsize: tuple = (10, 4),
+    dpi: int = 150,
+    callback: any = None,
+):
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 외곽선을 그려서 군집을 확인한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명
+        hue (str): 색상을 구분할 기준이 되는 컬럼명
+        cmap (str, optional): 칼라맵. Defaults to &#39;coolwarm&#39;.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    # 군집별 값의 종류별로 반복 수행
+    for c in data[hue].unique():
+        # 한 종류만 필터링한 결과에서 두 변수만 선택
+        df_c = data.loc[data[hue] == c, [xname, yname]]
+
+        # 외각선 좌표 계산
+        hull = ConvexHull(df_c)
+
+        # 마지막 좌표 이후에 첫 번째 좌표를 연결
+        points = np.append(hull.vertices, hull.vertices[0])
+
+        plt.plot(
+            df_c.iloc[points, 0],
+            df_c.iloc[points, 1],
+            linewidth=1,
+            linestyle=&#34;:&#34;,
+            ax=ax,
+        )
+        plt.fill(df_c.iloc[points, 0], df_c.iloc[points, 1], alpha=0.1, ax=ax)
+
+    sb.scatterplot(data=data, x=xname, y=yname, hue=hue, palette=cmap, ax=ax)
+
+    ax.grid(plt_grid)
+    ax.set_title(plt_title)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_countplot"><code class="name flex">
+<span>def <span class="ident">my_countplot</span></span>(<span>df: pandas.core.frame.DataFrame, xname: str = None, yname: str = None, hue=None, figsize: tuple = (10, 4), plt_title: str = None, plt_xlabel: str = None, plt_grid: bool = True, plt_ylabel: str = None, dpi: int = 150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내의 컬럼에 대해 카운트플롯을 그려서 분포를 확인한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>xname</code></strong> :&ensp;<code>str</code></dt>
+<dd>x축에 사용할 컬럼명</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>색상을 구분할 기준이 되는 컬럼명. Defaults to None.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_countplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue=None,
+    figsize: tuple = (10, 4),
+    plt_title: str = None,
+    plt_xlabel: str = None,
+    plt_grid: bool = True,
+    plt_ylabel: str = None,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 카운트플롯을 그려서 분포를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.countplot(data=df, x=xname, y=yname, hue=hue, ax=ax)
+    ax.grid(plt_grid)
+    if plt_title:
+        ax.set_title(plt_title)
+    if plt_xlabel:
+        ax.set_xlabel(plt_xlabel)
+    if plt.ylabel:
+        ax.set_ylabel(plt_ylabel)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_distribution_by_class"><code class="name flex">
+<span>def <span class="ident">my_distribution_by_class</span></span>(<span>data: pandas.core.frame.DataFrame, xnames: list = None, hue: str = None, type: str = 'kde', bins: <built-in function any> = 5, palette: str = None, fill: bool = False, figsize: tuple = (10, 5), dpi: int = 100, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>클래스별로 독립변수의 분포를 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>독립변수</dd>
+<dt><strong><code>xnames</code></strong> :&ensp;<code>list</code>, optional</dt>
+<dd>독립변수의 이름. Defaults to None.</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>클래스별로 구분할 변수. Defaults to None.</dd>
+<dt><strong><code>type</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>그래프 종류 (kde, hist, histkde). Defaults to "kde".</dd>
+<dt><strong><code>bins</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>히스토그램의 구간 수. Defaults to 5.</dd>
+<dt><strong><code>palette</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>칼라맵. Defaults to None.</dd>
+<dt><strong><code>fill</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>kde 그래프의 채우기 여부. Defaults to False.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 5).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 100.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_distribution_by_class(
+    data: DataFrame,
+    xnames: list = None,
+    hue: str = None,
+    type: str = &#34;kde&#34;,
+    bins: any = 5,
+    palette: str = None,
+    fill: bool = False,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;클래스별로 독립변수의 분포를 출력한다.
+
+    Args:
+        data (DataFrame): 독립변수
+        xnames (list, optional): 독립변수의 이름. Defaults to None.
+        hue (str, optional): 클래스별로 구분할 변수. Defaults to None.
+        type (str, optional): 그래프 종류 (kde, hist, histkde). Defaults to &#34;kde&#34;.
+        bins (any, optional): 히스토그램의 구간 수. Defaults to 5.
+        palette (str, optional): 칼라맵. Defaults to None.
+        fill (bool, optional): kde 그래프의 채우기 여부. Defaults to False.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    if xnames == None:
+        xnames = data.columns
+
+    for i, v in enumerate(xnames):
+        # 종속변수이거나 숫자형이 아닌 경우는 제외
+        if v == hue or data[v].dtype not in [
+            &#34;int&#34;,
+            &#34;int32&#34;,
+            &#34;int64&#34;,
+            &#34;float&#34;,
+            &#34;float32&#34;,
+            &#34;float64&#34;,
+        ]:
+            continue
+        kde = False
+        if type == &#34;kde&#34;:
+            my_kdeplot(
+                data,
+                v,
+                hue=hue,
+                palette=palette,
+                fill=fill,
+                figsize=figsize,
+                dpi=dpi,
+                callback=callback,
+            )
+        else:
+            if &#34;kde&#34; in type:
+                kde = True
+            my_histplot(
+                data,
+                v,
+                hue=hue,
+                bins=bins,
+                kde=kde,
+                palette=palette,
+                figsize=figsize,
+                dpi=dpi,
+                callback=callback,
+            )</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_heatmap"><code class="name flex">
+<span>def <span class="ident">my_heatmap</span></span>(<span>data: pandas.core.frame.DataFrame, cmap='coolwarm', figsize: tuple = (10, 4), plt_title: str = None, dpi: int = 150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내의 컬럼에 대해 히트맵을 그려서 관계를 확인한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>cmap</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>칼라맵. Defaults to 'coolwarm'.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_heatmap(
+    data: DataFrame,
+    cmap=&#34;coolwarm&#34;,
+    figsize: tuple = (10, 4),
+    plt_title: str = None,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 히트맵을 그려서 관계를 확인한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        cmap (str, optional): 칼라맵. Defaults to &#39;coolwarm&#39;.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.heatmap(data, annot=True, cmap=cmap, fmt=&#34;.2g&#34;, ax=ax)
+    if plt_title:
+        ax.set_title(plt_title)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_histplot"><code class="name flex">
+<span>def <span class="ident">my_histplot</span></span>(<span>df: pandas.core.frame.DataFrame, xname: str = None, yname: str = None, hue: str = None, bins='auto', palette: str = None, kde: bool = True, figsize: tuple = (10, 4), plt_title: str = None, plt_xlabel: str = None, plt_ylabel: str = None, plt_grid: bool = True, dpi: int = 150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내의 컬럼에 대해 히스토그램을 그려서 분포를 확인한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>xname</code></strong> :&ensp;<code>str</code></dt>
+<dd>x축에 사용할 컬럼명</dd>
+<dt><strong><code>yname</code></strong> :&ensp;<code>str</code></dt>
+<dd>y축에 사용할 컬럼명 x,y 두 축중 하나만 사용</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>색상을 구분할 기준이 되는 컬럼명. Defaults to None.</dd>
+<dt><strong><code>bins</code></strong> :&ensp;<code>int</code> or <code>list</code> ,optional</dt>
+<dd>히스토그램의 구간 수 혹은 리스트. Defaults to auto.</dd>
+<dt><strong><code>palette</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>색상 팔레트. Defaults to None.</dd>
+<dt><strong><code>kde</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>커널밀도추정을 함께 출력할지 여부. Defaults to True.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+</dl>
+<p>callback (any, optional) : ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defailts to None.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_histplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue: str = None,
+    bins=&#34;auto&#34;,
+    palette: str = None,
+    kde: bool = True,
+    figsize: tuple = (10, 4),
+    plt_title: str = None,
+    plt_xlabel: str = None,
+    plt_ylabel: str = None,
+    plt_grid: bool = True,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 히스토그램을 그려서 분포를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명 x,y 두 축중 하나만 사용
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        bins (int or list ,optional): 히스토그램의 구간 수 혹은 리스트. Defaults to auto.
+        palette (str, optional): 색상 팔레트. Defaults to None.
+        kde (bool, optional): 커널밀도추정을 함께 출력할지 여부. Defaults to True.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional) : ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defailts to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.histplot(
+        data=df, x=xname, y=yname, hue=hue, kde=True, bins=bins, palette=palette, ax=ax
+    )
+
+    ax.grid(plt_grid)
+    if plt_title:
+        ax.set_title(plt_title)
+    if plt_xlabel:
+        ax.set_xlabel(plt_xlabel)
+    ax.set_ylabel(plt_ylabel)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_jointplot"><code class="name flex">
+<span>def <span class="ident">my_jointplot</span></span>(<span>df: pandas.core.frame.DataFrame, xname: str = None, yname: str = None, hue=None, figsize: tuple = (10, 4), plt_title: str = None, dpi: int = 150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내의 컬럼에 대해 산점도와 히스토그램을 함께 그려서 관계를 확인한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>xname</code></strong> :&ensp;<code>str</code></dt>
+<dd>x축에 사용할 컬럼명</dd>
+<dt><strong><code>yname</code></strong> :&ensp;<code>str</code></dt>
+<dd>y축에 사용할 컬럼명</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>색상을 구분할 기준이 되는 컬럼명. Defaults to None.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_jointplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue=None,
+    figsize: tuple = (10, 4),
+    plt_title: str = None,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 산점도와 히스토그램을 함께 그려서 관계를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    g = sb.jointplot(data=df, x=xname, y=yname, hue=hue)
+    g.fig.set_figwidth(figsize[0])
+    g.fig.set_figheight(figsize[1])
+    g.fig.set_dpi(dpi)
+    if plt_title:
+        plt.title(plt_title)
+    if callback:
+        callback(g)
+
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_kde_confidence_interval"><code class="name flex">
+<span>def <span class="ident">my_kde_confidence_interval</span></span>(<span>data: pandas.core.frame.DataFrame, clevel=0.95, figsize: tuple = (10, 4), plt_grid: bool = True, plt_title: str = None, dpi: int = 150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>커널밀도추정을 이용하여 신뢰구간을 그려서 분포를 확인한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>clevel</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>신뢰수준. Defaults to 0.95.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_kde_confidence_interval(
+    data: DataFrame,
+    clevel=0.95,
+    figsize: tuple = (10, 4),
+    plt_grid: bool = True,
+    plt_title: str = None,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;커널밀도추정을 이용하여 신뢰구간을 그려서 분포를 확인한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        clevel (float, optional): 신뢰수준. Defaults to 0.95.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    # 데이터 프레임의 컬럼이 여러 개인 경우 처리
+    for c in data.columns:
+        column = data[c]
+        # print(column)
+        max = column.max()  # 최대값
+        dof = len(column) - 1  # 자유도
+        sample_mean = column.mean()  # 표본평균
+        sample_std = column.std(ddof=1)  # 표본표준편차
+        sample_std_error = sample_std / sqrt(len(column))  # 표본표준오차
+        # print(max, dof, sample_mean, sample_std, sample_std_error)
+
+        # 신뢰구간
+        cmin, cmax = t.interval(clevel, dof, loc=sample_mean, scale=sample_std_error)
+
+        # 현재 컬럼에 대한 커널밀도추정
+        sb.kdeplot(data=column, ax=ax)
+
+        # 그래프 축의 범위
+        xmin, xmax, ymin, ymax = ax.axis()
+
+        # 신뢰구간 그리기
+        plt.plot([cmin, cmin], [ymin, ymax], linestyle=&#34;:&#34;, ax=ax)
+        plt.plot([cmax, cmax], [ymin, ymax], linestyle=&#34;:&#34;, ax=ax)
+        ax.fill_between([cmin, cmax], y1=ymin, y2=ymax, alpha=0.1)
+
+        # 평균 그리기
+        plt.plot(
+            [sample_mean, sample_mean], [0, ymax], linestyle=&#34;--&#34;, linewidth=2, ax=ax
+        )
+
+        plt.text(
+            x=(cmax - cmin) / 2 + cmin,
+            y=ymax,
+            s=&#34;[%s] %0.1f ~ %0.1f&#34; % (column.name, cmin, cmax),
+            horizontalalignment=&#34;center&#34;,
+            verticalalignment=&#34;bottom&#34;,
+            fontdict={&#34;size&#34;: 10, &#34;color&#34;: &#34;red&#34;},
+            ax=ax,
+        )
+
+    ax.set_ylim(ymin, ymax * 1.1)
+    ax.grid(plt_grid)
+    if plt_title:
+        ax.set_title(plt_title)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_kdeplot"><code class="name flex">
+<span>def <span class="ident">my_kdeplot</span></span>(<span>df: pandas.core.frame.DataFrame, xname: str = None, yname: str = None, hue: str = None, palette: str = None, fill: bool = False, plt_grid: bool = False, fill_alpha: float = 0.3, linewidth: float = 1, figsize: tuple = (10, 5), dpi: int = 100, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내의 컬럼에 대해 커널밀도추정을 그려서 분포를 확인한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>xname</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>x축에 사용할 컬럼명. Defaults to None.</dd>
+<dt><strong><code>yname</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>y축에 사용할 컬럼명. Defaults to None.</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>색상을 구분할 기준이 되는 컬럼명. Defaults to None.</dd>
+<dt><strong><code>palette</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>색상 팔레트. Defaults to None.</dd>
+<dt><strong><code>fill</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>채우기 여부. Defaults to False.</dd>
+<dt><strong><code>fill_alpha</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>채우기의 투명도. Defaults to 0.3.</dd>
+<dt><strong><code>linewidth</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>선의 두께. Defaults to 0.5.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 200.</dd>
+</dl>
+<p>callback (any, optional) : ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defailts to None.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_kdeplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue: str = None,
+    palette: str = None,
+    fill: bool = False,
+    plt_grid: bool = False,
+    fill_alpha: float = 0.3,
+    linewidth: float = 1,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 커널밀도추정을 그려서 분포를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str, optional): x축에 사용할 컬럼명. Defaults to None.
+        yname (str, optional): y축에 사용할 컬럼명. Defaults to None.
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        palette (str, optional): 색상 팔레트. Defaults to None.
+        fill (bool, optional): 채우기 여부. Defaults to False.
+        fill_alpha (float, optional): 채우기의 투명도. Defaults to 0.3.
+        linewidth (float, optional): 선의 두께. Defaults to 0.5.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 200.
+        callback (any, optional) : ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defailts to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    if fill:
+        sb.kdeplot(
+            data=df,
+            x=xname,
+            y=yname,
+            hue=hue,
+            palette=palette,
+            fill=fill,
+            alpha=fill_alpha,
+            linewidth=linewidth,
+            ax=ax,
+        )
+    else:
+        sb.kdeplot(
+            data=df,
+            x=xname,
+            y=yname,
+            hue=hue,
+            palette=palette,
+            fill=fill,
+            linewidth=linewidth,
+            ax=ax,
+        )
+    ax.grid(plt_grid)
+    if callback:
+        callback(ax)
+    # plt.tight_layout()
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_learing_curve"><code class="name flex">
+<span>def <span class="ident">my_learing_curve</span></span>(<span>estimator: <built-in function any>, data: pandas.core.frame.DataFrame, yname: str = 'target', scalling: bool = False, cv: int = 10, train_sizes: numpy.ndarray = array([0.01, 0.12, 0.23, 0.34, 0.45, 0.56, 0.67, 0.78, 0.89, 1.
+]), scoring: str = None, figsize: tuple = (10, 5), dpi: int = 150, random_state: int = 123, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>학습곡선을 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>fit</code></strong> :&ensp;<code>_type_</code></dt>
+<dd>학습모델 객체</dd>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>독립변수</dd>
+<dt><strong><code>yname</code></strong> :&ensp;<code>Series</code></dt>
+<dd>종속변수</dd>
+<dt><strong><code>scaling</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>스케일링 여부. Defaults to False.</dd>
+<dt><strong><code>cv</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>교차검증의 수. Defaults to 10.</dd>
+<dt><strong><code>train_sizes</code></strong> :&ensp;<code>np.ndarray</code>, optional</dt>
+<dd>훈련 데이터의 비율. Defaults to np.linspace(0.1, 1.0, 10).</dd>
+<dt><strong><code>scoring</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>평가지표. Defaults to None.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 5).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 200.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_learing_curve(
+    estimator: any,
+    data: DataFrame,
+    yname: str = &#34;target&#34;,
+    scalling: bool = False,
+    cv: int = 10,
+    train_sizes: np.ndarray = np.linspace(0.01, 1.0, 10),
+    scoring: str = None,
+    figsize: tuple = (10, 5),
+    dpi: int = 150,
+    random_state: int = 123,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;학습곡선을 출력한다.
+
+    Args:
+        fit (_type_): 학습모델 객체
+        data (DataFrame): 독립변수
+        yname (Series): 종속변수
+        scaling (bool, optional): 스케일링 여부. Defaults to False.
+        cv (int, optional): 교차검증의 수. Defaults to 10.
+        train_sizes (np.ndarray, optional): 훈련 데이터의 비율. Defaults to np.linspace(0.1, 1.0, 10).
+        scoring (str, optional): 평가지표. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 200.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    if yname not in data.columns:
+        raise Exception(f&#34;\x1b[31m종속변수 {yname}가 존재하지 않습니다.\x1b[0m&#34;)
+
+    x = data.drop(yname, axis=1)
+    y = data[yname]
+    w = 1
+    if scalling:
+        scaler = StandardScaler()
+        x = DataFrame(scaler.fit_transform(x), index=x.index, columns=x.columns)
+
+    error_name = [&#34;MAE&#34;, &#34;MAPE&#34;, &#34;MSE&#34;, &#34;MSE_log&#34;, &#34;RMSE&#34;, &#34;RMSE_log&#34;, &#34;R2&#34;]
+
+    error_value = [
+        &#34;neg_mean_absolute_error&#34;,
+        &#34;neg_mean_absolute_percentage_error&#34;,
+        &#34;neg_mean_squared_error&#34;,
+        &#34;neg_mean_squared_log_error&#34;,
+        &#34;neg_root_mean_squared_error&#34;,
+        &#34;neg_root_mean_squared_log_error&#34;,
+        &#34;r2&#34;,
+    ]
+
+    # 평가지표가 없는 경우
+    if scoring == None:
+        train_sizes, train_scores, test_scores = learning_curve(
+            estimator,
+            x,
+            y,
+            cv=cv,
+            n_jobs=-1,
+            train_sizes=train_sizes,
+            random_state=random_state,
+        )
+
+        ylabel = &#34;Score&#34;
+
+    # 평가지표가 있는 경우
+    else:
+        ylabel = scoring
+        if scoring in error_name:
+            scoring = error_value[error_name.index(scoring)]
+        if scoring in (&#34;rmse&#34;, &#34;mse&#34;):
+            w = -1
+        scoring_list = [
+            &#34;r2&#34;,
+            &#34;max_error&#34;,
+            &#34;matthews_corrcoef&#34;,
+            &#34;neg_median_absolute_error&#34;,
+            &#34;neg_mean_absolute_error&#34;,
+            &#34;neg_mean_absolute_percentage_error&#34;,
+            &#34;neg_mean_squared_error&#34;,
+            &#34;neg_mean_squared_log_error&#34;,
+            &#34;neg_root_mean_squared_error&#34;,
+            &#34;neg_root_mean_squared_log_error&#34;,
+            &#34;neg_mean_poisson_deviance&#34;,
+            &#34;neg_mean_gamma_deviance&#34;,
+            &#34;accuracy&#34;,
+            &#34;top_k_accuracy&#34;,
+            &#34;roc_auc&#34;,
+            &#34;roc_auc_ovr&#34;,
+            &#34;roc_auc_ovo&#34;,
+            &#34;roc_auc_ovr_weighted&#34;,
+            &#34;roc_auc_ovo_weighted&#34;,
+            &#34;balanced_accuracy&#34;,
+            &#34;average_precision&#34;,
+            &#34;neg_log_loss&#34;,
+            &#34;neg_brier_score&#34;,
+            &#34;positive_likelihood_ratio&#34;,
+            &#34;neg_negative_likelihood_ratio&#34;,
+            &#34;adjusted_rand_score&#34;,
+            &#34;rand_score&#34;,
+            &#34;homogeneity_score&#34;,
+            &#34;completeness_score&#34;,
+            &#34;v_measure_score&#34;,
+            &#34;mutual_info_score&#34;,
+            &#34;adjusted_mutual_info_score&#34;,
+            &#34;normalized_mutual_info_score&#34;,
+            &#34;fowlkes_mallows_score&#34;,
+        ]
+
+        if scoring not in scoring_list:
+            raise Exception(f&#34;\x1b[31m평가지표 {scoring}가 존재하지 않습니다.\x1b[0m&#34;)
+
+        train_sizes, train_scores, test_scores = learning_curve(
+            estimator,
+            x,
+            y,
+            cv=cv,
+            n_jobs=-1,
+            train_sizes=train_sizes,
+            scoring=scoring,
+            random_state=random_state,
+        )
+
+    train_mean = w * np.mean(train_scores, axis=1)
+    train_std = w * np.std(train_scores, axis=1)
+    test_mean = w * np.mean(test_scores, axis=1)
+    test_std = w * np.std(test_scores, axis=1)
+
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    # 훈련 데이터 수에 따른 훈련 데이터의 score 평균
+    sb.lineplot(
+        x=train_sizes,
+        y=train_mean,
+        marker=&#34;o&#34;,
+        markersize=5,
+        label=&#34;훈련 데이터&#34;,
+        color=&#34;#ff2200&#34;,
+        ax=ax,
+    )
+    ax.fill_between(
+        train_sizes,
+        train_mean + train_std,
+        train_mean - train_std,
+        alpha=0.15,
+        color=&#34;#ff2200&#34;,
+    )
+
+    # 검증 데이터 수에 따른 검증 데이터의 score 평균
+    sb.lineplot(
+        x=train_sizes,
+        y=test_mean,
+        linestyle=&#34;--&#34;,
+        marker=&#34;s&#34;,
+        markersize=5,
+        label=&#34;검증 데이터&#34;,
+        color=&#34;#0066ff&#34;,
+        ax=ax,
+    )
+    ax.fill_between(
+        train_sizes,
+        test_mean + test_std,
+        test_mean - test_std,
+        alpha=0.15,
+        color=&#34;#0066ff&#34;,
+    )
+
+    ax.grid()
+    ax.set_xlabel(&#34;훈련 셋트 크기&#34;)
+    ax.set_ylabel(ylabel)
+    ax.legend()
+    if callback:
+        callback(ax)
+    # plt.tight_layout()
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_lineplot"><code class="name flex">
+<span>def <span class="ident">my_lineplot</span></span>(<span>df: pandas.core.frame.DataFrame, xname: str = None, yname: str = None, hue: str = None, palette: str = None, figsize: tuple = (10, 5), dpi: int = 100, plt_title: str = None, plt_grid: bool = True, plt_xlabel: str = None, plt_ylabel: str = None, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_lineplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue: str = None,
+    palette: str = None,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+    plt_title: str = None,
+    plt_grid: bool = True,
+    plt_xlabel: str = None,
+    plt_ylabel: str = None,
+    callback: any = None,
+) -&gt; None:
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+
+    sb.lineplot(data=df, x=xname, y=yname, hue=hue, palette=palette, ax=ax)
+    ax.grid(plt_grid)
+    if plt_title:
+        ax.set_title(plt_title)
+    if plt_xlabel:
+        ax.set_xlabel(plt_xlabel)
+    if plt_ylabel:
+        ax.set_ylabel(plt_ylabel)
+    if callback:
+        callback(ax)
+
+    plt.tight_layout()
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_lmplot"><code class="name flex">
+<span>def <span class="ident">my_lmplot</span></span>(<span>df: pandas.core.frame.DataFrame, xname: str = None, yname: str = None, hue: str = None, figsize: tuple = (10, 4), plt_title: str = None, plt_grid: bool = True, dpi: int = 150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내의 컬럼에 대해 회귀선을 포함한 산점도를 그려서 관계를 확인한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>xname</code></strong> :&ensp;<code>str</code></dt>
+<dd>x축에 사용할 컬럼명</dd>
+<dt><strong><code>yname</code></strong> :&ensp;<code>str</code></dt>
+<dd>y축에 사용할 컬럼명</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>색상을 구분할 기준이 되는 컬럼명. Defaults to None.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_lmplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue: str = None,
+    figsize: tuple = (10, 4),
+    plt_title: str = None,
+    plt_grid: bool = True,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 회귀선을 포함한 산점도를 그려서 관계를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+    &#34;&#34;&#34;
+    g = sb.lmplot(data=df, x=xname, y=yname, hue=hue)
+    g.fig.set_figwidth(figsize[0])
+    g.fig.set_figheight(figsize[1])
+    g.fig.set_dpi(dpi)
+    if callback:
+        callback(g)
+    plt.grid(plt_grid)
+    plt.title(plt_title)
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_pairplot"><code class="name flex">
+<span>def <span class="ident">my_pairplot</span></span>(<span>df: pandas.core.frame.DataFrame, diag_kind: str = 'auto', hue=None, figsize: tuple = (10, 4), kind: str = 'scatter', plt_title: str = None, dpi: int = 150) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내의 모든 컬럼에 대해 쌍별 관계를 시각화한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>색상을 구분할 기준이 되는 컬럼명. Defaults to None.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt>diag_kind ( ['auto', 'hist', 'kde', None], optional) : 대각그래프에 들어갈 그래프 설정</dt>
+<dt>kind (['scatter', 'kde', 'hist', 'reg'], optional ): 그 외 그래프 설정</dt>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_pairplot(
+    df: DataFrame,
+    diag_kind: str = &#34;auto&#34;,
+    hue=None,
+    figsize: tuple = (10, 4),
+    kind: str = &#34;scatter&#34;,
+    plt_title: str = None,
+    dpi: int = 150,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 모든 컬럼에 대해 쌍별 관계를 시각화한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        diag_kind ( [&#39;auto&#39;, &#39;hist&#39;, &#39;kde&#39;, None], optional) : 대각그래프에 들어갈 그래프 설정
+        kind ([&#39;scatter&#39;, &#39;kde&#39;, &#39;hist&#39;, &#39;reg&#39;], optional ): 그 외 그래프 설정
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+    &#34;&#34;&#34;
+    sb.pairplot(df, hue=hue, diag_kind=diag_kind, kind=kind)
+    if plt_title:
+        plt.title(plt_title)
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_pointplot"><code class="name flex">
+<span>def <span class="ident">my_pointplot</span></span>(<span>df: pandas.core.frame.DataFrame, xname: str = None, yname: str = None, hue=None, figsize: tuple = (10, 4), plt_grid: bool = True, plt_title: str = None, dpi: int = 150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내의 컬럼에 대해 포인트플롯을 그려서 분포를 확인한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>xname</code></strong> :&ensp;<code>str</code></dt>
+<dd>x축에 사용할 컬럼명</dd>
+<dt><strong><code>yname</code></strong> :&ensp;<code>str</code></dt>
+<dd>y축에 사용할 컬럼명</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>색상을 구분할 기준이 되는 컬럼명. Defaults to None.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_pointplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue=None,
+    figsize: tuple = (10, 4),
+    plt_grid: bool = True,
+    plt_title: str = None,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 포인트플롯을 그려서 분포를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.pointplot(data=df, x=xname, y=yname, hue=hue, ax=ax)
+    ax.grid(plt_grid)
+    ax.set_title(plt_title)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_pr_curve"><code class="name flex">
+<span>def <span class="ident">my_pr_curve</span></span>(<span>y: pandas.core.series.Series, y_proba: pandas.core.series.Series, figsize: tuple = (8, 6), dpi=150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Precision-Recall 곡선을 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>y</code></strong> :&ensp;<code>Series</code></dt>
+<dd>실제값</dd>
+<dt><strong><code>y_proba</code></strong> :&ensp;<code>Series</code></dt>
+<dd>예측확률</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (8, 6).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_pr_curve(
+    y: Series, y_proba: Series, figsize: tuple = (8, 6), dpi=150, callback: any = None
+) -&gt; None:
+    &#34;&#34;&#34;Precision-Recall 곡선을 출력한다.
+
+    Args:
+        y (Series): 실제값
+        y_proba (Series): 예측확률
+        figsize (tuple, optional): 그래프의 크기. Defaults to (8, 6).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+
+    labels = sorted(list(y.unique()))
+    is_binary = len(labels) == 2
+
+    precision, recall, thresholds = precision_recall_curve(
+        y_true=y, probas_pred=y_proba
+    )
+    y_test_mean = y.mean()
+
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.lineplot(
+        x=recall,
+        y=precision,
+        label=&#34;Precision / Recall Curve&#34;,
+        color=&#34;blue&#34;,
+        linewidth=1,
+        ax=ax,
+    )
+    sb.lineplot(
+        x=[0, 1],
+        y=[y_test_mean, y_test_mean],
+        color=&#34;black&#34;,
+        linewidth=0.7,
+        linestyle=&#34;--&#34;,
+        ax=ax,
+    )
+    ax.set_xlabel(&#34;Recall&#34;)
+    ax.set_ylabel(&#34;Precision&#34;)
+    ax.set_xticks(np.round(np.arange(0, 1.1, 0.1), 2))
+    ax.set_xlim(-0.01, 1.01)
+    ax.set_ylim(y_test_mean - 0.05, 1.01)
+    ax.grid()
+    # plt.tight_layout()
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_pvalue_anotation"><code class="name flex">
+<span>def <span class="ident">my_pvalue_anotation</span></span>(<span>data: pandas.core.frame.DataFrame, target: str, hue: str, pairs: list, test: str = 't-test_ind', text_format: str = 'star', loc: str = 'outside', figsize: tuple = (10, 4), dpi: int = 150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내의 컬럼에 대해 상자그림을 그리고 p-value를 함께 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>target</code></strong> :&ensp;<code>str</code></dt>
+<dd>종속변수에 대한 컬럼명</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>str</code></dt>
+<dd>명목형 변수에 대한 컬럼명</dd>
+<dt><strong><code>pairs</code></strong> :&ensp;<code>list</code>, optional</dt>
+<dd>비교할 그룹의 목록. 명목형 변수에 포함된 값 중에서 비교 대상을 [("A","B")] 형태로 선정한다.</dd>
+<dt><strong><code>test</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>검정방법. Defaults to "t-test_ind".
+- t-test_ind(독립,등분산), t-test_welch(독립,이분산)
+- t-test_paired(대응,등분산), Mann-Whitney(대응,이분산), Mann-Whitney-gt, Mann-Whitney-ls
+- Levene(분산분석), Wilcoxon, Kruskal</dd>
+<dt><strong><code>text_format</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>출력형식(full, simple, star). Defaults to "star".</dd>
+<dt><strong><code>loc</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>출력위치(inside, outside). Defaults to "outside".</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_pvalue_anotation(
+    data: DataFrame,
+    target: str,
+    hue: str,
+    pairs: list,
+    test: str = &#34;t-test_ind&#34;,
+    text_format: str = &#34;star&#34;,
+    loc: str = &#34;outside&#34;,
+    figsize: tuple = (10, 4),
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 상자그림을 그리고 p-value를 함께 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        target (str): 종속변수에 대한 컬럼명
+        hue (str): 명목형 변수에 대한 컬럼명
+        pairs (list, optional): 비교할 그룹의 목록. 명목형 변수에 포함된 값 중에서 비교 대상을 [(&#34;A&#34;,&#34;B&#34;)] 형태로 선정한다.
+        test (str, optional): 검정방법. Defaults to &#34;t-test_ind&#34;.
+            - t-test_ind(독립,등분산), t-test_welch(독립,이분산)
+            - t-test_paired(대응,등분산), Mann-Whitney(대응,이분산), Mann-Whitney-gt, Mann-Whitney-ls
+            - Levene(분산분석), Wilcoxon, Kruskal
+        text_format (str, optional): 출력형식(full, simple, star). Defaults to &#34;star&#34;.
+        loc (str, optional): 출력위치(inside, outside). Defaults to &#34;outside&#34;.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.boxplot(data=data, x=hue, y=target, ax=ax)
+
+    annotator = Annotator(ax, data=data, x=hue, y=target, pairs=pairs)
+    annotator.configure(test=test, text_format=text_format, loc=loc)
+    annotator.apply_and_annotate()
+
+    sb.despine()
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_qqplot"><code class="name flex">
+<span>def <span class="ident">my_qqplot</span></span>(<span>y_pred: numpy.ndarray, figsize: tuple = (10, 4), dpi: int = 150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>QQ플롯을 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>y_pred</code></strong> :&ensp;<code>np.ndarray</code></dt>
+<dd>종속변수에 대한 예측치</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_qqplot(
+    y_pred: np.ndarray, figsize: tuple = (10, 4), dpi: int = 150, callback: any = None
+) -&gt; None:
+    &#34;&#34;&#34;QQ플롯을 출력한다.
+
+    Args:
+        y_pred (np.ndarray): 종속변수에 대한 예측치
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    (x, y), _ = probplot(zscore(y_pred))
+    k = (max(x) + 0.5).round()
+
+    sb.scatterplot(x, y, ax=ax)
+    sb.lineplot(x=[-k, k], y=[-k, k], color=&#34;red&#34;, linestyle=&#34;--&#34;, ax=ax)
+
+    ax.grid()
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_regplot"><code class="name flex">
+<span>def <span class="ident">my_regplot</span></span>(<span>df: pandas.core.frame.DataFrame, xname: str = None, yname: str = None, palette: str = None, figsize: tuple = (10, 4), ci: int = 95, plt_title: str = None, plt_grid: bool = True, dpi: int = 150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내의 컬럼에 대해 회귀선을 포함한 산점도를 그려서 관계를 확인한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>xname</code></strong> :&ensp;<code>str</code></dt>
+<dd>x축에 사용할 컬럼명</dd>
+<dt><strong><code>yname</code></strong> :&ensp;<code>str</code></dt>
+<dd>y축에 사용할 컬럼명</dd>
+<dt>palette (str, optional) : 색상 팔레트. Defaults to None.</dt>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+<dt>ci (int in [0,100] or None, optional) : 신뢰구간설정</dt>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_regplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    palette: str = None,
+    figsize: tuple = (10, 4),
+    ci: int = 95,
+    plt_title: str = None,
+    plt_grid: bool = True,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 회귀선을 포함한 산점도를 그려서 관계를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명
+        palette (str, optional) : 색상 팔레트. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        ci (int in [0,100] or None, optional) : 신뢰구간설정
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.regplot(data=df, x=xname, y=yname, ci=ci, color=palette, ax=ax)
+    ax.grid(plt_grid)
+    if plt_title:
+        ax.set_title(plt_title)
+    if callback:
+        callback(ax)
+
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_resid_histplot"><code class="name flex">
+<span>def <span class="ident">my_resid_histplot</span></span>(<span>y: numpy.ndarray, y_pred: numpy.ndarray, bins='auto', kde: bool = True, palette: str = None, figsize: tuple = (10, 4), dpi: int = 150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>예측값과 잔차를 히스토그램으로 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>y</code></strong> :&ensp;<code>np.ndarray</code></dt>
+<dd>종속변수에 대한 관측치</dd>
+<dt><strong><code>y_pred</code></strong> :&ensp;<code>np.ndarray</code></dt>
+<dd>종속변수에 대한 예측치</dd>
+<dt><strong><code>bins</code></strong> :&ensp;<code>_type_</code>, optional</dt>
+<dd>히스토그램의 구간 수 혹은 리스트. Defaults to auto.</dd>
+<dt><strong><code>kde</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>커널밀도추정을 함께 출력할지 여부. Defaults to True.</dd>
+<dt><strong><code>palette</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>색상 팔레트. Defaults to None.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_resid_histplot(
+    y: np.ndarray,
+    y_pred: np.ndarray,
+    bins=&#34;auto&#34;,
+    kde: bool = True,
+    palette: str = None,
+    figsize: tuple = (10, 4),
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;예측값과 잔차를 히스토그램으로 출력한다.
+
+    Args:
+        y (np.ndarray): 종속변수에 대한 관측치
+        y_pred (np.ndarray): 종속변수에 대한 예측치
+        bins (_type_, optional): 히스토그램의 구간 수 혹은 리스트. Defaults to auto.
+        kde (bool, optional): 커널밀도추정을 함께 출력할지 여부. Defaults to True.
+        palette (str, optional): 색상 팔레트. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    resid = y - y_pred
+    resid_df = DataFrame({&#34;resid&#34;: resid}).reset_index(drop=True)
+    my_histplot(
+        resid_df, xname=&#34;resid&#34;, bins=bins, figsize=figsize, dpi=dpi, callback=callback
+    )</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_residplot"><code class="name flex">
+<span>def <span class="ident">my_residplot</span></span>(<span>y, y_pred, lowess: bool = False, mse: bool = False, figsize: tuple = (10, 4), dpi: int = 150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>예측값과 잔차를 그래프로 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>y</code></strong> :&ensp;<code>_type_</code></dt>
+<dd>종속변수에 대한 관측치</dd>
+<dt><strong><code>y_pred</code></strong> :&ensp;<code>_type_</code></dt>
+<dd>종속변수에 대한 예측치</dd>
+<dt><strong><code>lowess</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>로우에스티메이션을 사용할지 여부(잔차의 선형성 확인). Defaults to False.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_residplot(
+    y,
+    y_pred,
+    lowess: bool = False,
+    mse: bool = False,
+    figsize: tuple = (10, 4),
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;예측값과 잔차를 그래프로 출력한다.
+
+    Args:
+        y (_type_): 종속변수에 대한 관측치
+        y_pred (_type_): 종속변수에 대한 예측치
+        lowess (bool, optional): 로우에스티메이션을 사용할지 여부(잔차의 선형성 확인). Defaults to False.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+
+    &#34;&#34;&#34;
+    resid = y - y_pred
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.residplot(
+        x=y_pred,
+        y=resid,
+        lowess=lowess,
+        line_kws={&#34;color&#34;: &#34;red&#34;, &#34;linewidth&#34;: 1},
+        scatter_kws={&#34;edgecolor&#34;: &#34;white&#34;, &#34;alpha&#34;: 0.7},
+        ax=ax,
+    )
+
+    if mse:
+        mse = mean_squared_error(y, y_pred)
+        mse_sq = np.sqrt(mse)
+
+        r1 = resid[(resid &gt; -mse_sq) &amp; (resid &lt; mse_sq)].count() / resid.count() * 100
+        r2 = (
+            resid[(resid &gt; -2 * mse_sq) &amp; (resid &lt; 2 * mse_sq)].count()
+            / resid.count()
+            * 100
+        )
+        r3 = (
+            resid[(resid &gt; -3 * mse_sq) &amp; (resid &lt; 3 * mse_sq)].count()
+            / resid.count()
+            * 100
+        )
+
+        mse_r = [r1, r2, r3]
+
+        for i, c in enumerate([&#34;red&#34;, &#34;green&#34;, &#34;black&#34;]):
+            ax.axhline(mse_sq * (i + 1), color=c, linestyle=&#34;--&#34;, linewidth=0.5)
+            ax.axhline(mse_sq * (-(i + 1)), color=c, linestyle=&#34;--&#34;, linewidth=0.5)
+
+        # 현재 표시되는 그래프의 x축 범위를 가져온다.
+        xmin, xmax = ax.get_xlim()
+
+        target = [68, 95, 99]
+        for i, c in enumerate([&#34;red&#34;, &#34;green&#34;, &#34;black&#34;]):
+            if i:
+                plt.text(
+                    s=f&#34;{i+1}&#34;
+                    r&#34;${}\sqrt{MSE}$ = %.2f%% (%.2f%%)&#34;
+                    % (mse_r[i], mse_r[i] - target[i]),
+                    x=xmax + 0.2,
+                    y=(i + 1) * mse_sq,
+                    color=c,
+                    ax=ax,
+                )
+                plt.text(
+                    s=f&#34;-{i+1}&#34;
+                    r&#34;${}\sqrt{MSE}$ = %.2f%% (%.2f%%)&#34;
+                    % (mse_r[i], mse_r[i] - target[i]),
+                    x=xmax + 0.2,
+                    y=-(i + 1) * mse_sq,
+                    color=c,
+                    ax=ax,
+                )
+            else:
+                plt.text(
+                    s=r&#34;${}\sqrt{MSE}$ = %.2f%% (%.2f%%)&#34;
+                    % (mse_r[i], mse_r[i] - target[i]),
+                    x=xmax + 0.2,
+                    y=(i + 1) * mse_sq,
+                    color=c,
+                    ax=ax,
+                )
+                plt.text(
+                    s=&#34;-&#34;
+                    r&#34;${}\sqrt{MSE}$ = %.2f%% (%.2f%%)&#34;
+                    % (mse_r[i], mse_r[i] - target[i]),
+                    x=xmax + 0.2,
+                    y=-(i + 1) * mse_sq,
+                    color=c,
+                    ax=ax,
+                )
+    else:
+        ax.grid()
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_roc_curve"><code class="name flex">
+<span>def <span class="ident">my_roc_curve</span></span>(<span>y: pandas.core.series.Series, y_proba: pandas.core.series.Series, figsize: tuple = (8, 6), dpi=150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ROC곡선을 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>y</code></strong> :&ensp;<code>Series</code></dt>
+<dd>실제값</dd>
+<dt><strong><code>y_proba</code></strong> :&ensp;<code>Series</code></dt>
+<dd>예측확률</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_roc_curve(
+    y: Series, y_proba: Series, figsize: tuple = (8, 6), dpi=150, callback: any = None
+) -&gt; None:
+    &#34;&#34;&#34;ROC곡선을 출력한다.
+
+    Args:
+        y (Series): 실제값
+        y_proba (Series): 예측확률
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    # 두 번째 파라미터가 판정결과가 아닌 1로 판정할 확률값
+    labels = sorted(list(y.unique()))
+    is_binary = len(labels) == 2
+    if is_binary:
+        fpr, tpr, thresholds = roc_curve(y, y_proba)
+    else:
+        fpr, tpr, thresholds = roc_curve(y, y_proba, average=&#34;macro&#34;)
+
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.lineplot(x=fpr, y=tpr, color=&#34;red&#34;, linewidth=1, label=&#34;ROC Curve&#34;, ax=ax)
+
+    ax.fill_between(fpr, tpr, facecolor=&#34;blue&#34;, alpha=0.1)
+    sb.lineplot(x=[0, 1], y=[0, 1], color=&#34;black&#34;, linestyle=&#34;--&#34;, linewidth=0.7, ax=ax)
+    ax.set_xlabel(&#34;Fase Positive Rate&#34;)
+    ax.set_ylabel(&#34;True Positive Rate&#34;)
+    ax.set_xticks(np.round(np.arange(0, 1.1, 0.1), 2))
+    ax.set_xlim(-0.01, 1.01)
+    ax.set_ylim(-0.01, 1.01)
+    ax.text(
+        0.95,
+        0.05,
+        &#34;AUC=%0.3f&#34; % roc_auc_score(y, y_proba),
+        fontsize=16,
+        ha=&#34;right&#34;,
+        va=&#34;bottom&#34;,
+    )
+    ax.grid()
+    if callback:
+        callback(ax)
+    # plt.tight_layout()
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_roc_pr_curve"><code class="name flex">
+<span>def <span class="ident">my_roc_pr_curve</span></span>(<span>y: pandas.core.series.Series, y_proba: pandas.core.series.Series, figsize: tuple = (16, 6), dpi=150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ROC와 Precision-Recall 곡선을 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>y</code></strong> :&ensp;<code>Series</code></dt>
+<dd>실제값</dd>
+<dt><strong><code>y_proba</code></strong> :&ensp;<code>Series</code></dt>
+<dd>예측확률</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (16, 6).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_roc_pr_curve(
+    y: Series, y_proba: Series, figsize: tuple = (16, 6), dpi=150, callback: any = None
+) -&gt; None:
+    &#34;&#34;&#34;ROC와 Precision-Recall 곡선을 출력한다.
+
+    Args:
+        y (Series): 실제값
+        y_proba (Series): 예측확률
+        figsize (tuple, optional): 그래프의 크기. Defaults to (16, 6).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    fig, ax = plt.subplots(1, 2, figsize=figsize, dpi=dpi)
+
+    # ROC Curve
+    fpr, tpr, thresholds = roc_curve(y, y_proba)
+    sb.lineplot(x=fpr, y=tpr, color=&#34;red&#34;, linewidth=1, label=&#34;ROC Curve&#34;, ax=ax[0])
+    ax[0].fill_between(fpr, tpr, facecolor=&#34;blue&#34;, alpha=0.1)
+    sb.lineplot(
+        x=[0, 1], y=[0, 1], color=&#34;black&#34;, linestyle=&#34;--&#34;, linewidth=0.7, ax=ax[0]
+    )
+    ax[0].set_xlabel(&#34;False Positive Rate&#34;)
+    ax[0].set_ylabel(&#34;True Positive Rate&#34;)
+    ax[0].set_xticks(np.round(np.arange(0, 1.1, 0.1), 2))
+    ax[0].set_xlim([-0.01, 1.01])
+    ax[0].set_ylim([-0.01, 1.01])
+    ax[0].text(
+        0.95,
+        0.05,
+        &#34;AUC=%0.3f&#34; % roc_auc_score(y, y_proba),
+        fontsize=16,
+        ha=&#34;right&#34;,
+        va=&#34;bottom&#34;,
+    )
+    ax[0].legend()
+    ax[0].grid()
+
+    # Precision-Recall Curve
+    precision, recall, thresholds = precision_recall_curve(y, y_proba)
+    y_mean = y.mean()
+
+    sb.lineplot(
+        x=recall,
+        y=precision,
+        label=&#34;Precision / Recall Curve&#34;,
+        color=&#34;blue&#34;,
+        linewidth=1,
+        ax=ax[1],
+    )
+    sb.lineplot(
+        x=[0, 1],
+        y=[y_mean, y_mean],
+        color=&#34;black&#34;,
+        linewidth=0.7,
+        linestyle=&#34;--&#34;,
+        ax=ax[1],
+    )
+    ax[1].set_xlabel(&#34;Recall&#34;)
+    ax[1].set_ylabel(&#34;Precision&#34;)
+    ax[1].set_xticks(np.round(np.arange(0, 1.1, 0.1), 2))
+    ax[1].set_xlim([-0.01, 1.01])
+    ax[1].set_ylim([y_mean - 0.05, 1.01])
+    ax[1].legend()
+    ax[1].grid()
+
+    # plt.tight_layout()
+    if callback:
+        callback(ax[0], ax[1])
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_scatter_by_class"><code class="name flex">
+<span>def <span class="ident">my_scatter_by_class</span></span>(<span>data: pandas.core.frame.DataFrame, group: list = None, hue: str = None, palette: str = None, outline: bool = False, figsize: tuple = (10, 5), dpi: int = 100, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>클래스별로 독립변수의 산점도를 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>독립변수</dd>
+<dt><strong><code>group</code></strong> :&ensp;<code>list</code>, optional</dt>
+<dd>독립변수의 조합. Defaults to None.</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>클래스별로 구분할 변수. Defaults to None.</dd>
+<dt><strong><code>palette</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>칼라맵. Defaults to None.</dd>
+<dt><strong><code>outline</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>테두리 여부. Defaults to False.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 5).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 100.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_scatter_by_class(
+    data: DataFrame,
+    group: list = None,
+    hue: str = None,
+    palette: str = None,
+    outline: bool = False,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;클래스별로 독립변수의 산점도를 출력한다.
+
+    Args:
+        data (DataFrame): 독립변수
+        group (list, optional): 독립변수의 조합. Defaults to None.
+        hue (str, optional): 클래스별로 구분할 변수. Defaults to None.
+        palette (str, optional): 칼라맵. Defaults to None.
+        outline (bool, optional): 테두리 여부. Defaults to False.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    if group == None:
+        group = []
+
+        xnames = data.columns
+
+        for i, v in enumerate(xnames):
+            if v == hue or data[v].dtype not in [
+                &#34;int&#34;,
+                &#34;int32&#34;,
+                &#34;int64&#34;,
+                &#34;float&#34;,
+                &#34;float32&#34;,
+                &#34;float64&#34;,
+            ]:
+                continue
+
+            j = (i + 1) % len(xnames)
+            group.append([v, xnames[j]])
+
+    if outline:
+        for i, v in enumerate(group):
+            my_convex_hull(data, v[0], v[1], hue, palette, figsize, dpi, callback)
+    else:
+        for i, v in enumerate(group):
+            my_scatterplot(data, v[0], v[1], hue, palette, figsize, dpi, callback)</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_scatterplot"><code class="name flex">
+<span>def <span class="ident">my_scatterplot</span></span>(<span>df: pandas.core.frame.DataFrame, xname: str = None, yname: str = None, hue=None, figsize: tuple = (10, 4), plt_title: str = None, plt_grid: bool = True, dpi: int = 150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내의 두 컬럼에 대해 산점도를 그려서 관계를 확인한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>xname</code></strong> :&ensp;<code>str</code></dt>
+<dd>x축에 사용할 컬럼명</dd>
+<dt><strong><code>yname</code></strong> :&ensp;<code>str</code></dt>
+<dd>y축에 사용할 컬럼명</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>색상을 구분할 기준이 되는 컬럼명. Defaults to None.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_scatterplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue=None,
+    figsize: tuple = (10, 4),
+    plt_title: str = None,
+    plt_grid: bool = True,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 두 컬럼에 대해 산점도를 그려서 관계를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.scatterplot(data=df, x=xname, y=yname, hue=hue, ax=ax)
+    ax.grid(plt_grid)
+    if plt_title:
+        ax.set_title(plt_title)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_stackplot"><code class="name flex">
+<span>def <span class="ident">my_stackplot</span></span>(<span>df: pandas.core.frame.DataFrame, xname: str, hue: str, palette: str = None, figsize: tuple = (10, 5), dpi: int = 150, plt_title: str = None, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>hue로 구분되는 막대 그래프를 비율로 표시한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>xname</code></strong> :&ensp;<code>str</code></dt>
+<dd>x축에 사용할 컬럼명</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>색상을 구분할 기준이 되는 컬럼명. Defaults to None.</dd>
+<dt><strong><code>kde</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>커널밀도추정을 함께 출력할지 여부. Defaults to True.</dd>
+<dt><strong><code>multiple</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>hue가 있을 경우 전체의 비율을 어떻게 표시할지 여부. Deafults to layer</dd>
+<dt><strong><code>palette</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>색상 팔레트. Defaults to None.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 5).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+</dl>
+<p>callback (any, optional) : ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defailts to None.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_stackplot(
+    df: DataFrame,
+    xname: str,
+    hue: str,
+    palette: str = None,
+    figsize: tuple = (10, 5),
+    dpi: int = 150,
+    plt_title: str = None,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;hue로 구분되는 막대 그래프를 비율로 표시한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        kde (bool, optional): 커널밀도추정을 함께 출력할지 여부. Defaults to True.
+        multiple (str, optional): hue가 있을 경우 전체의 비율을 어떻게 표시할지 여부. Deafults to layer
+        palette (str, optional): 색상 팔레트. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional) : ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defailts to None.
+    &#34;&#34;&#34;
+    df2 = df[[xname, hue]]
+    df2[xname] = df2[xname].astype(str)
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+
+    sb.histplot(
+        data=df,
+        x=xname,
+        hue=hue,
+        palette=palette,
+        linewidth=0.5,
+        stat=&#34;probability&#34;,  # 전체에서의 비율로 그리기
+        multiple=&#34;fill&#34;,  # 전체를 100%로 그리기
+        shrink=0.8,
+        ax=ax,
+    )  # 막대의 폭
+
+    # 그래프의 x축 항목 수 만큼 반복
+    for p in ax.patches:
+        # 각 막대의 위치, 넓이, 높이
+        left, bottom, width, height = p.get_bbox().bounds
+        # 막대의 중앙에 글자 표시하기
+        ax.annotate(
+            &#34;%0.1f%%&#34; % (height * 100),
+            xy=(left + width / 2, bottom + height / 2),
+            ha=&#34;center&#34;,
+            va=&#34;center&#34;,
+        )
+
+    if str(df[xname].dtype) in [&#34;int&#34;, &#34;int32&#34;, &#34;int64&#34;, &#34;float&#34;, &#34;float32&#34;, &#34;float64&#34;]:
+        xticks = list(df[xname].unique())
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(xticks)
+    if plt_title:
+        ax.set_title(plt_title)
+    if callback:
+        callback(ax)
+
+    plt.tight_layout()
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="helper.plot.my_violinplot"><code class="name flex">
+<span>def <span class="ident">my_violinplot</span></span>(<span>df: pandas.core.frame.DataFrame, xname: str = None, yname: str = None, hue=None, figsize: tuple = (10, 4), plt_grid: bool = True, plt_title: str = None, dpi: int = 150, callback: <built-in function any> = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내의 컬럼에 대해 바이올린플롯(상자그림+커널밀도)을 그려서 분포를 확인한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>df</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>xname</code></strong> :&ensp;<code>str</code></dt>
+<dd>x축에 사용할 컬럼명</dd>
+<dt><strong><code>yname</code></strong> :&ensp;<code>str</code></dt>
+<dd>y축에 사용할 컬럼명</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>색상을 구분할 기준이 되는 컬럼명. Defaults to None.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>tuple</code>, optional</dt>
+<dd>그래프의 크기. Defaults to (10, 4).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>그래프의 해상도. Defaults to 150.</dd>
+<dt><strong><code>callback</code></strong> :&ensp;<code>any</code>, optional</dt>
+<dd>ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_violinplot(
+    df: DataFrame,
+    xname: str = None,
+    yname: str = None,
+    hue=None,
+    figsize: tuple = (10, 4),
+    plt_grid: bool = True,
+    plt_title: str = None,
+    dpi: int = 150,
+    callback: any = None,
+) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 컬럼에 대해 바이올린플롯(상자그림+커널밀도)을 그려서 분포를 확인한다.
+
+    Args:
+        df (DataFrame): 데이터프레임 객체
+        xname (str): x축에 사용할 컬럼명
+        yname (str): y축에 사용할 컬럼명
+        hue (str, optional): 색상을 구분할 기준이 되는 컬럼명. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
+        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    &#34;&#34;&#34;
+    plt.figure(figsize=figsize, dpi=dpi)
+    ax = plt.gca()
+    sb.violinplot(data=df, x=xname, y=yname, hue=hue, ax=ax)
+    ax.grid(plt_grid)
+    if plt_title:
+        ax.set_title(plt_title)
+    if callback:
+        callback(ax)
+    plt.show()
+    plt.close()</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="helper" href="index.html">helper</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="helper.plot.my_barplot" href="#helper.plot.my_barplot">my_barplot</a></code></li>
+<li><code><a title="helper.plot.my_boxenplot" href="#helper.plot.my_boxenplot">my_boxenplot</a></code></li>
+<li><code><a title="helper.plot.my_boxplot" href="#helper.plot.my_boxplot">my_boxplot</a></code></li>
+<li><code><a title="helper.plot.my_confusion_matrix" href="#helper.plot.my_confusion_matrix">my_confusion_matrix</a></code></li>
+<li><code><a title="helper.plot.my_convex_hull" href="#helper.plot.my_convex_hull">my_convex_hull</a></code></li>
+<li><code><a title="helper.plot.my_countplot" href="#helper.plot.my_countplot">my_countplot</a></code></li>
+<li><code><a title="helper.plot.my_distribution_by_class" href="#helper.plot.my_distribution_by_class">my_distribution_by_class</a></code></li>
+<li><code><a title="helper.plot.my_heatmap" href="#helper.plot.my_heatmap">my_heatmap</a></code></li>
+<li><code><a title="helper.plot.my_histplot" href="#helper.plot.my_histplot">my_histplot</a></code></li>
+<li><code><a title="helper.plot.my_jointplot" href="#helper.plot.my_jointplot">my_jointplot</a></code></li>
+<li><code><a title="helper.plot.my_kde_confidence_interval" href="#helper.plot.my_kde_confidence_interval">my_kde_confidence_interval</a></code></li>
+<li><code><a title="helper.plot.my_kdeplot" href="#helper.plot.my_kdeplot">my_kdeplot</a></code></li>
+<li><code><a title="helper.plot.my_learing_curve" href="#helper.plot.my_learing_curve">my_learing_curve</a></code></li>
+<li><code><a title="helper.plot.my_lineplot" href="#helper.plot.my_lineplot">my_lineplot</a></code></li>
+<li><code><a title="helper.plot.my_lmplot" href="#helper.plot.my_lmplot">my_lmplot</a></code></li>
+<li><code><a title="helper.plot.my_pairplot" href="#helper.plot.my_pairplot">my_pairplot</a></code></li>
+<li><code><a title="helper.plot.my_pointplot" href="#helper.plot.my_pointplot">my_pointplot</a></code></li>
+<li><code><a title="helper.plot.my_pr_curve" href="#helper.plot.my_pr_curve">my_pr_curve</a></code></li>
+<li><code><a title="helper.plot.my_pvalue_anotation" href="#helper.plot.my_pvalue_anotation">my_pvalue_anotation</a></code></li>
+<li><code><a title="helper.plot.my_qqplot" href="#helper.plot.my_qqplot">my_qqplot</a></code></li>
+<li><code><a title="helper.plot.my_regplot" href="#helper.plot.my_regplot">my_regplot</a></code></li>
+<li><code><a title="helper.plot.my_resid_histplot" href="#helper.plot.my_resid_histplot">my_resid_histplot</a></code></li>
+<li><code><a title="helper.plot.my_residplot" href="#helper.plot.my_residplot">my_residplot</a></code></li>
+<li><code><a title="helper.plot.my_roc_curve" href="#helper.plot.my_roc_curve">my_roc_curve</a></code></li>
+<li><code><a title="helper.plot.my_roc_pr_curve" href="#helper.plot.my_roc_pr_curve">my_roc_pr_curve</a></code></li>
+<li><code><a title="helper.plot.my_scatter_by_class" href="#helper.plot.my_scatter_by_class">my_scatter_by_class</a></code></li>
+<li><code><a title="helper.plot.my_scatterplot" href="#helper.plot.my_scatterplot">my_scatterplot</a></code></li>
+<li><code><a title="helper.plot.my_stackplot" href="#helper.plot.my_stackplot">my_stackplot</a></code></li>
+<li><code><a title="helper.plot.my_violinplot" href="#helper.plot.my_violinplot">my_violinplot</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

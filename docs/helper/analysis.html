@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>helper.analysis API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>helper.analysis</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from pandas import DataFrame
+import scipy
+from scipy.stats import shapiro, normaltest, bartlett, levene, ttest_1samp, ttest_ind, ttest_rel, mannwhitneyu, pearsonr, spearmanr
+from statsmodels.formula.api import ols
+from statsmodels.stats.anova import anova_lm
+from pingouin import anova
+from pingouin import welch_anova
+from statsmodels.sandbox.stats.multicomp import MultiComparison
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+from pingouin import pairwise_tukey, pairwise_tests, pairwise_gameshowell
+from helper.util import my_pretty_table, my_unmelt
+from helper.plot import my_heatmap
+
+def my_normal_test(data: DataFrame, method: str = &#34;n&#34;) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 모든 컬럼에 대해 정규성 검정을 수행하고 결과를 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        method (str, optional): 정규성 검정 방법(n=normaltest, s=shapiro). Defaults to &#34;n&#34;.
+    &#34;&#34;&#34;
+    for c in data.columns:
+        if method == &#34;n&#34;:
+            n = &#34;normaltest&#34;
+            s, p = normaltest(data[c])
+        else:
+            n = &#34;shapiro&#34;
+            s, p = shapiro(data[c])
+            
+        print(f&#34;[{n}-{c}] statistic: {s:.3f}, p-value: {p:.3f}, 정규성 충족 여부: {p &gt; 0.05}&#34;)
+
+def my_equal_var_test(data: DataFrame, normal_dist: bool = True) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내에 있는 모든 컬럼들에 대해 등분산성 검정을 수행하고 결과를 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        normal_dist (bool, optional): 정규성 검정 결과를 의미한다. True일 경우 정규분포를 따르는 데이터에 대한 등분산성 검정을 수행한다. Defaults to True.
+    &#34;&#34;&#34;
+    fields: list = [data[x] for x in data.colunms]
+
+    if normal_dist:
+        n: str = &#34;Bartlett&#34;
+        s, p = bartlett(*fields)
+    else:
+        n: str = &#34;Levene&#34;
+        s, p = levene(*fields)
+        
+    print(f&#34;{n} 검정: statistic: {s:.3f}, p-value: {p:.3f}, 등분산성 충족 여부: {p &gt; 0.05}&#34;)
+
+def my_normal_equal_var_1field(data: DataFrame, xname: str = &#39;x&#39;, hue: str = &#39;hue&#39;) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내에 있는 한 종류의 명목형 변수에 따라 종속변수의 정규성과 등분산성을 검정하고 결과를 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        xname (str, optional): 종속변수의 컬럼명. Defaults to &#39;x&#39;.
+        hue (str, optional): 명목형 변수의 컬럼명. Defaults to &#39;hue&#39;.
+    &#34;&#34;&#34;
+    u1 = data[hue].unique()
+    equal_var_fields: list = []
+    normal_dist: bool = True
+    report: list = []
+
+    for i in u1:
+        filtered_data = data[data[hue] == i][xname]
+        equal_var_fields.append(filtered_data)
+        s, p = normaltest(filtered_data)
+
+        normalize = p &gt; 0.05
+        report.append({&#34;field&#34;: i, &#34;statistic&#34;: s, &#34;p-value&#34;: p, &#34;result&#34;: normalize})
+        normal_dist = normal_dist and normalize
+
+    if normal_dist:
+        n = &#34;Bartlett&#34;
+        s, p = bartlett(*equal_var_fields)
+    else:
+        n = &#34;Levene&#34;
+        s, p = levene(*equal_var_fields)
+        
+    report.append({&#34;field&#34;: n, &#34;statistic&#34;: s, &#34;p-value&#34;: p, &#34;result&#34;: p &gt; 0.05})
+    report_df = DataFrame(report).set_index(&#39;field&#39;)
+    my_pretty_table(report_df)
+    
+def my_normal_equal_var_2field(data: DataFrame, xname: str = &#39;x&#39;, hue: list = [&#39;h1&#39;, &#39;h2&#39;]) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내에 있는 두 종류의 명목형 변수에 따라 종속변수의 정규성과 등분산성을 검정하고 결과를 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        xname (str, optional): 종속변수의 컬럼명. Defaults to &#39;x&#39;.
+        hue (list, optional): 명목형 변수의 컬럼명을 저장하고 있는 리스트. Defaults to [&#39;h1&#39;, &#39;h2&#39;].
+    &#34;&#34;&#34;
+    u1 = data[hue[0]].unique()
+    u2 = data[hue[1]].unique()
+    equal_var_fields: list = []
+    normal_dist: bool = True
+    report: list = []
+
+    for i in u1:
+        for j in u2:
+            filtered_data = data[(data[hue[0]] == i) &amp; (data[hue[1]] == j)][xname]
+            equal_var_fields.append(filtered_data)
+            s, p = normaltest(filtered_data)
+
+            normalize: bool = p &gt; 0.05
+            report.append({&#34;field&#34;: f&#34;{i}, {j}&#34;, &#34;statistic&#34;: s, &#34;p-value&#34;: p, &#34;result&#34;: normalize})
+            normal_dist = normal_dist and normalize
+
+    if normal_dist:
+        n: str = &#34;Bartlett&#34;
+        s, p = bartlett(*equal_var_fields)
+    else:
+        n: str = &#34;Levene&#34;
+        s, p = levene(*equal_var_fields)
+        
+    report.append({&#34;field&#34;: n, &#34;statistic&#34;: s, &#34;p-value&#34;: p, &#34;result&#34;: p &gt; 0.05})
+    report_df = DataFrame(report).set_index(&#39;field&#39;)
+    my_pretty_table(report_df)
+
+def my_ttest_1samp(data: DataFrame, mean_value: int = 0) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내에 있는 모든 컬럼에 대해 일표본 t-검정을 수행하고 결과를 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        mean_value (int, optional): 귀무가설의 기준값. Defaults to 0.
+    &#34;&#34;&#34;
+    alternative: list = [&#34;two-sided&#34;, &#34;less&#34;, &#34;greater&#34;]
+    result: list = []
+
+    for c in data.columns:
+        for a in alternative:
+            s, p = ttest_1samp(data[c], mean_value, alternative=a)
+            
+            itp = None
+            
+            if a == &#34;two-sided&#34;:
+                itp = f&#34;μ {&#39;==&#39; if p &gt; 0.05 else &#39;!=&#39;} {mean_value}&#34;
+            elif a == &#34;less&#34;:
+                itp = f&#34;μ {&#39;&gt;=&#39; if p &gt; 0.05 else &#39;&lt;&#39;} {mean_value}&#34;
+            else:
+                itp = f&#34;μ {&#39;&lt;=&#39; if p &gt; 0.05 else &#39;&gt;&#39;} {mean_value}&#34;
+            
+            result.append({
+                &#34;field&#34;: c,
+                &#34;alternative&#34;: a,
+                &#34;statistic&#34;: round(s, 3),
+                &#34;p-value&#34;: round(p, 3),
+                &#34;H0&#34;: p &gt; 0.05,
+                &#34;H1&#34;: p &lt;= 0.05,
+                &#34;interpretation&#34;: itp
+            })
+            
+    rdf = DataFrame(result).set_index([&#34;field&#34;, &#34;alternative&#34;])
+    my_pretty_table(rdf)
+
+def my_ttest_ind(data: DataFrame, xname: str, yname: str, equal_var: bool = True) -&gt; None:
+    &#34;&#34;&#34;독립표본 t-검정을 수행하고 결과를 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        xname (str): 첫 번째 필드 이름
+        yname (str): 두 번째 필드 이름
+        equal_var (bool, optional): 등분산성 가정 여부. Defaults to True.
+    &#34;&#34;&#34;
+    
+    alternative: list = [&#34;two-sided&#34;, &#34;less&#34;, &#34;greater&#34;]
+    result: list = []
+    fmt: str = &#34;μ({f0}) {0} μ({f1})&#34;
+    
+    for a in alternative:
+        s, p = ttest_ind(data[xname], data[yname], equal_var=equal_var, alternative=a)
+        n = &#34;t-test_ind&#34; if equal_var else &#34;Welch&#39;s t-test&#34;
+            
+        # 검정 결과 해석
+        itp = None
+        
+        if a == &#34;two-sided&#34;:
+            itp = fmt.format(&#34;==&#34; if p &gt; 0.05 else &#34;!=&#34;, f0=xname, f1=yname)
+        elif a == &#34;less&#34;:
+            itp = fmt.format(&#34;&gt;=&#34; if p &gt; 0.05 else &#34;&lt;&#34;, f0=xname, f1=yname)
+        else:
+            itp = fmt.format(&#34;&lt;=&#34; if p &gt; 0.05 else &#34;&gt;&#34;, f0=xname, f1=yname)
+            
+        result.append({
+            &#34;test&#34;: n,
+            &#34;alternative&#34;: a,
+            &#34;statistic&#34;: round(s, 3),
+            &#34;p-value&#34;: round(p, 3),
+            &#34;H0&#34;: p &gt; 0.05,
+            &#34;H1&#34;: p &lt;= 0.05,
+            &#34;interpretation&#34;: itp
+        })
+        
+    rdf = DataFrame(result).set_index([&#34;test&#34;, &#34;alternative&#34;])
+    my_pretty_table(rdf)
+
+def my_ttest_rel(data: DataFrame, xname: str, yname: str, equal_var: bool = True) -&gt; None:
+    &#34;&#34;&#34;대응표본 t-검정 또는 Mann-Whitney U 검정을 수행하고 결과를 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        xname (str): 첫 번째 필드 이름
+        yname (str): 두 번째 필드 이름
+        equal_var (bool, optional): 등분산성 가정 여부. True인 경우 대응표본 T검정 수행 / False인 경우 Mann-Whitney 검정 수행. Defaults to True.
+    &#34;&#34;&#34;
+    
+    alternative: list = [&#34;two-sided&#34;, &#34;less&#34;, &#34;greater&#34;]
+    result: list = []
+    fmt: str = &#34;μ({f0}) {0} μ({f1})&#34;
+    
+    for a in alternative:
+        if equal_var:
+            s, p = ttest_rel(data[xname], data[yname], alternative=a)
+            n = &#34;t-test_paired&#34;
+        else:
+            s, p = mannwhitneyu(data[xname], data[yname], alternative=a)
+            n = &#34;Mann-Whitney&#34;
+            
+        # 검정 결과 해석
+        itp = None
+        
+        if a == &#34;two-sided&#34;:
+            itp = fmt.format(&#34;==&#34; if p &gt; 0.05 else &#34;!=&#34;, f0=xname, f1=yname)
+        elif a == &#34;less&#34;:
+            itp = fmt.format(&#34;&gt;=&#34; if p &gt; 0.05 else &#34;&lt;&#34;, f0=xname, f1=yname)
+        else:
+            itp = fmt.format(&#34;&lt;=&#34; if p &gt; 0.05 else &#34;&gt;&#34;, f0=xname, f1=yname)
+            
+        result.append({
+            &#34;test&#34;: n,
+            &#34;alternative&#34;: a,
+            &#34;statistic&#34;: round(s, 3),
+            &#34;p-value&#34;: round(p, 3),
+            &#34;H0&#34;: p &gt; 0.05,
+            &#34;H1&#34;: p &lt;= 0.05,
+            &#34;interpretation&#34;: itp
+        })
+        
+    rdf = DataFrame(result).set_index([&#34;test&#34;, &#34;alternative&#34;])
+    my_pretty_table(rdf)
+    
+def my_anova(data: DataFrame, target: str, hue: any, equal_var: bool = True, post : bool = False) -&gt; None:
+    &#34;&#34;&#34;분산분석을 수행하고 결과를 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        target (str): 종속변수의 컬럼명
+        hue (_type_): 명목형 변수의 컬럼명을 저장하고 있는 리스트
+        equal_var (bool, optional): 등분산성 가정 여부. Defaults to True.
+        post (bool, optional): 사후검정 여부, Defaults to False
+    &#34;&#34;&#34;
+    
+    # 일원 분산 분석 명목형 파라미터 정리
+    if type(hue) == str or type(hue) == list and len(hue) == 1:
+        anova_type = &#34;oneway&#34;
+        expr = f&#39;{target} ~ C({hue})&#39;
+        typ = 1
+        if (type(hue) == list):
+            hue = hue[0]
+    # 이원 분산 분석 -&gt; type(hue) == list and len(hue) &gt; 1:
+    else:
+        anova_type = &#34;twoway&#34;
+        expr = f&#39;{target} ~ &#39;
+        for i, h in enumerate(hue):
+            expr += f&#39;C({h})&#39;
+            if i + 1 &lt; len(hue):
+                expr += &#39;*&#39;
+        typ = 2
+    # pingouin 패키지를 사용하는 경우
+    if equal_var:
+        # 등분산성을 충족하는 경우에 대해서는 oneway, twoway 분석 모두 지원
+        print(&#34;pingouin.anova&#34;)
+        aov = anova(data=data, dv=target, between=hue, detailed=True)
+        my_pretty_table(aov)
+    else:
+        # 등분산성을 충족하지 않는 경우에 대해서는 oneway 분석만 지원
+        if anova_type == &#34;oneway&#34;:
+            print(&#34;pingouin.welch_anova&#34;)
+            aov = welch_anova(data=data, dv=target, between=hue)
+            my_pretty_table(aov)
+    
+    # statsmodels 패키지를 사용하는 경우
+    print(&#34;\nstatsmodels.anova.anova_lm&#34;)  
+    lm = ols(expr, data=data).fit()
+    if equal_var:
+        anova_result = anova_lm(lm, typ=typ)
+    else:
+        anova_result = anova_lm(lm, typ=typ, robust=&#34;hc3&#34;)
+    my_pretty_table(anova_result)
+    
+    s = anova_result[&#39;F&#39;][0]
+    p = anova_result[&#39;PR(&gt;F)&#39;][0]
+    print(f&#34;[anova_lm] statistic: {s:.3f}, p-value: {p:.3f}, {&#39;대립&#39; if p &lt;= 0.05 else &#39;귀무&#39;}가설 채택&#34;)
+    
+    # 일원 분산 분석인 경우 사후검정 수행
+    if post and anova_type == &#34;oneway&#34;:
+        # 등분산인 경우
+        if equal_var:
+            cnt = data[[target, hue]].groupby(hue).count()
+            
+            # 샘플수가 같은 경우 투키 방법
+            if cnt.iloc[0, 0] == cnt[cnt.columns[0]].mean():
+                print(&#34;\n사후검정: Tukey HSD 방법&#34;)
+                mc = MultiComparison(data[target], data[hue])
+                result = mc.tukeyhsd()
+                print(result)
+            # 샘플수가 다른 경우 본페로니 방법
+            else:
+                print(&#34;\n사후검정: 본페로니 방법&#34;)
+                result = pairwise_tests(data=data, dv=target, between=hue, padjust=&#39;bonf&#39;)
+                my_pretty_table(result)
+        
+        # 등분산이 아닌 경우 -&gt; gameshowell
+        else:
+            print(&#34;\n사후검정: Games-Howell 방법&#34;)
+            result = pairwise_gameshowell(data=data, dv=target, between=hue)
+            my_pretty_table(result)
+   
+def my_correlation(data: DataFrame, method: str = &#34;p&#34;, heatmap: bool = True, figsize: list=(10, 8), dpi: int=150) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내에 있는 모든 컬럼들에 대해 상관계수를 계산하고 결과를 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        method (str, optional): 상관계수 계산 방법(p=pearson, s=spearman). Defaults to &#34;p&#34;.
+        heatmap (bool, optional): 상관계수 히트맵 출력 여부. Defaults to True.
+        figsize (list, optional): 히트맵의 크기. Defaults to (10, 8).
+        dpi (int, optional): 히트맵의 해상도. Defaults to 150.
+    &#34;&#34;&#34;
+    if heatmap:
+        my_heatmap(data.corr(method=&#34;pearson&#34; if method == &#34;p&#34; else &#34;spearman&#34;), figsize=figsize, dpi=dpi)
+    else:
+        my_pretty_table(data.corr(method=&#34;pearson&#34; if method == &#34;p&#34; else &#34;spearman&#34;))
+    
+    result = []
+    
+    for i,c in enumerate(data.columns):
+        for j,d in enumerate(data.columns):
+            if i &lt; j :
+                if method == &#39;p&#39;:
+                    s, p = pearsonr(data[c], data[d])
+                else:
+                    s, p = spearmanr(data[c], data[d])
+                    
+                result.append({
+                    &#34;field1&#34;: c,
+                    &#34;field2&#34;: d,
+                    &#34;correlation&#34;: s,
+                    &#34;p-value&#34;: p,
+                    &#34;result&#34;: p &lt;= 0.05
+                })
+                
+    rdf = DataFrame(result)
+    rdf.set_index([&#34;field1&#34;, &#34;field2&#34;], inplace=True)
+    my_pretty_table(rdf)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="helper.analysis.my_anova"><code class="name flex">
+<span>def <span class="ident">my_anova</span></span>(<span>data: pandas.core.frame.DataFrame, target: str, hue: <built-in function any>, equal_var: bool = True, post: bool = False) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>분산분석을 수행하고 결과를 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>target</code></strong> :&ensp;<code>str</code></dt>
+<dd>종속변수의 컬럼명</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>_type_</code></dt>
+<dd>명목형 변수의 컬럼명을 저장하고 있는 리스트</dd>
+<dt><strong><code>equal_var</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>등분산성 가정 여부. Defaults to True.</dd>
+<dt><strong><code>post</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>사후검정 여부, Defaults to False</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_anova(data: DataFrame, target: str, hue: any, equal_var: bool = True, post : bool = False) -&gt; None:
+    &#34;&#34;&#34;분산분석을 수행하고 결과를 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        target (str): 종속변수의 컬럼명
+        hue (_type_): 명목형 변수의 컬럼명을 저장하고 있는 리스트
+        equal_var (bool, optional): 등분산성 가정 여부. Defaults to True.
+        post (bool, optional): 사후검정 여부, Defaults to False
+    &#34;&#34;&#34;
+    
+    # 일원 분산 분석 명목형 파라미터 정리
+    if type(hue) == str or type(hue) == list and len(hue) == 1:
+        anova_type = &#34;oneway&#34;
+        expr = f&#39;{target} ~ C({hue})&#39;
+        typ = 1
+        if (type(hue) == list):
+            hue = hue[0]
+    # 이원 분산 분석 -&gt; type(hue) == list and len(hue) &gt; 1:
+    else:
+        anova_type = &#34;twoway&#34;
+        expr = f&#39;{target} ~ &#39;
+        for i, h in enumerate(hue):
+            expr += f&#39;C({h})&#39;
+            if i + 1 &lt; len(hue):
+                expr += &#39;*&#39;
+        typ = 2
+    # pingouin 패키지를 사용하는 경우
+    if equal_var:
+        # 등분산성을 충족하는 경우에 대해서는 oneway, twoway 분석 모두 지원
+        print(&#34;pingouin.anova&#34;)
+        aov = anova(data=data, dv=target, between=hue, detailed=True)
+        my_pretty_table(aov)
+    else:
+        # 등분산성을 충족하지 않는 경우에 대해서는 oneway 분석만 지원
+        if anova_type == &#34;oneway&#34;:
+            print(&#34;pingouin.welch_anova&#34;)
+            aov = welch_anova(data=data, dv=target, between=hue)
+            my_pretty_table(aov)
+    
+    # statsmodels 패키지를 사용하는 경우
+    print(&#34;\nstatsmodels.anova.anova_lm&#34;)  
+    lm = ols(expr, data=data).fit()
+    if equal_var:
+        anova_result = anova_lm(lm, typ=typ)
+    else:
+        anova_result = anova_lm(lm, typ=typ, robust=&#34;hc3&#34;)
+    my_pretty_table(anova_result)
+    
+    s = anova_result[&#39;F&#39;][0]
+    p = anova_result[&#39;PR(&gt;F)&#39;][0]
+    print(f&#34;[anova_lm] statistic: {s:.3f}, p-value: {p:.3f}, {&#39;대립&#39; if p &lt;= 0.05 else &#39;귀무&#39;}가설 채택&#34;)
+    
+    # 일원 분산 분석인 경우 사후검정 수행
+    if post and anova_type == &#34;oneway&#34;:
+        # 등분산인 경우
+        if equal_var:
+            cnt = data[[target, hue]].groupby(hue).count()
+            
+            # 샘플수가 같은 경우 투키 방법
+            if cnt.iloc[0, 0] == cnt[cnt.columns[0]].mean():
+                print(&#34;\n사후검정: Tukey HSD 방법&#34;)
+                mc = MultiComparison(data[target], data[hue])
+                result = mc.tukeyhsd()
+                print(result)
+            # 샘플수가 다른 경우 본페로니 방법
+            else:
+                print(&#34;\n사후검정: 본페로니 방법&#34;)
+                result = pairwise_tests(data=data, dv=target, between=hue, padjust=&#39;bonf&#39;)
+                my_pretty_table(result)
+        
+        # 등분산이 아닌 경우 -&gt; gameshowell
+        else:
+            print(&#34;\n사후검정: Games-Howell 방법&#34;)
+            result = pairwise_gameshowell(data=data, dv=target, between=hue)
+            my_pretty_table(result)</code></pre>
+</details>
+</dd>
+<dt id="helper.analysis.my_correlation"><code class="name flex">
+<span>def <span class="ident">my_correlation</span></span>(<span>data: pandas.core.frame.DataFrame, method: str = 'p', heatmap: bool = True, figsize: list = (10, 8), dpi: int = 150) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내에 있는 모든 컬럼들에 대해 상관계수를 계산하고 결과를 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>method</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>상관계수 계산 방법(p=pearson, s=spearman). Defaults to "p".</dd>
+<dt><strong><code>heatmap</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>상관계수 히트맵 출력 여부. Defaults to True.</dd>
+<dt><strong><code>figsize</code></strong> :&ensp;<code>list</code>, optional</dt>
+<dd>히트맵의 크기. Defaults to (10, 8).</dd>
+<dt><strong><code>dpi</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>히트맵의 해상도. Defaults to 150.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_correlation(data: DataFrame, method: str = &#34;p&#34;, heatmap: bool = True, figsize: list=(10, 8), dpi: int=150) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내에 있는 모든 컬럼들에 대해 상관계수를 계산하고 결과를 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        method (str, optional): 상관계수 계산 방법(p=pearson, s=spearman). Defaults to &#34;p&#34;.
+        heatmap (bool, optional): 상관계수 히트맵 출력 여부. Defaults to True.
+        figsize (list, optional): 히트맵의 크기. Defaults to (10, 8).
+        dpi (int, optional): 히트맵의 해상도. Defaults to 150.
+    &#34;&#34;&#34;
+    if heatmap:
+        my_heatmap(data.corr(method=&#34;pearson&#34; if method == &#34;p&#34; else &#34;spearman&#34;), figsize=figsize, dpi=dpi)
+    else:
+        my_pretty_table(data.corr(method=&#34;pearson&#34; if method == &#34;p&#34; else &#34;spearman&#34;))
+    
+    result = []
+    
+    for i,c in enumerate(data.columns):
+        for j,d in enumerate(data.columns):
+            if i &lt; j :
+                if method == &#39;p&#39;:
+                    s, p = pearsonr(data[c], data[d])
+                else:
+                    s, p = spearmanr(data[c], data[d])
+                    
+                result.append({
+                    &#34;field1&#34;: c,
+                    &#34;field2&#34;: d,
+                    &#34;correlation&#34;: s,
+                    &#34;p-value&#34;: p,
+                    &#34;result&#34;: p &lt;= 0.05
+                })
+                
+    rdf = DataFrame(result)
+    rdf.set_index([&#34;field1&#34;, &#34;field2&#34;], inplace=True)
+    my_pretty_table(rdf)</code></pre>
+</details>
+</dd>
+<dt id="helper.analysis.my_equal_var_test"><code class="name flex">
+<span>def <span class="ident">my_equal_var_test</span></span>(<span>data: pandas.core.frame.DataFrame, normal_dist: bool = True) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내에 있는 모든 컬럼들에 대해 등분산성 검정을 수행하고 결과를 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>normal_dist</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>정규성 검정 결과를 의미한다. True일 경우 정규분포를 따르는 데이터에 대한 등분산성 검정을 수행한다. Defaults to True.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_equal_var_test(data: DataFrame, normal_dist: bool = True) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내에 있는 모든 컬럼들에 대해 등분산성 검정을 수행하고 결과를 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        normal_dist (bool, optional): 정규성 검정 결과를 의미한다. True일 경우 정규분포를 따르는 데이터에 대한 등분산성 검정을 수행한다. Defaults to True.
+    &#34;&#34;&#34;
+    fields: list = [data[x] for x in data.colunms]
+
+    if normal_dist:
+        n: str = &#34;Bartlett&#34;
+        s, p = bartlett(*fields)
+    else:
+        n: str = &#34;Levene&#34;
+        s, p = levene(*fields)
+        
+    print(f&#34;{n} 검정: statistic: {s:.3f}, p-value: {p:.3f}, 등분산성 충족 여부: {p &gt; 0.05}&#34;)</code></pre>
+</details>
+</dd>
+<dt id="helper.analysis.my_normal_equal_var_1field"><code class="name flex">
+<span>def <span class="ident">my_normal_equal_var_1field</span></span>(<span>data: pandas.core.frame.DataFrame, xname: str = 'x', hue: str = 'hue') ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내에 있는 한 종류의 명목형 변수에 따라 종속변수의 정규성과 등분산성을 검정하고 결과를 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>xname</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>종속변수의 컬럼명. Defaults to 'x'.</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>명목형 변수의 컬럼명. Defaults to 'hue'.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_normal_equal_var_1field(data: DataFrame, xname: str = &#39;x&#39;, hue: str = &#39;hue&#39;) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내에 있는 한 종류의 명목형 변수에 따라 종속변수의 정규성과 등분산성을 검정하고 결과를 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        xname (str, optional): 종속변수의 컬럼명. Defaults to &#39;x&#39;.
+        hue (str, optional): 명목형 변수의 컬럼명. Defaults to &#39;hue&#39;.
+    &#34;&#34;&#34;
+    u1 = data[hue].unique()
+    equal_var_fields: list = []
+    normal_dist: bool = True
+    report: list = []
+
+    for i in u1:
+        filtered_data = data[data[hue] == i][xname]
+        equal_var_fields.append(filtered_data)
+        s, p = normaltest(filtered_data)
+
+        normalize = p &gt; 0.05
+        report.append({&#34;field&#34;: i, &#34;statistic&#34;: s, &#34;p-value&#34;: p, &#34;result&#34;: normalize})
+        normal_dist = normal_dist and normalize
+
+    if normal_dist:
+        n = &#34;Bartlett&#34;
+        s, p = bartlett(*equal_var_fields)
+    else:
+        n = &#34;Levene&#34;
+        s, p = levene(*equal_var_fields)
+        
+    report.append({&#34;field&#34;: n, &#34;statistic&#34;: s, &#34;p-value&#34;: p, &#34;result&#34;: p &gt; 0.05})
+    report_df = DataFrame(report).set_index(&#39;field&#39;)
+    my_pretty_table(report_df)</code></pre>
+</details>
+</dd>
+<dt id="helper.analysis.my_normal_equal_var_2field"><code class="name flex">
+<span>def <span class="ident">my_normal_equal_var_2field</span></span>(<span>data: pandas.core.frame.DataFrame, xname: str = 'x', hue: list = ['h1', 'h2']) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내에 있는 두 종류의 명목형 변수에 따라 종속변수의 정규성과 등분산성을 검정하고 결과를 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>xname</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>종속변수의 컬럼명. Defaults to 'x'.</dd>
+<dt><strong><code>hue</code></strong> :&ensp;<code>list</code>, optional</dt>
+<dd>명목형 변수의 컬럼명을 저장하고 있는 리스트. Defaults to ['h1', 'h2'].</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_normal_equal_var_2field(data: DataFrame, xname: str = &#39;x&#39;, hue: list = [&#39;h1&#39;, &#39;h2&#39;]) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내에 있는 두 종류의 명목형 변수에 따라 종속변수의 정규성과 등분산성을 검정하고 결과를 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        xname (str, optional): 종속변수의 컬럼명. Defaults to &#39;x&#39;.
+        hue (list, optional): 명목형 변수의 컬럼명을 저장하고 있는 리스트. Defaults to [&#39;h1&#39;, &#39;h2&#39;].
+    &#34;&#34;&#34;
+    u1 = data[hue[0]].unique()
+    u2 = data[hue[1]].unique()
+    equal_var_fields: list = []
+    normal_dist: bool = True
+    report: list = []
+
+    for i in u1:
+        for j in u2:
+            filtered_data = data[(data[hue[0]] == i) &amp; (data[hue[1]] == j)][xname]
+            equal_var_fields.append(filtered_data)
+            s, p = normaltest(filtered_data)
+
+            normalize: bool = p &gt; 0.05
+            report.append({&#34;field&#34;: f&#34;{i}, {j}&#34;, &#34;statistic&#34;: s, &#34;p-value&#34;: p, &#34;result&#34;: normalize})
+            normal_dist = normal_dist and normalize
+
+    if normal_dist:
+        n: str = &#34;Bartlett&#34;
+        s, p = bartlett(*equal_var_fields)
+    else:
+        n: str = &#34;Levene&#34;
+        s, p = levene(*equal_var_fields)
+        
+    report.append({&#34;field&#34;: n, &#34;statistic&#34;: s, &#34;p-value&#34;: p, &#34;result&#34;: p &gt; 0.05})
+    report_df = DataFrame(report).set_index(&#39;field&#39;)
+    my_pretty_table(report_df)</code></pre>
+</details>
+</dd>
+<dt id="helper.analysis.my_normal_test"><code class="name flex">
+<span>def <span class="ident">my_normal_test</span></span>(<span>data: pandas.core.frame.DataFrame, method: str = 'n') ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내의 모든 컬럼에 대해 정규성 검정을 수행하고 결과를 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>method</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>정규성 검정 방법(n=normaltest, s=shapiro). Defaults to "n".</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_normal_test(data: DataFrame, method: str = &#34;n&#34;) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내의 모든 컬럼에 대해 정규성 검정을 수행하고 결과를 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        method (str, optional): 정규성 검정 방법(n=normaltest, s=shapiro). Defaults to &#34;n&#34;.
+    &#34;&#34;&#34;
+    for c in data.columns:
+        if method == &#34;n&#34;:
+            n = &#34;normaltest&#34;
+            s, p = normaltest(data[c])
+        else:
+            n = &#34;shapiro&#34;
+            s, p = shapiro(data[c])
+            
+        print(f&#34;[{n}-{c}] statistic: {s:.3f}, p-value: {p:.3f}, 정규성 충족 여부: {p &gt; 0.05}&#34;)</code></pre>
+</details>
+</dd>
+<dt id="helper.analysis.my_ttest_1samp"><code class="name flex">
+<span>def <span class="ident">my_ttest_1samp</span></span>(<span>data: pandas.core.frame.DataFrame, mean_value: int = 0) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>데이터프레임 내에 있는 모든 컬럼에 대해 일표본 t-검정을 수행하고 결과를 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>mean_value</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>귀무가설의 기준값. Defaults to 0.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_ttest_1samp(data: DataFrame, mean_value: int = 0) -&gt; None:
+    &#34;&#34;&#34;데이터프레임 내에 있는 모든 컬럼에 대해 일표본 t-검정을 수행하고 결과를 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        mean_value (int, optional): 귀무가설의 기준값. Defaults to 0.
+    &#34;&#34;&#34;
+    alternative: list = [&#34;two-sided&#34;, &#34;less&#34;, &#34;greater&#34;]
+    result: list = []
+
+    for c in data.columns:
+        for a in alternative:
+            s, p = ttest_1samp(data[c], mean_value, alternative=a)
+            
+            itp = None
+            
+            if a == &#34;two-sided&#34;:
+                itp = f&#34;μ {&#39;==&#39; if p &gt; 0.05 else &#39;!=&#39;} {mean_value}&#34;
+            elif a == &#34;less&#34;:
+                itp = f&#34;μ {&#39;&gt;=&#39; if p &gt; 0.05 else &#39;&lt;&#39;} {mean_value}&#34;
+            else:
+                itp = f&#34;μ {&#39;&lt;=&#39; if p &gt; 0.05 else &#39;&gt;&#39;} {mean_value}&#34;
+            
+            result.append({
+                &#34;field&#34;: c,
+                &#34;alternative&#34;: a,
+                &#34;statistic&#34;: round(s, 3),
+                &#34;p-value&#34;: round(p, 3),
+                &#34;H0&#34;: p &gt; 0.05,
+                &#34;H1&#34;: p &lt;= 0.05,
+                &#34;interpretation&#34;: itp
+            })
+            
+    rdf = DataFrame(result).set_index([&#34;field&#34;, &#34;alternative&#34;])
+    my_pretty_table(rdf)</code></pre>
+</details>
+</dd>
+<dt id="helper.analysis.my_ttest_ind"><code class="name flex">
+<span>def <span class="ident">my_ttest_ind</span></span>(<span>data: pandas.core.frame.DataFrame, xname: str, yname: str, equal_var: bool = True) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>독립표본 t-검정을 수행하고 결과를 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>xname</code></strong> :&ensp;<code>str</code></dt>
+<dd>첫 번째 필드 이름</dd>
+<dt><strong><code>yname</code></strong> :&ensp;<code>str</code></dt>
+<dd>두 번째 필드 이름</dd>
+<dt><strong><code>equal_var</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>등분산성 가정 여부. Defaults to True.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_ttest_ind(data: DataFrame, xname: str, yname: str, equal_var: bool = True) -&gt; None:
+    &#34;&#34;&#34;독립표본 t-검정을 수행하고 결과를 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        xname (str): 첫 번째 필드 이름
+        yname (str): 두 번째 필드 이름
+        equal_var (bool, optional): 등분산성 가정 여부. Defaults to True.
+    &#34;&#34;&#34;
+    
+    alternative: list = [&#34;two-sided&#34;, &#34;less&#34;, &#34;greater&#34;]
+    result: list = []
+    fmt: str = &#34;μ({f0}) {0} μ({f1})&#34;
+    
+    for a in alternative:
+        s, p = ttest_ind(data[xname], data[yname], equal_var=equal_var, alternative=a)
+        n = &#34;t-test_ind&#34; if equal_var else &#34;Welch&#39;s t-test&#34;
+            
+        # 검정 결과 해석
+        itp = None
+        
+        if a == &#34;two-sided&#34;:
+            itp = fmt.format(&#34;==&#34; if p &gt; 0.05 else &#34;!=&#34;, f0=xname, f1=yname)
+        elif a == &#34;less&#34;:
+            itp = fmt.format(&#34;&gt;=&#34; if p &gt; 0.05 else &#34;&lt;&#34;, f0=xname, f1=yname)
+        else:
+            itp = fmt.format(&#34;&lt;=&#34; if p &gt; 0.05 else &#34;&gt;&#34;, f0=xname, f1=yname)
+            
+        result.append({
+            &#34;test&#34;: n,
+            &#34;alternative&#34;: a,
+            &#34;statistic&#34;: round(s, 3),
+            &#34;p-value&#34;: round(p, 3),
+            &#34;H0&#34;: p &gt; 0.05,
+            &#34;H1&#34;: p &lt;= 0.05,
+            &#34;interpretation&#34;: itp
+        })
+        
+    rdf = DataFrame(result).set_index([&#34;test&#34;, &#34;alternative&#34;])
+    my_pretty_table(rdf)</code></pre>
+</details>
+</dd>
+<dt id="helper.analysis.my_ttest_rel"><code class="name flex">
+<span>def <span class="ident">my_ttest_rel</span></span>(<span>data: pandas.core.frame.DataFrame, xname: str, yname: str, equal_var: bool = True) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>대응표본 t-검정 또는 Mann-Whitney U 검정을 수행하고 결과를 출력한다.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>데이터프레임 객체</dd>
+<dt><strong><code>xname</code></strong> :&ensp;<code>str</code></dt>
+<dd>첫 번째 필드 이름</dd>
+<dt><strong><code>yname</code></strong> :&ensp;<code>str</code></dt>
+<dd>두 번째 필드 이름</dd>
+<dt><strong><code>equal_var</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>등분산성 가정 여부. True인 경우 대응표본 T검정 수행 / False인 경우 Mann-Whitney 검정 수행. Defaults to True.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def my_ttest_rel(data: DataFrame, xname: str, yname: str, equal_var: bool = True) -&gt; None:
+    &#34;&#34;&#34;대응표본 t-검정 또는 Mann-Whitney U 검정을 수행하고 결과를 출력한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        xname (str): 첫 번째 필드 이름
+        yname (str): 두 번째 필드 이름
+        equal_var (bool, optional): 등분산성 가정 여부. True인 경우 대응표본 T검정 수행 / False인 경우 Mann-Whitney 검정 수행. Defaults to True.
+    &#34;&#34;&#34;
+    
+    alternative: list = [&#34;two-sided&#34;, &#34;less&#34;, &#34;greater&#34;]
+    result: list = []
+    fmt: str = &#34;μ({f0}) {0} μ({f1})&#34;
+    
+    for a in alternative:
+        if equal_var:
+            s, p = ttest_rel(data[xname], data[yname], alternative=a)
+            n = &#34;t-test_paired&#34;
+        else:
+            s, p = mannwhitneyu(data[xname], data[yname], alternative=a)
+            n = &#34;Mann-Whitney&#34;
+            
+        # 검정 결과 해석
+        itp = None
+        
+        if a == &#34;two-sided&#34;:
+            itp = fmt.format(&#34;==&#34; if p &gt; 0.05 else &#34;!=&#34;, f0=xname, f1=yname)
+        elif a == &#34;less&#34;:
+            itp = fmt.format(&#34;&gt;=&#34; if p &gt; 0.05 else &#34;&lt;&#34;, f0=xname, f1=yname)
+        else:
+            itp = fmt.format(&#34;&lt;=&#34; if p &gt; 0.05 else &#34;&gt;&#34;, f0=xname, f1=yname)
+            
+        result.append({
+            &#34;test&#34;: n,
+            &#34;alternative&#34;: a,
+            &#34;statistic&#34;: round(s, 3),
+            &#34;p-value&#34;: round(p, 3),
+            &#34;H0&#34;: p &gt; 0.05,
+            &#34;H1&#34;: p &lt;= 0.05,
+            &#34;interpretation&#34;: itp
+        })
+        
+    rdf = DataFrame(result).set_index([&#34;test&#34;, &#34;alternative&#34;])
+    my_pretty_table(rdf)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="helper" href="index.html">helper</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="helper.analysis.my_anova" href="#helper.analysis.my_anova">my_anova</a></code></li>
+<li><code><a title="helper.analysis.my_correlation" href="#helper.analysis.my_correlation">my_correlation</a></code></li>
+<li><code><a title="helper.analysis.my_equal_var_test" href="#helper.analysis.my_equal_var_test">my_equal_var_test</a></code></li>
+<li><code><a title="helper.analysis.my_normal_equal_var_1field" href="#helper.analysis.my_normal_equal_var_1field">my_normal_equal_var_1field</a></code></li>
+<li><code><a title="helper.analysis.my_normal_equal_var_2field" href="#helper.analysis.my_normal_equal_var_2field">my_normal_equal_var_2field</a></code></li>
+<li><code><a title="helper.analysis.my_normal_test" href="#helper.analysis.my_normal_test">my_normal_test</a></code></li>
+<li><code><a title="helper.analysis.my_ttest_1samp" href="#helper.analysis.my_ttest_1samp">my_ttest_1samp</a></code></li>
+<li><code><a title="helper.analysis.my_ttest_ind" href="#helper.analysis.my_ttest_ind">my_ttest_ind</a></code></li>
+<li><code><a title="helper.analysis.my_ttest_rel" href="#helper.analysis.my_ttest_rel">my_ttest_rel</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
