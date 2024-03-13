@@ -80,8 +80,3 @@ from helper.plot import *
 from helper.analysis import *
 from helper.classification import *
 ```
-
-
-## Documentation
-
-[Documentation](https://leekh4232.github.io/hossam-data-helper/hossam)
