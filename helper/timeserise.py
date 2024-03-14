@@ -1,7 +1,8 @@
 import logging
 import numpy as np
 import seaborn as sb
-from pandas import DataFrame, Series
+import datetime as dt
+from pandas import DataFrame, Series, date_range
 from matplotlib import pyplot as plt
 
 from statsmodels.tsa.stattools import adfuller
@@ -632,3 +633,26 @@ def my_prophet_report(
         }
 
         my_pretty_table(DataFrame(result, index=["Prophet"]).T)
+
+
+def get_weekend_df(start: any, end: any = None) -> DataFrame:
+    """주말 데이터 프레임을 생성한다.
+
+    Args:
+        start (any): 시작일
+        end (any, optional): 종료일. Defaults to None.
+
+    Returns:
+        DataFrame: 주말 데이터 프레임
+    """
+    if end is None:
+        end = dt.datetime.now()
+
+    date = date_range(start, end)
+    df = DataFrame({"date": date, "weekend": date.day_name()}).set_index("date")
+
+    df["weekend"] = df["weekend"].apply(
+        lambda x: 1 if x in ["Saturday", "Sunday"] else 0
+    )
+
+    df2 = df[df["weekend"] == 1]
