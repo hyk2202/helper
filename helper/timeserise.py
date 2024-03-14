@@ -1,3 +1,4 @@
+import numpy as np
 import seaborn as sb
 from pandas import DataFrame, Series
 from matplotlib import pyplot as plt
@@ -7,6 +8,12 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from statsmodels.tsa.arima.model import ARIMA
 from pmdarima.arima import auto_arima
+from prophet import Prophet
+
+from sklearn.model_selection import ParameterGrid
+from sklearn.metrics import mean_squared_error
+
+import concurrent.futures as futures
 
 from .util import my_pretty_table
 from .plot import my_lineplot
@@ -404,3 +411,132 @@ def my_arima(
     plt.close()
 
     return model
+
+
+def __prophet_execute(
+    train: DataFrame,
+    test: DataFrame = None,
+    periods: int = 0,
+    freq: str = "D",
+    **params,
+):
+    """Prophet 모델을 생성한다.
+
+    Args:
+        train (DataFrame): 훈련데이터
+        test (DataFrame, optional): 검증데이터. Defaults to None.
+        periods (int, optional): 예측기간. Defaults to 0.
+        freq (str, optional): 예측주기(D,M,Y). Defaults to "D".
+
+    Returns:
+        _type_: _description_
+    """
+    model = Prophet(**params)
+    model.fit(train)
+
+    size = len(test) if test else 0
+
+    if freq not in ["D", "d", "M", "m", "Y", "y"]:
+        freq = "D"
+    else:
+        freq = freq.upper()
+
+    future = model.make_future_dataframe(periods=size + periods, freq=freq)
+    forecast = model.predict(future)
+
+    if test is not None:
+        pred = forecast[["ds", "yhat"]][-len(test) :]
+        score = np.sqrt(mean_squared_error(test["y"].values, pred["yhat"].values))
+    else:
+        pred = forecast[["ds", "yhat"]]
+        score = np.sqrt(mean_squared_error(train["y"].values, pred["yhat"].values))
+
+    return model, score, dict(params), forecast, pred
+
+
+def my_prophet(
+    train: DataFrame,
+    test: DataFrame = None,
+    periods: int = 0,
+    freq: str = "D",
+    report: bool = True,
+    figsize=(10, 5),
+    dpi: int = 100,
+    sort: str = None,
+    **params,
+) -> DataFrame:
+    """Prophet 모델을 생성한다.
+
+    Args:
+        train (DataFrame): 훈련 데이터
+        test (DataFrame): 독립변수에 대한 검증 데이터. Defaults to None.
+        periods (int, optional): 예측기간. Defaults to 0.
+        freq (str, optional): 예측주기(D,M,Y). Defaults to "D".
+        report (bool, optional) : 독립변수 보고를 출력할지 여부. Defaults to True.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        sort (bool, optional): 독립변수 결과 보고 표의 정렬 기준 (v, p)
+        **params (dict, optional): 하이퍼파라미터. Defaults to None.
+    Returns:
+        tuple: best_model, best_params, best_score
+    """
+    # ------------------------------------------------------
+    # 분석모델 생성
+
+    result = []
+    processes = []
+
+    if params:
+        with futures.ThreadPoolExecutor() as executor:
+            params = ParameterGrid(params)
+
+            for p in params:
+                processes.append(
+                    executor.submit(__prophet_execute, train, test, periods, freq, **p)
+                )
+
+            for p in futures.as_completed(processes):
+                m, score, params, forecast, pred = p.result()
+                result.append(
+                    {
+                        "model": m,
+                        "params": params,
+                        "score": score,
+                        "forecast": forecast,
+                        "pred": pred,
+                    }
+                )
+
+    else:
+        m, score, params, forecast, pred = __prophet_execute(train, test, periods, freq)
+        result.append(
+            {
+                "model": m,
+                "params": params,
+                "score": score,
+                "forecast": forecast,
+                "pred": pred,
+            }
+        )
+
+    result_df = DataFrame(result).sort_values("score").reset_index(drop=True)
+    best_model, best_params, best_score, best_forecast, best_pred = result_df.iloc[0]
+
+    print_result = []
+    for i, v in enumerate(result):
+        item = v["params"]
+        item["score"] = v["score"]
+        print_result.append(item)
+
+    my_pretty_table(
+        DataFrame(print_result)
+        .sort_values("score", ascending=True)
+        .reset_index(drop=True)
+    )
+
+    if report:
+        # ------------------------------------------------------
+        # 결과 시각화
+        pass
+
+    return best_model, best_params, best_score, best_forecast, best_pred
