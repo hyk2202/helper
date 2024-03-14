@@ -446,12 +446,12 @@ def __prophet_execute(
     freq = freq.upper()
     if freq not in ["D", "M", "Y"]:
         freq = "D"
-
-    future = model.make_future_dataframe(periods=size + periods, freq=freq)
+    size = size + periods
+    future = model.make_future_dataframe(periods=size, freq=freq)
     forecast = model.predict(future)
 
     if test is not None:
-        pred = forecast[["ds", "yhat"]][-len(test) :]
+        pred = forecast[["ds", "yhat"]][-size:]
         score = np.sqrt(mean_squared_error(test["y"].values, pred["yhat"].values))
     else:
         pred = forecast[["ds", "yhat"]]
