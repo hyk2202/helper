@@ -9,9 +9,10 @@ from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 from statsmodels.tsa.arima.model import ARIMA
 from pmdarima.arima import auto_arima
 from prophet import Prophet
+from prophet.plot import add_changepoints_to_plot
 
 from sklearn.model_selection import ParameterGrid
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 import concurrent.futures as futures
 
@@ -434,7 +435,7 @@ def __prophet_execute(
     model = Prophet(**params)
     model.fit(train)
 
-    size = len(test) if test else 0
+    size = 0 if test is None else len(test)
 
     if freq not in ["D", "d", "M", "m", "Y", "y"]:
         freq = "D"
@@ -535,8 +536,72 @@ def my_prophet(
     )
 
     if report:
-        # ------------------------------------------------------
-        # 결과 시각화
-        pass
+        my_prophet_report(best_model, best_forecast, best_pred, test, figsize, dpi)
 
     return best_model, best_params, best_score, best_forecast, best_pred
+
+
+def my_prophet_report(
+    model: Prophet,
+    forecast: DataFrame,
+    pred: DataFrame,
+    test: DataFrame = None,
+    figsize: tuple = (20, 8),
+    dpi: int = 100,
+) -> DataFrame:
+    """Prophet 모델 결과를 시각화한다.
+
+    Args:
+        model (Prophet): Prophet 모델
+        forecast (DataFrame): 예측 결과
+        pred (DataFrame): 예측 결과
+        test (DataFrame, optional): 검증 데이터. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        sort (bool, optional): 독립변수 결과 보고 표의 정렬 기준 (v, p)
+
+    Returns:
+        DataFrame: 독립변수 결과 보고
+    """
+
+    # ------------------------------------------------------
+    # 결과 시각화
+    fig = model.plot(forecast, figsize=figsize, xlabel="Date", ylabel="Value")
+    fig.set_dpi(dpi)
+    ax = fig.gca()
+    add_changepoints_to_plot(ax, model, forecast)
+
+    if test is not None:
+        sb.lineplot(
+            data=test,
+            x="ds",
+            y="y",
+            color="#ff7f0e",
+            linestyle="--",
+            label="test",
+            ax=ax,
+        )
+
+    plt.show()
+    plt.close()
+
+    fig = model.plot_components(forecast)
+    fig.set_dpi(dpi)
+    ax = fig.gca()
+    plt.show()
+    plt.close()
+
+    # 예측 결과 테이블
+    my_pretty_table(forecast)
+
+    if test is not None:
+        yhat = forecast["yhat"].values[-len(test) :]
+        y = test["y"].values
+
+        result = {
+            "평균절대오차(MAE)": mean_absolute_error(y, yhat),
+            "평균제곱오차(MSE)": mean_squared_error(y, yhat),
+            "평균오차(RMSE)": np.sqrt(mean_squared_error(y, yhat)),
+        }
+
+        my_pretty_table(DataFrame(result, index=["Prophet"]).T)
