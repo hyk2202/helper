@@ -276,7 +276,7 @@ def my_standard_scaler(data: DataFrame, yname: str = None) -> DataFrame:
 def my_train_test_split(
     data: DataFrame,
     yname: str = "y",
-    test_size: float = 0.3,
+    test_size: float = 0.2,
     random_state: int = 123,
     scalling: bool = False,
 ) -> tuple:
