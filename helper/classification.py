@@ -11,6 +11,7 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import GridSearchCV
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from scipy.stats import norm
@@ -20,12 +21,11 @@ from helper.plot import (
     my_learing_curve,
     my_confusion_matrix,
     my_roc_curve,
-    my_pr_curve,
-    my_roc_pr_curve,
 )
 
 
-def my_logistic_classification(
+def my_classification(
+    classname: any,
     x_train: DataFrame,
     y_train: Series,
     x_test: DataFrame = None,
@@ -36,34 +36,39 @@ def my_logistic_classification(
     figsize=(10, 5),
     dpi: int = 100,
     sort: str = None,
-    params: dict = {
-        "penalty": ["l1", "l2", "elasticnet"],
-        "C": [0.001, 0.01, 0.1, 1, 10, 100],
-    },
-) -> LogisticRegression:
-    """로지스틱 회귀분석을 수행하고 결과를 출력한다.
+    **params
+) -> any:
+    """분류분석을 수행하고 결과를 출력한다.
 
     Args:
+        classname (any): 분류분석 추정기 (모델 객체)
         x_train (DataFrame): 독립변수에 대한 훈련 데이터
         y_train (Series): 종속변수에 대한 훈련 데이터
         x_test (DataFrame): 독립변수에 대한 검증 데이터. Defaults to None.
         y_test (Series): 종속변수에 대한 검증 데이터. Defaults to None.
         cv (int, optional): 교차검증 횟수. Defaults to 5.
+        hist (bool, optional): 히스토그램을 출력할지 여부. Defaults to True.
+        roc (bool, optional): ROC Curve를 출력할지 여부. Defaults to True.
+        pr (bool, optional): PR Curve를 출력할지 여부. Defaults to True.
+        multiclass (str, optional): 다항분류일 경우, 다항분류 방법. Defaults to None.
         learning_curve (bool, optional): 학습곡선을 출력할지 여부. Defaults to True.
         report (bool, optional) : 독립변수 보고를 출력할지 여부. Defaults to True.
         figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
         dpi (int, optional): 그래프의 해상도. Defaults to 100.
         sort (bool, optional): 독립변수 결과 보고 표의 정렬 기준 (v, p)
-        params (dict, optional): 하이퍼파라미터. Defaults to {'penalty': ['l1', 'l2', 'elasticnet'], 'C': [0.001, 0.01, 0.1, 1, 10, 100]}.
+        **params (dict, optional): 하이퍼파라미터. Defaults to None.
     Returns:
-        LogisticRegression: 회귀분석 모델
+        any: 분류분석 모델
     """
     # ------------------------------------------------------
     # 분석모델 생성
 
     # 교차검증 설정
     if cv > 0:
-        prototype_estimator = LogisticRegression(max_iter=500, n_jobs=-1)
+        if not params:
+            params = {}
+
+        prototype_estimator = classname(n_jobs=-1)
         grid = GridSearchCV(prototype_estimator, param_grid=params, cv=cv, n_jobs=-1)
         grid.fit(x_train, y_train)
 
@@ -180,7 +185,7 @@ def my_classification_result(
     score_names = []
 
     # 이진분류인지 다항분류인지 구분
-    labels = list(y_train.unique())
+    labels = list(estimator.classes_)
     is_binary = len(labels) == 2
 
     if x_train is not None and y_train is not None:
@@ -574,3 +579,133 @@ def my_classification_multiclass_report(
                 pass
 
         my_pretty_table(result_df)
+
+
+def my_logistic_classification(
+    x_train: DataFrame,
+    y_train: Series,
+    x_test: DataFrame = None,
+    y_test: Series = None,
+    cv: int = 5,
+    hist: bool = True,
+    roc: bool = True,
+    pr: bool = True,
+    multiclass: str = None,
+    learning_curve=True,
+    report: bool = True,
+    figsize=(10, 5),
+    dpi: int = 100,
+    sort: str = None,
+    **params
+) -> LogisticRegression:
+    """로지스틱 회귀분석을 수행하고 결과를 출력한다.
+
+    Args:
+        x_train (DataFrame): 독립변수에 대한 훈련 데이터
+        y_train (Series): 종속변수에 대한 훈련 데이터
+        x_test (DataFrame): 독립변수에 대한 검증 데이터. Defaults to None.
+        y_test (Series): 종속변수에 대한 검증 데이터. Defaults to None.
+        cv (int, optional): 교차검증 횟수. Defaults to 5.
+        hist (bool, optional): 히스토그램을 출력할지 여부. Defaults to True.
+        roc (bool, optional): ROC Curve를 출력할지 여부. Defaults to True.
+        pr (bool, optional): PR Curve를 출력할지 여부. Defaults to True.
+        multiclass (str, optional): 다항분류일 경우, 다항분류 방법. Defaults to None.
+        learning_curve (bool, optional): 학습곡선을 출력할지 여부. Defaults to True.
+        report (bool, optional) : 독립변수 보고를 출력할지 여부. Defaults to True.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        sort (bool, optional): 독립변수 결과 보고 표의 정렬 기준 (v, p)
+        **params (dict, optional): 하이퍼파라미터. Defaults to None.
+    Returns:
+        LogisticRegression: 회귀분석 모델
+    """
+
+    # 교차검증 설정
+    if cv > 0:
+        if not params:
+            params = {
+                "penalty": ["l1", "l2", "elasticnet"],
+                "C": [0.001, 0.01, 0.1, 1, 10, 100],
+                "max_iter": [500],
+            }
+
+    return my_classification(
+        classname=LogisticRegression,
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        cv=cv,
+        hist=hist,
+        roc=roc,
+        pr=pr,
+        multiclass=multiclass,
+        learning_curve=learning_curve,
+        report=report,
+        figsize=figsize,
+        dpi=dpi,
+        sort=sort,
+        **params
+    )
+
+
+def my_knn_classification(
+    x_train: DataFrame,
+    y_train: Series,
+    x_test: DataFrame = None,
+    y_test: Series = None,
+    cv: int = 5,
+    hist: bool = True,
+    roc: bool = True,
+    pr: bool = True,
+    multiclass: str = None,
+    learning_curve=True,
+    figsize=(10, 5),
+    dpi: int = 100,
+    **params
+) -> KNeighborsClassifier:
+    """KNN 분류분석을 수행하고 결과를 출력한다.
+
+    Args:
+        x_train (DataFrame): 독립변수에 대한 훈련 데이터
+        y_train (Series): 종속변수에 대한 훈련 데이터
+        x_test (DataFrame): 독립변수에 대한 검증 데이터. Defaults to None.
+        y_test (Series): 종속변수에 대한 검증 데이터. Defaults to None.
+        cv (int, optional): 교차검증 횟수. Defaults to 5.
+        hist (bool, optional): 히스토그램을 출력할지 여부. Defaults to True.
+        roc (bool, optional): ROC Curve를 출력할지 여부. Defaults to True.
+        pr (bool, optional): PR Curve를 출력할지 여부. Defaults to True.
+        multiclass (str, optional): 다항분류일 경우, 다항분류 방법. Defaults to None.
+        learning_curve (bool, optional): 학습곡선을 출력할지 여부. Defaults to True.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        **params (dict, optional): 하이퍼파라미터. Defaults to None.
+    Returns:
+        KNeighborsClassifier: 분류분석 모델
+    """
+
+    # 교차검증 설정
+    if cv > 0:
+        if not params:
+            params = {
+                "n_neighbors": [3, 5, 7],
+                "weights": ["uniform", "distance"],
+                "metric": ["euclidean", "manhattan"],
+            }
+
+    return my_classification(
+        classname=KNeighborsClassifier,
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        cv=cv,
+        hist=hist,
+        roc=roc,
+        pr=pr,
+        multiclass=multiclass,
+        learning_curve=learning_curve,
+        figsize=figsize,
+        dpi=dpi,
+        **params
+    )

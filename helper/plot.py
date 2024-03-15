@@ -29,6 +29,16 @@ from sklearn.metrics import (
 from sklearn.model_selection import learning_curve
 from sklearn.preprocessing import StandardScaler
 
+import sys
+
+plt.rcParams["font.family"] = (
+    "AppleGothic" if sys.platform == "darwin" else "Malgun Gothic"
+)
+plt.rcParams["font.size"] = 10
+plt.rcParams["figure.figsize"] = (10, 6)
+plt.rcParams["figure.dpi"] = 200
+plt.rcParams["axes.unicode_minus"] = False
+
 
 def my_boxplot(
     df: DataFrame,
@@ -1210,173 +1220,652 @@ def my_confusion_matrix(
     plt.close()
 
 
-def my_roc_curve(
-    y: Series, y_proba: Series, figsize: tuple = (8, 6), dpi=150, callback: any = None
+def my_roc_curve_binary(
+    estimator: any,
+    x: DataFrame,
+    y: Series,
+    hist: bool = True,
+    roc: bool = True,
+    pr: bool = True,
+    figsize: tuple = (6, 5),
+    dpi: int = 100,
+    callback: any = None,
 ) -> None:
-    """ROC곡선을 출력한다.
+    """이진 분류에 대한 ROC와 Precision-Recall 곡선을 출력한다.
 
     Args:
+        estimator (any): 학습모델 객체
+        x (DataFrame): 독립변수
         y (Series): 실제값
-        y_proba (Series): 예측확률
+        hist (bool, optional): 히스토그램 출력 여부. Defaults to True.
+        roc (bool, optional): ROC 곡선 출력 여부. Defaults to True.
+        pr (bool, optional): Precision-Recall 곡선 출력 여부. Defaults to True.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 10).
+        dpi (int, optional): 그래프의 해상도. Defaults to 200.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    """
+    cols = 0
+
+    if hist:
+        cols += 1
+
+    if roc:
+        cols += 1
+
+    if pr:
+        cols += 1
+
+    if cols == 0:
+        return
+
+    fig_index = 0
+
+    figsize_ = (figsize[0] * cols, figsize[1])
+
+    # 히스토그램을 위한 구간
+    bins = [i / 20 for i in range(0, 21)]
+
+    title = "{0} vs {1}".format(estimator.classes_[0], estimator.classes_[1])
+
+    # 예측확률
+    y_proba = estimator.predict_proba(x)[:, 1]
+
+    # 비교 대상을 위한 데이터
+    df_aux = DataFrame({"class": y, "prob": y_proba})
+
+    fig, ax = plt.subplots(1, cols, figsize=figsize_, dpi=dpi)
+
+    # ax[0] : histogram -------------------------
+    if hist:
+        sb.histplot(data=df_aux, x="prob", hue="class", bins=bins, ax=ax[fig_index])
+        ax[fig_index].legend()
+        ax[fig_index].grid()
+        fig_index += 1
+
+    # ROC Curve
+    if roc:
+        fpr, tpr, thresholds = roc_curve(df_aux["class"], df_aux["prob"])
+        sb.lineplot(
+            x=fpr, y=tpr, color="red", linewidth=1, label="ROC Curve", ax=ax[fig_index]
+        )
+        ax[fig_index].fill_between(fpr, tpr, facecolor="blue", alpha=0.1)
+        sb.lineplot(
+            x=[0, 1],
+            y=[0, 1],
+            color="black",
+            linestyle="--",
+            linewidth=0.7,
+            ax=ax[fig_index],
+        )
+        ax[fig_index].set_xlabel("False Positive Rate")
+        ax[fig_index].set_ylabel("True Positive Rate")
+        ax[fig_index].set_xticks(np.round(np.arange(0, 1.1, 0.1), 2))
+        ax[fig_index].set_xlim([-0.01, 1.01])
+        ax[fig_index].set_ylim([-0.01, 1.01])
+        ax[fig_index].text(
+            0.95,
+            0.05,
+            "AUC=%0.3f" % roc_auc_score(df_aux["class"], df_aux["prob"]),
+            fontsize=16,
+            ha="right",
+            va="bottom",
+        )
+        ax[fig_index].legend()
+        ax[fig_index].grid()
+        fig_index += 1
+
+    # Precision-Recall Curve
+    if pr:
+        precision, recall, thresholds = precision_recall_curve(
+            df_aux["class"], df_aux["prob"]
+        )
+        y_mean = y.mean()
+
+        sb.lineplot(
+            x=recall,
+            y=precision,
+            label="Precision / Recall Curve",
+            color="blue",
+            linewidth=1,
+            ax=ax[fig_index],
+        )
+        sb.lineplot(
+            x=[0, 1],
+            y=[y_mean, y_mean],
+            color="black",
+            linewidth=0.7,
+            linestyle="--",
+            ax=ax[fig_index],
+        )
+        ax[fig_index].set_xlabel("Recall")
+        ax[fig_index].set_ylabel("Precision")
+        ax[fig_index].set_xticks(np.round(np.arange(0, 1.1, 0.1), 2))
+        ax[fig_index].set_xlim([-0.01, 1.01])
+        ax[fig_index].set_ylim([y_mean - 0.05, 1.01])
+        ax[fig_index].legend()
+        ax[fig_index].grid()
+        fig_index += 1
+
+    if callback:
+        callback(*ax)
+
+    plt.tight_layout()
+    plt.show()
+    plt.close()
+
+
+def my_roc_curve_multiclass_ovo(
+    estimator: any,
+    x: DataFrame,
+    y: Series,
+    hist: bool = True,
+    roc: bool = True,
+    pr: bool = True,
+    figsize: tuple = (6, 5),
+    dpi: int = 100,
+    callback: any = None,
+) -> None:
+    """다중 분류에 대한 ROC와 Precision-Recall 곡선을 출력한다.
+
+    Args:
+        estimator (any): 학습모델 객체
+        x (DataFrame): 독립변수
+        y (Series): 실제값
+        hist (bool, optional): 히스토그램 출력 여부. Defaults to True.
+        roc (bool, optional): ROC 곡선 출력 여부. Defaults to True.
+        pr (bool, optional): Precision-Recall 곡선 출력 여부. Defaults to True.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 10).
+        dpi (int, optional): 그래프의 해상도. Defaults to 200.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    """
+    cols = 0
+
+    if hist:
+        cols += 1
+
+    if roc:
+        cols += 1
+
+    if pr:
+        cols += 1
+
+    if cols == 0:
+        return
+
+    figsize_ = (figsize[0] * cols, figsize[1])
+
+    # 추정확률
+    y_proba = estimator.predict_proba(x)
+
+    # 히스토그램을 위한 구간
+    bins = [i / 20 for i in range(0, 21)]
+
+    # 각 대조군 별로 auc값을 저장할 리스트
+    auc_list = []
+
+    # 모든 클래스 쌍의 조합 만들기
+    class_combinations = []
+    class_list = list(estimator.classes_)
+    size = len(class_list)
+
+    for i in range(0, size):
+        j = (i + 1) % size
+        comb_item = [class_list[i], class_list[j]]
+        class_combinations.append(comb_item)
+
+        comb_item = [class_list[j], class_list[i]]
+        class_combinations.append(comb_item)
+
+    # 대조군 단위로 반복
+    for i in range(len(class_combinations)):
+        fig_index = 0
+
+        c1, c2 = class_combinations[i]
+        # print(c1, c2)
+        c1_index = class_list.index(c1)
+        title = "{0} vs {1}".format(c1, c2)
+        # print(title)
+
+        # 비교 대상에 대한 데이터
+        df_aux = DataFrame({"class": y, "prob": y_proba[:, c1_index]})
+
+        # 현재 대조군에 맞는 항목만 필터링
+        df_aux = df_aux[(df_aux["class"] == c1) | (df_aux["class"] == c2)]
+
+        # 현재 대조군 데이터 중에서 맞춘 것은 1, 못맞춘 것은 0으로 재설정
+        df_aux["class"] = [1 if y == c1 else 0 for y in df_aux["class"]]
+        df_aux = df_aux.reset_index(drop=True)
+
+        # my_pretty_table(df_aux.head(10))
+
+        # 시각화 시작
+        fig, ax = plt.subplots(1, cols, figsize=figsize_, dpi=dpi)
+        plt.suptitle(title, fontsize=16)
+
+        if cols < 2:
+            ax = [ax]
+
+        # ax[0] : histogram -------------------------
+        if hist:
+            sb.histplot(data=df_aux, x="prob", hue="class", bins=bins, ax=ax[fig_index])
+            ax[fig_index].legend([f"{c1}", f"{c2}"])
+            ax[fig_index].set_xlabel(f"P(x = {c1})")
+            ax[fig_index].grid()
+            fig_index += 1
+
+        # ax[1] : ROC Curve -------------------------
+        if roc:
+            fpr, tpr, _ = roc_curve(df_aux["class"], df_aux["prob"])
+            auc = roc_auc_score(df_aux["class"], df_aux["prob"])
+
+            auc_list.append(auc)
+
+            sb.lineplot(
+                x=fpr,
+                y=tpr,
+                linewidth=1,
+                label="ROC Curve",
+                color="#0066ff",
+                ci=0,
+                ax=ax[fig_index],
+            )
+            sb.lineplot(
+                x=[0, 1],
+                y=[0, 1],
+                linestyle="--",
+                color="#005500",
+                linewidth=0.5,
+                ax=ax[fig_index],
+            )
+            ax[fig_index].set_xlabel("Fase Positive Rate")
+            ax[fig_index].set_ylabel("True Positive Rate")
+            ax[fig_index].set_xticks(np.round(np.arange(0, 1.1, 0.1), 2))
+            ax[fig_index].set_xlim([-0.01, 1.01])
+            ax[fig_index].set_ylim([-0.01, 1.01])
+            ax[fig_index].grid()
+            ax[fig_index].text(
+                0.95, 0.05, "AUC=%0.3f" % auc, fontsize=16, ha="right", va="bottom"
+            )
+            fig_index += 1
+
+        # ax[2] : PR Curve -------------------------
+        if pr:
+            precision, recall, thresholds = precision_recall_curve(
+                df_aux["class"], df_aux["prob"]
+            )
+            y_mean = df_aux["class"].mean()
+
+            sb.lineplot(
+                x=recall,
+                y=precision,
+                label="Precision / Recall Curve",
+                color="blue",
+                linewidth=1,
+                ax=ax[fig_index],
+            )
+            sb.lineplot(
+                x=[0, 1],
+                y=[y_mean, y_mean],
+                color="#005500",
+                linewidth=0.5,
+                linestyle="--",
+                ax=ax[fig_index],
+            )
+            ax[fig_index].set_xlabel("Recall")
+            ax[fig_index].set_ylabel("Precision")
+            ax[fig_index].set_xticks(np.round(np.arange(0, 1.1, 0.1), 2))
+            ax[fig_index].set_xlim([-0.01, 1.01])
+            ax[fig_index].set_ylim([y_mean - 0.05, 1.01])
+            ax[fig_index].legend()
+            ax[fig_index].grid()
+            fig_index += 1
+
+        plt.tight_layout()
+        plt.show()
+        plt.close()
+
+        # break
+
+    if auc_list:
+        print(f"mean roc auc ovo: {sum(auc_list)/len(auc_list):.4f}")
+
+
+def my_roc_curve_multiclass_ovr(
+    estimator: any,
+    x: DataFrame,
+    y: Series,
+    hist: bool = True,
+    roc: bool = True,
+    pr: bool = True,
+    figsize: tuple = (6, 5),
+    dpi: int = 100,
+    callback: any = None,
+) -> None:
+    """다중 분류에 대한 ROC와 Precision-Recall 곡선을 출력한다.
+
+    Args:
+        estimator (any): 학습모델 객체
+        x (DataFrame): 독립변수
+        y (Series): 실제값
+        hist (bool, optional): 히스토그램 출력 여부. Defaults to True.
+        roc (bool, optional): ROC 곡선 출력 여부. Defaults to True.
+        pr (bool, optional): Precision-Recall 곡선 출력 여부. Defaults to True.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 10).
+        dpi (int, optional): 그래프의 해상도. Defaults to 200.
+        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
+    """
+    cols = 0
+
+    if hist:
+        cols += 1
+
+    if roc:
+        cols += 1
+
+    if pr:
+        cols += 1
+
+    if cols == 0:
+        return
+
+    figsize_ = (figsize[0] * cols, figsize[1])
+
+    # 추정확률
+    y_proba = estimator.predict_proba(x)
+
+    # 히스토그램을 위한 구간
+    bins = [i / 20 for i in range(0, 21)]
+
+    # 각 대조군 별로 auc값을 저장할 리스트
+    auc_list = []
+
+    # 모든 클래스
+    class_list = list(estimator.classes_)
+    size = len(class_list)
+
+    # 대조군 단위로 반복
+    for i in range(0, size):
+        fig_index = 0
+
+        c = class_list[i]
+        title = "{0} vs Rest".format(c)
+
+        # 비교 대상에 대한 데이터
+        df_aux = DataFrame({"class": y, "prob": y_proba[:, i]})
+
+        # class값에서 현재 c를 True에 해당하는 1로, 나머지를 False에 해당하는 0으로 변경
+        df_aux["class"] = np.where(df_aux["class"] == c, 1, 0)
+
+        # 인덱스 재설정
+        df_aux = df_aux.reset_index(drop=True)
+
+        # my_pretty_table(df_aux.head(10))
+
+        # 시각화 시작
+        fig, ax = plt.subplots(1, cols, figsize=figsize_, dpi=dpi)
+        plt.suptitle(title, fontsize=16)
+
+        if cols < 2:
+            ax = [ax]
+
+        # ax[0] : histogram -------------------------
+        if hist:
+            sb.histplot(data=df_aux, x="prob", hue="class", bins=bins, ax=ax[fig_index])
+            ax[fig_index].legend([f"{c}", "Rest"])
+            ax[fig_index].set_xlabel(f"P(x = {c})")
+            ax[fig_index].grid()
+            fig_index += 1
+
+        # ax[1] : ROC Curve -------------------------
+        if roc:
+            fpr, tpr, _ = roc_curve(df_aux["class"], df_aux["prob"])
+            auc = roc_auc_score(df_aux["class"], df_aux["prob"])
+
+            auc_list.append(auc)
+
+            sb.lineplot(
+                x=fpr,
+                y=tpr,
+                linewidth=1,
+                label="ROC Curve",
+                color="#0066ff",
+                ci=0,
+                ax=ax[fig_index],
+            )
+            sb.lineplot(
+                x=[0, 1],
+                y=[0, 1],
+                linestyle="--",
+                color="#005500",
+                linewidth=0.5,
+                ax=ax[fig_index],
+            )
+            ax[fig_index].set_xlabel("Fase Positive Rate")
+            ax[fig_index].set_ylabel("True Positive Rate")
+            ax[fig_index].set_xticks(np.round(np.arange(0, 1.1, 0.1), 2))
+            ax[fig_index].set_xlim([-0.01, 1.01])
+            ax[fig_index].set_ylim([-0.01, 1.01])
+            ax[fig_index].grid()
+            ax[fig_index].text(
+                0.95, 0.05, "AUC=%0.3f" % auc, fontsize=16, ha="right", va="bottom"
+            )
+            fig_index += 1
+
+        # ax[2] : PR Curve -------------------------
+        if roc:
+            precision, recall, thresholds = precision_recall_curve(
+                df_aux["class"], df_aux["prob"]
+            )
+            y_mean = df_aux["class"].mean()
+
+            sb.lineplot(
+                x=recall,
+                y=precision,
+                label="Precision / Recall Curve",
+                color="blue",
+                linewidth=1,
+                ax=ax[fig_index],
+            )
+            sb.lineplot(
+                x=[0, 1],
+                y=[y_mean, y_mean],
+                color="#005500",
+                linewidth=0.5,
+                linestyle="--",
+                ax=ax[fig_index],
+            )
+            ax[fig_index].set_xlabel("Recall")
+            ax[fig_index].set_ylabel("Precision")
+            ax[fig_index].set_xticks(np.round(np.arange(0, 1.1, 0.1), 2))
+            ax[fig_index].set_xlim([-0.01, 1.01])
+            ax[fig_index].set_ylim([y_mean - 0.05, 1.01])
+            ax[fig_index].legend()
+            ax[fig_index].grid()
+
+        plt.tight_layout()
+        plt.show()
+        plt.close()
+
+        # break
+
+    if auc_list:
+        print(f"mean roc auc ovo: {sum(auc_list)/len(auc_list):.4f}")
+
+
+def my_roc_curve(
+    estimator: any,
+    x: DataFrame,
+    y: Series,
+    hist: bool = True,
+    roc: bool = True,
+    pr: bool = True,
+    multiclass: str = None,
+    figsize: tuple = (6, 5),
+    dpi: int = 100,
+    callback: any = None,
+) -> None:
+    """ROC와 Precision-Recall 곡선을 출력한다. 이진분류와 다중분류에 대해 모두 대응 가능한 통합 함수이다.
+
+    Args:
+        estimator (any): 학습모델 객체
+        x (DataFrame): 독립변수
+        y (Series): 실제값
+        hist (bool, optional): 히스토그램 출력 여부. Defaults to True.
+        roc (bool, optional): ROC 곡선 출력 여부. Defaults to True.
+        pr (bool, optional): Precision-Recall 곡선 출력 여부. Defaults to True.
+        multiclass (str, optional): 다중분류일 경우 ovo, ovr 중 선택. Defaults to None.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 10).
+        dpi (int, optional): 그래프의 해상도. Defaults to 200.
         callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
     """
     # 두 번째 파라미터가 판정결과가 아닌 1로 판정할 확률값
-    labels = sorted(list(y.unique()))
-    is_binary = len(labels) == 2
+    is_binary = len(estimator.classes_) == 2
+
     if is_binary:
-        fpr, tpr, thresholds = roc_curve(y, y_proba)
+        my_roc_curve_binary(estimator, x, y, hist, roc, pr, figsize, dpi, callback)
     else:
-        fpr, tpr, thresholds = roc_curve(y, y_proba, average="macro")
-
-    plt.figure(figsize=figsize, dpi=dpi)
-    ax = plt.gca()
-    sb.lineplot(x=fpr, y=tpr, color="red", linewidth=1, label="ROC Curve", ax=ax)
-
-    ax.fill_between(fpr, tpr, facecolor="blue", alpha=0.1)
-    sb.lineplot(x=[0, 1], y=[0, 1], color="black", linestyle="--", linewidth=0.7, ax=ax)
-    ax.set_xlabel("Fase Positive Rate")
-    ax.set_ylabel("True Positive Rate")
-    ax.set_xticks(np.round(np.arange(0, 1.1, 0.1), 2))
-    ax.set_xlim(-0.01, 1.01)
-    ax.set_ylim(-0.01, 1.01)
-    ax.text(
-        0.95,
-        0.05,
-        "AUC=%0.3f" % roc_auc_score(y, y_proba),
-        fontsize=16,
-        ha="right",
-        va="bottom",
-    )
-    ax.grid()
-    if callback:
-        callback(ax)
-    # plt.tight_layout()
-    plt.show()
-    plt.close()
+        if multiclass == "ovo":
+            my_roc_curve_multiclass_ovo(
+                estimator, x, y, hist, roc, pr, figsize, dpi, callback
+            )
+        elif multiclass == "ovr":
+            my_roc_curve_multiclass_ovr(
+                estimator, x, y, hist, roc, pr, figsize, dpi, callback
+            )
+        else:
+            my_roc_curve_multiclass_ovo(
+                estimator, x, y, hist, roc, pr, figsize, dpi, callback
+            )
+            my_roc_curve_multiclass_ovr(
+                estimator, x, y, hist, roc, pr, figsize, dpi, callback
+            )
 
 
-def my_pr_curve(
-    y: Series, y_proba: Series, figsize: tuple = (8, 6), dpi=150, callback: any = None
+def my_distribution_by_class(
+    data: DataFrame,
+    xnames: list = None,
+    hue: str = None,
+    type: str = "kde",
+    bins: any = 5,
+    palette: str = None,
+    fill: bool = False,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+    callback: any = None,
 ) -> None:
-    """Precision-Recall 곡선을 출력한다.
+    """클래스별로 독립변수의 분포를 출력한다.
 
     Args:
-        y (Series): 실제값
-        y_proba (Series): 예측확률
-        figsize (tuple, optional): 그래프의 크기. Defaults to (8, 6).
-        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        data (DataFrame): 독립변수
+        xnames (list, optional): 독립변수의 이름. Defaults to None.
+        hue (str, optional): 클래스별로 구분할 변수. Defaults to None.
+        type (str, optional): 그래프 종류 (kde, hist, histkde). Defaults to "kde".
+        bins (any, optional): 히스토그램의 구간 수. Defaults to 5.
+        palette (str, optional): 칼라맵. Defaults to None.
+        fill (bool, optional): kde 그래프의 채우기 여부. Defaults to False.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
         callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
     """
+    if xnames == None:
+        xnames = data.columns
 
-    labels = sorted(list(y.unique()))
-    is_binary = len(labels) == 2
+    for i, v in enumerate(xnames):
+        # 종속변수이거나 숫자형이 아닌 경우는 제외
+        if v == hue or data[v].dtype not in [
+            "int",
+            "int32",
+            "int64",
+            "float",
+            "float32",
+            "float64",
+        ]:
+            continue
 
-    precision, recall, thresholds = precision_recall_curve(
-        y_true=y, probas_pred=y_proba
-    )
-    y_test_mean = y.mean()
+        if type == "kde":
+            my_kdeplot(
+                data,
+                v,
+                hue=hue,
+                palette=palette,
+                fill=fill,
+                figsize=figsize,
+                dpi=dpi,
+                callback=callback,
+            )
+        elif type == "hist":
+            my_histplot(
+                data,
+                v,
+                hue=hue,
+                bins=bins,
+                kde=False,
+                palette=palette,
+                figsize=figsize,
+                dpi=dpi,
+                callback=callback,
+            )
+        elif type == "histkde":
+            my_histplot(
+                data,
+                v,
+                hue=hue,
+                bins=bins,
+                kde=True,
+                palette=palette,
+                figsize=figsize,
+                dpi=dpi,
+                callback=callback,
+            )
 
-    plt.figure(figsize=figsize, dpi=dpi)
-    ax = plt.gca()
-    sb.lineplot(
-        x=recall,
-        y=precision,
-        label="Precision / Recall Curve",
-        color="blue",
-        linewidth=1,
-        ax=ax,
-    )
-    sb.lineplot(
-        x=[0, 1],
-        y=[y_test_mean, y_test_mean],
-        color="black",
-        linewidth=0.7,
-        linestyle="--",
-        ax=ax,
-    )
-    ax.set_xlabel("Recall")
-    ax.set_ylabel("Precision")
-    ax.set_xticks(np.round(np.arange(0, 1.1, 0.1), 2))
-    ax.set_xlim(-0.01, 1.01)
-    ax.set_ylim(y_test_mean - 0.05, 1.01)
-    ax.grid()
-    # plt.tight_layout()
-    if callback:
-        callback(ax)
-    plt.show()
-    plt.close()
 
-
-def my_roc_pr_curve(
-    y: Series, y_proba: Series, figsize: tuple = (16, 6), dpi=150, callback: any = None
+def my_scatter_by_class(
+    data: DataFrame,
+    group: list = None,
+    hue: str = None,
+    palette: str = None,
+    outline: bool = False,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+    callback: any = None,
 ) -> None:
-    """ROC와 Precision-Recall 곡선을 출력한다.
+    """클래스별로 독립변수의 산점도를 출력한다.
 
     Args:
-        y (Series): 실제값
-        y_proba (Series): 예측확률
-        figsize (tuple, optional): 그래프의 크기. Defaults to (16, 6).
-        dpi (int, optional): 그래프의 해상도. Defaults to 150.
+        data (DataFrame): 독립변수
+        group (list, optional): 독립변수의 조합. Defaults to None.
+        hue (str, optional): 클래스별로 구분할 변수. Defaults to None.
+        palette (str, optional): 칼라맵. Defaults to None.
+        outline (bool, optional): 테두리 여부. Defaults to False.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
         callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
     """
-    fig, ax = plt.subplots(1, 2, figsize=figsize, dpi=dpi)
+    if group == None:
+        group = []
 
-    # ROC Curve
-    fpr, tpr, thresholds = roc_curve(y, y_proba)
-    sb.lineplot(x=fpr, y=tpr, color="red", linewidth=1, label="ROC Curve", ax=ax[0])
-    ax[0].fill_between(fpr, tpr, facecolor="blue", alpha=0.1)
-    sb.lineplot(
-        x=[0, 1], y=[0, 1], color="black", linestyle="--", linewidth=0.7, ax=ax[0]
-    )
-    ax[0].set_xlabel("False Positive Rate")
-    ax[0].set_ylabel("True Positive Rate")
-    ax[0].set_xticks(np.round(np.arange(0, 1.1, 0.1), 2))
-    ax[0].set_xlim([-0.01, 1.01])
-    ax[0].set_ylim([-0.01, 1.01])
-    ax[0].text(
-        0.95,
-        0.05,
-        "AUC=%0.3f" % roc_auc_score(y, y_proba),
-        fontsize=16,
-        ha="right",
-        va="bottom",
-    )
-    ax[0].legend()
-    ax[0].grid()
+        xnames = data.columns
 
-    # Precision-Recall Curve
-    precision, recall, thresholds = precision_recall_curve(y, y_proba)
-    y_mean = y.mean()
+        for i, v in enumerate(xnames):
+            if v == hue or data[v].dtype not in [
+                "int",
+                "int32",
+                "int64",
+                "float",
+                "float32",
+                "float64",
+            ]:
+                continue
 
-    sb.lineplot(
-        x=recall,
-        y=precision,
-        label="Precision / Recall Curve",
-        color="blue",
-        linewidth=1,
-        ax=ax[1],
-    )
-    sb.lineplot(
-        x=[0, 1],
-        y=[y_mean, y_mean],
-        color="black",
-        linewidth=0.7,
-        linestyle="--",
-        ax=ax[1],
-    )
-    ax[1].set_xlabel("Recall")
-    ax[1].set_ylabel("Precision")
-    ax[1].set_xticks(np.round(np.arange(0, 1.1, 0.1), 2))
-    ax[1].set_xlim([-0.01, 1.01])
-    ax[1].set_ylim([y_mean - 0.05, 1.01])
-    ax[1].legend()
-    ax[1].grid()
+            j = (i + 1) % len(xnames)
+            group.append([v, xnames[j]])
 
-    # plt.tight_layout()
-    if callback:
-        callback(ax[0], ax[1])
-    plt.show()
-    plt.close()
+    if outline:
+        for i, v in enumerate(group):
+            my_convex_hull(data, v[0], v[1], hue, palette, figsize, dpi, callback)
+    else:
+        for i, v in enumerate(group):
+            my_scatterplot(data, v[0], v[1], hue, palette, figsize, dpi, callback)
 
 
 def my_distribution_by_class(
