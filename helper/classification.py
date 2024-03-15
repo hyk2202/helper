@@ -31,8 +31,12 @@ def my_classification(
     x_test: DataFrame = None,
     y_test: Series = None,
     cv: int = 5,
+    hist: bool = True,
+    roc: bool = True,
+    pr: bool = True,
+    multiclass: str = None,
     learning_curve=True,
-    report: bool = True,
+    report: bool = False,
     figsize=(10, 5),
     dpi: int = 100,
     sort: str = None,
@@ -418,7 +422,7 @@ def my_classification_report(
 
 
 def my_classification_binary_report(
-    estimator: any, x: DataFrame = None, y: Series = None
+    estimator: any, x: DataFrame = None, y: Series = None, sort: str = None
 ) -> None:
     """이항로지스틱 회귀분석 결과를 출력한다.
 
