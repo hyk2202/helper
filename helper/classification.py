@@ -14,14 +14,14 @@ from sklearn.metrics import (
 )
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import GridSearchCV
+from sklearn.svm import LinearSVC, SVC
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 
 from scipy.stats import norm
 
 from .util import my_pretty_table
 from .plot import my_learing_curve, my_confusion_matrix, my_roc_curve
-
 
 
 def __my_classification(
@@ -73,26 +73,53 @@ def __my_classification(
         if not params:
             params = {}
 
-        prototype_estimator = classname(n_jobs=-1)
-        grid = GridSearchCV(prototype_estimator, param_grid=params, cv=cv, n_jobs=-1)
+        if hasattr(classname, "n_jobs"):
+            prototype_estimator = classname(n_jobs=-1)
+            # grid = GridSearchCV(
+            #     prototype_estimator, param_grid=params, cv=cv, n_jobs=-1
+            # )
+            grid = RandomizedSearchCV(
+                prototype_estimator,
+                param_distributions=params,
+                cv=cv,
+                n_jobs=-1,
+                n_iter=500,
+                verbose=1,
+            )
+        else:
+            print("n_jobs를 허용하지 않음")
+            prototype_estimator = classname()
+            # grid = GridSearchCV(prototype_estimator, param_grid=params, cv=cv)
+            grid = RandomizedSearchCV(
+                prototype_estimator,
+                param_distributions=params,
+                cv=cv,
+                n_iter=500,
+                verbose=1,
+            )
+
         grid.fit(x_train, y_train)
 
         result_df = DataFrame(grid.cv_results_["params"])
         result_df["mean_test_score"] = grid.cv_results_["mean_test_score"]
 
         if is_print:
-            print("[교차검증]")
+            print("[교차검증 TOP5]")
             my_pretty_table(
-                result_df.dropna(subset=["mean_test_score"]).sort_values(
-                    by="mean_test_score", ascending=False
-                )
+                result_df.dropna(subset=["mean_test_score"])
+                .sort_values(by="mean_test_score", ascending=False)
+                .head()
             )
             print("")
 
         estimator = grid.best_estimator_
         estimator.best_params = grid.best_params_
     else:
-        estimator = LogisticRegression(max_iter=500, n_jobs=-1)
+        if hasattr(classname, "n_jobs"):
+            estimator = classname(n_jobs=-1, **params)
+        else:
+            estimator = classname(**params)
+
         estimator.fit(x_train, y_train)
 
     # ------------------------------------------------------
@@ -102,19 +129,23 @@ def __my_classification(
     y_pred = (
         estimator.predict(x_test) if x_test is not None else estimator.predict(x_train)
     )
-    y_pred_prob = (
-        estimator.predict_proba(x_test)
-        if x_test is not None
-        else estimator.predict_proba(x_train)
-    )
+
+    if hasattr(estimator, "predict_proba"):
+        y_pred_prob = (
+            estimator.predict_proba(x_test)
+            if x_test is not None
+            else estimator.predict_proba(x_train)
+        )
 
     # 도출된 결과를 모델 객체에 포함시킴
     estimator.x = x_test if x_test is not None else x_train
     estimator.y = y_test if y_test is not None else y_train
     estimator.y_pred = y_pred if y_test is not None else estimator.predict(x_train)
-    estimator.y_pred_proba = (
-        y_pred_prob if y_test is not None else estimator.predict_proba(x_train)
-    )
+
+    if hasattr(estimator, "predict_proba"):
+        estimator.y_pred_proba = (
+            y_pred_prob if y_test is not None else estimator.predict_proba(x_train)
+        )
 
     # ------------------------------------------------------
     # 성능평가
@@ -193,6 +224,7 @@ def my_classification_result(
         cv (int, optional): 교차검증 횟수. Defaults to 10.
         figsize (tuple, optional): 그래프의 크기. Defaults to (12, 5).
         dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        is_print (bool, optional): 출력 여부. Defaults to True.
     """
 
     # ------------------------------------------------------
@@ -208,6 +240,7 @@ def my_classification_result(
     if x_train is not None and y_train is not None:
         # 추정치
         y_train_pred = estimator.predict(x_train)
+
         if hasattr(estimator, "predict_proba"):
             y_train_pred_proba = estimator.predict_proba(x_train)
             y_train_pred_proba_1 = y_train_pred_proba[:, 1]
@@ -226,13 +259,12 @@ def my_classification_result(
         # 혼동행렬
         y_train_conf_mat = confusion_matrix(y_train, y_train_pred)
 
+        # 성능평가
+        # 의사결정계수, 위양성율, 특이성, AUC는 다항로지스틱에서는 사용 불가
+        # 나머지 항목들은 코드 변경 예정
         if is_binary:
-            # TN,FP,FN,TP --> 다항로지스틱에서는 사용 X
             ((TN, FP), (FN, TP)) = y_train_conf_mat
 
-            # 성능평가
-            # 의사결정계수, 위양성율, 특이성, AUC는 다항로지스틱에서는 사용 불가
-            # 나머지 항목들은 코드 변경 예정
             result = {
                 "의사결정계수(Pseudo R2)": y_train_pseudo_r2,
                 "정확도(Accuracy)": accuracy_score(y_train, y_train_pred),
@@ -242,6 +274,7 @@ def my_classification_result(
                 "특이성(TNR)": 1 - (FP / (TN + FP)),
                 "F1 Score": f1_score(y_train, y_train_pred),
             }
+
             if hasattr(estimator, "predict_proba"):
                 result["AUC"] = roc_auc_score(y_train, y_train_pred_proba_1)
         else:
@@ -250,9 +283,10 @@ def my_classification_result(
                 "정밀도(Precision)": precision_score(
                     y_train, y_train_pred, average="macro"
                 ),
-                "재현율(Recall)": recall_score(y_train, y_train_pred, average="macro"),
-                "F1 Score": f1_score(y_train, y_train_pred, average="macro"),}
-                
+                "재현율(Recall)": recall_score(y_train, y_train_pred, average="micro"),
+                "F1 Score": f1_score(y_train, y_train_pred, average="macro"),
+            }
+
             if hasattr(estimator, "predict_proba"):
                 if multiclass == "ovo" or multiclass == None:
                     result["AUC(ovo)"] = roc_auc_score(
@@ -263,15 +297,18 @@ def my_classification_result(
                     result["AUC(ovr)"] = roc_auc_score(
                         y_train, y_train_pred_proba, average="macro", multi_class="ovr"
                     )
+
         scores.append(result)
         score_names.append("훈련데이터")
 
     if x_test is not None and y_test is not None:
         # 추정치
         y_test_pred = estimator.predict(x_test)
+
         if hasattr(estimator, "predict_proba"):
             y_test_pred_proba = estimator.predict_proba(x_test)
             y_test_pred_proba_1 = y_test_pred_proba[:, 1]
+
         # 의사결정계수
         y_test_pseudo_r2 = 0
 
@@ -298,9 +335,9 @@ def my_classification_result(
                 "특이성(TNR)": 1 - (FP / (TN + FP)),
                 "F1 Score": f1_score(y_test, y_test_pred),
             }
+
             if hasattr(estimator, "predict_proba"):
                 result["AUC"] = roc_auc_score(y_test, y_test_pred_proba_1)
-
         else:
             result = {
                 "정확도(Accuracy)": accuracy_score(y_test, y_test_pred),
@@ -325,8 +362,8 @@ def my_classification_result(
         scores.append(result)
         score_names.append("검증데이터")
 
+    # 각 항목의 설명 추가
     if is_binary:
-        # 각 항목의 설명 추가
         result = {
             "의사결정계수(Pseudo R2)": "로지스틱회귀의 성능 측정 지표로, 1에 가까울수록 좋은 모델",
             "정확도(Accuracy)": "예측 결과(TN,FP,TP,TN)가 실제 결과(TP,TN)와 일치하는 정도",
@@ -336,7 +373,7 @@ def my_classification_result(
             "특이성(TNR)": "실제 음성(FP,TN) 중 음성(TN)으로 정확히 예측한 비율",
             "F1 Score": "정밀도와 재현율의 조화평균",
         }
-        
+
         if hasattr(estimator, "predict_proba"):
             result["AUC"] = "ROC Curve의 면적으로, 1에 가까울수록 좋은 모델"
     else:
@@ -346,6 +383,7 @@ def my_classification_result(
             "재현율(Recall)": "실제 양성(TP,FN) 중 양성(TP)으로 예측한 비율",
             "F1 Score": "정밀도와 재현율의 조화평균",
         }
+
         if hasattr(estimator, "predict_proba"):
             if multiclass == "ovo" or multiclass == None:
                 result["AUC(ovo)"] = "One vs One에 대한 AUC로, 1에 가까울수록 좋은 모델"
@@ -354,14 +392,18 @@ def my_classification_result(
                 result["AUC(ovr)"] = (
                     "One vs Rest에 대한 AUC로, 1에 가까울수록 좋은 모델"
                 )
+
     scores.append(result)
     score_names.append("설명")
+
     if is_print:
         print("[분류분석 성능평가]")
         result_df = DataFrame(scores, index=score_names)
+
         if estimator.__class__.__name__ != "LogisticRegression":
             if "의사결정계수(Pseudo R2)" in result_df.columns:
                 result_df.drop(columns=["의사결정계수(Pseudo R2)"], inplace=True)
+
         my_pretty_table(result_df.T)
 
     # 결과값을 모델 객체에 포함시킴
@@ -383,28 +425,29 @@ def my_classification_result(
         if hasattr(estimator, "predict_proba"):
             print("\n[Roc Curve]")
 
-        if x_test is None or y_test is None:
-            my_roc_curve(
-                estimator,
-                x_train,
-                y_train,
-                hist=hist,
-                roc=roc,
-                pr=pr,
-                multiclass=multiclass,
-                dpi=dpi,
-            )
-        else:
-            my_roc_curve(
-                estimator,
-                x_test,
-                y_test,
-                hist=hist,
-                roc=roc,
-                pr=pr,
-                multiclass=multiclass,
-                dpi=dpi,
-            )
+            if x_test is None or y_test is None:
+                my_roc_curve(
+                    estimator,
+                    x_train,
+                    y_train,
+                    hist=hist,
+                    roc=roc,
+                    pr=pr,
+                    multiclass=multiclass,
+                    dpi=dpi,
+                )
+            else:
+                my_roc_curve(
+                    estimator,
+                    x_test,
+                    y_test,
+                    hist=hist,
+                    roc=roc,
+                    pr=pr,
+                    multiclass=multiclass,
+                    dpi=dpi,
+                )
+
         # 학습곡선
         if learning_curve:
             print("\n[학습곡선]")
@@ -497,8 +540,9 @@ def my_classification_binary_report(
 
     # 표준오차
     for i in range(n):
-        ans += (
-            np.dot(np.transpose(x_full[i, :]), x_full[i, :])
+        ans = (
+            ans
+            + np.dot(np.transpose(x_full[i, :]), x_full[i, :])
             * y_pred_proba[i, 1]
             * y_pred_proba[i, 0]
         )
@@ -537,7 +581,11 @@ def my_classification_binary_report(
         }
     )
 
-    result_df.sort_values("VIF", ascending=False, inplace=True)
+    if sort:
+        if sort.upper() == "V":
+            result_df.sort_values("VIF", inplace=True)
+        elif sort.upper() == "P":
+            result_df.sort_values("유의확률", inplace=True)
 
     my_pretty_table(result_df)
 
@@ -641,7 +689,7 @@ def my_logistic_classification(
     pr: bool = True,
     multiclass: str = None,
     learning_curve=True,
-    report: bool = True,
+    report: bool = False,
     figsize=(10, 5),
     dpi: int = 100,
     sort: str = None,
@@ -665,6 +713,7 @@ def my_logistic_classification(
         figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
         dpi (int, optional): 그래프의 해상도. Defaults to 100.
         sort (bool, optional): 독립변수 결과 보고 표의 정렬 기준 (v, p)
+        is_print (bool, optional): 출력 여부. Defaults to True.
         **params (dict, optional): 하이퍼파라미터. Defaults to None.
     Returns:
         LogisticRegression: 회귀분석 모델
@@ -695,8 +744,8 @@ def my_logistic_classification(
         figsize=figsize,
         dpi=dpi,
         sort=sort,
-        is_print = is_print,
-        **params
+        is_print=is_print,
+        **params,
     )
 
 
@@ -731,9 +780,10 @@ def my_knn_classification(
         learning_curve (bool, optional): 학습곡선을 출력할지 여부. Defaults to True.
         figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
         dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        is_print (bool, optional): 출력 여부. Defaults to True.
         **params (dict, optional): 하이퍼파라미터. Defaults to None.
     Returns:
-        KNeighborsClassifier: 분류분석 모델
+        KNeighborsClassifier
     """
 
     # 교차검증 설정
@@ -759,9 +809,131 @@ def my_knn_classification(
         learning_curve=learning_curve,
         figsize=figsize,
         dpi=dpi,
-        is_print = is_print,
-        **params
+        is_print=is_print,
+        **params,
     )
+
+
+def my_linear_svc_classification(
+    x_train: DataFrame,
+    y_train: Series,
+    x_test: DataFrame = None,
+    y_test: Series = None,
+    cv: int = 5,
+    learning_curve=True,
+    figsize=(10, 5),
+    dpi: int = 100,
+    is_print: bool = True,
+    **params
+) -> LinearSVC:
+    """선형 SVM 분류분석을 수행하고 결과를 출력한다.
+
+    Args:
+        x_train (DataFrame): 독립변수에 대한 훈련 데이터
+        y_train (Series): 종속변수에 대한 훈련 데이터
+        x_test (DataFrame): 독립변수에 대한 검증 데이터. Defaults to None.
+        y_test (Series): 종속변수에 대한 검증 데이터. Defaults to None.
+        cv (int, optional): 교차검증 횟수. Defaults to 5.
+        learning_curve (bool, optional): 학습곡선을 출력할지 여부. Defaults to True.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        is_print (bool, optional): 출력 여부. Defaults to True.
+        **params (dict, optional): 하이퍼파라미터. Defaults to None.
+    Returns:
+        LinearSVC
+    """
+
+    # 교차검증 설정
+    if cv > 0:
+        if not params:
+            params = {
+                "penalty": ["l1", "l2"],
+                "loss": ["squared_hinge", "hinge"],
+                "C": [0.01, 0.1, 1, 10],
+                "max_iter": [1000],
+                "dual": [True, False],
+                "random_state": [1234],
+            }
+
+    return __my_classification(
+        classname=LinearSVC,
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        cv=cv,
+        learning_curve=learning_curve,
+        figsize=figsize,
+        dpi=dpi,
+        is_print=is_print,
+        **params,
+    )
+
+
+def my_svc_classification(
+    x_train: DataFrame,
+    y_train: Series,
+    x_test: DataFrame = None,
+    y_test: Series = None,
+    cv: int = 5,
+    # hist: bool = True,
+    # roc: bool = True,
+    # pr: bool = True,
+    # multiclass: str = None,
+    learning_curve=True,
+    figsize=(10, 5),
+    dpi: int = 100,
+    is_print: bool = True,
+    **params
+) -> SVC:
+    """SVC 분류분석을 수행하고 결과를 출력한다.
+
+    Args:
+        x_train (DataFrame): 독립변수에 대한 훈련 데이터
+        y_train (Series): 종속변수에 대한 훈련 데이터
+        x_test (DataFrame): 독립변수에 대한 검증 데이터. Defaults to None.
+        y_test (Series): 종속변수에 대한 검증 데이터. Defaults to None.
+        cv (int, optional): 교차검증 횟수. Defaults to 5.
+        learning_curve (bool, optional): 학습곡선을 출력할지 여부. Defaults to True.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        is_print (bool, optional): 출력 여부. Defaults to True.
+        **params (dict, optional): 하이퍼파라미터. Defaults to None.
+    Returns:
+        SVC
+    """
+
+    # 교차검증 설정
+    if cv > 0:
+        if not params:
+            params = {
+                "C": [0.1, 1, 10],
+                "kernel": ["rbf", "linear", "poly", "sigmoid"],
+                "degree": [2, 3, 4, 5],
+                "gamma": ["scale", "auto"],
+                "coef0": [0.01, 0.1, 1, 10],
+                "shrinking": [True, False],
+                # "probability": [True],  # AUC 값 확인을 위해서는 True로 설정
+            }
+
+    return __my_classification(
+        classname=SVC,
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        cv=cv,
+        # hist=hist,
+        # roc=roc,
+        # pr=pr,
+        # multiclass=multiclass,
+        learning_curve=learning_curve,
+        figsize=figsize,
+        dpi=dpi,
+        is_print=is_print,
+        **params,
+    )
+
 
 def my_classification(
     x_train: DataFrame,
@@ -806,7 +978,7 @@ def my_classification(
                 sort=sort,
                 is_print=False,
                 **params,
-)
+            )
         )
 
         processes.append(
@@ -821,6 +993,38 @@ def my_classification(
                 roc=roc,
                 pr=pr,
                 multiclass=multiclass,
+                learning_curve=learning_curve,
+                figsize=figsize,
+                dpi=dpi,
+                is_print=False,
+                **params,
+            )
+        )
+
+        processes.append(
+            executor.submit(
+                my_linear_svc_classification,
+                x_train=x_train,
+                y_train=y_train,
+                x_test=x_test,
+                y_test=y_test,
+                cv=cv,
+                learning_curve=learning_curve,
+                figsize=figsize,
+                dpi=dpi,
+                is_print=False,
+                **params,
+            )
+        )
+
+        processes.append(
+            executor.submit(
+                my_svc_classification,
+                x_train=x_train,
+                y_train=y_train,
+                x_test=x_test,
+                y_test=y_test,
+                cv=cv,
                 learning_curve=learning_curve,
                 figsize=figsize,
                 dpi=dpi,
