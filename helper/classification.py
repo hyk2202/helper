@@ -23,6 +23,7 @@ from .util import my_pretty_table
 from .plot import my_learing_curve, my_confusion_matrix, my_roc_curve
 
 
+
 def __my_classification(
     classname: any,
     x_train: DataFrame,
@@ -250,9 +251,8 @@ def my_classification_result(
                     y_train, y_train_pred, average="macro"
                 ),
                 "재현율(Recall)": recall_score(y_train, y_train_pred, average="macro"),
-                "F1 Score": f1_score(y_train, y_train_pred, average="macro"),
-            }
-
+                "F1 Score": f1_score(y_train, y_train_pred, average="macro"),}
+                
             if hasattr(estimator, "predict_proba"):
                 if multiclass == "ovo" or multiclass == None:
                     result["AUC(ovo)"] = roc_auc_score(
@@ -336,7 +336,7 @@ def my_classification_result(
             "특이성(TNR)": "실제 음성(FP,TN) 중 음성(TN)으로 정확히 예측한 비율",
             "F1 Score": "정밀도와 재현율의 조화평균",
         }
-
+        
         if hasattr(estimator, "predict_proba"):
             result["AUC"] = "ROC Curve의 면적으로, 1에 가까울수록 좋은 모델"
     else:
@@ -695,7 +695,8 @@ def my_logistic_classification(
         figsize=figsize,
         dpi=dpi,
         sort=sort,
-        is_print=is_print**params,
+        is_print = is_print,
+        **params
     )
 
 
@@ -758,9 +759,9 @@ def my_knn_classification(
         learning_curve=learning_curve,
         figsize=figsize,
         dpi=dpi,
-        is_print=is_print**params,
+        is_print = is_print,
+        **params
     )
-
 
 def my_classification(
     x_train: DataFrame,
@@ -805,7 +806,7 @@ def my_classification(
                 sort=sort,
                 is_print=False,
                 **params,
-            )
+)
         )
 
         processes.append(
