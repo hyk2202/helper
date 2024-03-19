@@ -89,7 +89,6 @@ def my_diff(
 
     return df
 
-
 def my_rolling(
     data: Series,
     window: int,
@@ -128,7 +127,6 @@ def my_rolling(
 
     return rolling
 
-
 def my_ewm(
     data: Series, span: int, plot: bool = True, figsize: tuple = (10, 5), dpi: int = 100
 ) -> Series:
@@ -163,7 +161,6 @@ def my_ewm(
         )
 
     return ewm
-
 
 def my_seasonal_decompose(
     data: Series,
@@ -215,7 +212,6 @@ def my_seasonal_decompose(
 
     return sd_df
 
-
 def my_timeseries_split(data: DataFrame, test_size: float = 0.2) -> tuple:
     """시계열 데이터를 학습 데이터와 테스트 데이터로 분할한다.
 
@@ -235,7 +231,6 @@ def my_timeseries_split(data: DataFrame, test_size: float = 0.2) -> tuple:
     test = data[int(train_size * len(data)) :]
 
     return (train, test)
-
 
 def my_acf_plot(
     data: Series, figsize: tuple = (10, 5), dpi: int = 100, callback: any = None
@@ -260,7 +255,6 @@ def my_acf_plot(
     plt.show()
     plt.close()
 
-
 def my_pacf_plot(
     data: Series, figsize: tuple = (10, 5), dpi: int = 100, callback: any = None
 ):
@@ -283,7 +277,6 @@ def my_pacf_plot(
 
     plt.show()
     plt.close()
-
 
 def my_acf_pacf_plot(
     data: Series, figsize: tuple = (10, 5), dpi: int = 100, callback: any = None
@@ -309,7 +302,6 @@ def my_acf_pacf_plot(
 
     plt.show()
     plt.close()
-
 
 def my_arima(
     train: Series,
@@ -415,7 +407,6 @@ def my_arima(
 
     return model
 
-
 def __prophet_execute(
     train: DataFrame,
     test: DataFrame = None,
@@ -444,21 +435,20 @@ def __prophet_execute(
 
     size = 0 if test is None else len(test)
     freq = freq.upper()
-    if freq not in ["D", "M", "Y"]:
-        freq = "D"
+    if freq not in ['D','M','Y']:
+        freq = 'D'
     size = size + periods
-    future = model.make_future_dataframe(periods=size, freq=freq)
+    future = model.make_future_dataframe(periods=size , freq=freq)
     forecast = model.predict(future)
 
     if test is not None:
-        pred = forecast[["ds", "yhat"]][-size:]
+        pred = forecast[["ds", "yhat"]][-size :]
         score = np.sqrt(mean_squared_error(test["y"].values, pred["yhat"].values))
     else:
         pred = forecast[["ds", "yhat"]]
         score = np.sqrt(mean_squared_error(train["y"].values, pred["yhat"].values))
 
     return model, score, dict(params), forecast, pred
-
 
 def my_prophet(
     train: DataFrame,
@@ -504,17 +494,7 @@ def my_prophet(
             params = ParameterGrid(params)
 
             for p in params:
-                processes.append(
-                    executor.submit(
-                        __prophet_execute,
-                        train=train,
-                        test=test,
-                        periods=periods,
-                        freq=freq,
-                        callback=callback,
-                        **p,
-                    )
-                )
+                processes.append(executor.submit(__prophet_execute, train=train, test=test, periods=periods, freq=freq, callback=callback, **p,))
 
             for p in futures.as_completed(processes):
                 m, score, params, forecast, pred = p.result()
@@ -529,9 +509,7 @@ def my_prophet(
                 )
 
     else:
-        m, score, params, forecast, pred = __prophet_execute(
-            train=train, test=test, periods=periods, freq=freq, callback=callback, **p
-        )
+        m, score, params, forecast, pred = __prophet_execute(train=train, test=test, periods=periods, freq=freq, callback=callback, **p)
         result.append(
             {
                 "model": m,
@@ -561,9 +539,8 @@ def my_prophet(
         my_prophet_report(
             best_model, best_forecast, best_pred, test, print_forecast, figsize, dpi
         )
-
+        
     return best_model, best_params, best_score, best_forecast, best_pred
-
 
 def my_prophet_report(
     model: Prophet,
@@ -614,13 +591,12 @@ def my_prophet_report(
     fig = model.plot_components(forecast)
     fig.set_dpi(dpi)
     ax = fig.gca()
-
+    
     plt.show()
     plt.close()
 
     # 예측 결과 테이블
-    if print_forecast:
-        my_pretty_table(forecast)
+    if print_forecast: my_pretty_table(forecast)
 
     if test is not None:
         yhat = forecast["yhat"].values[-len(test) :]

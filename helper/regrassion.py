@@ -86,11 +86,11 @@ def my_auto_linear_regrassion(df:DataFrame, yname:str, cv:int=5, learning_curve:
     ts_b = params / se_b                # t값
 
     # 각 독립수에 대한 pvalue
-    p_values = [2*(1-t.cdf(np.abs(i),(len(design_x)-len(design_x.iloc[0])))) for i in ts_b]
+    p_values = [2*(1-t.cdf(np.abs(i),(len(design_x)-len(design_x.iloc[0])))) for i in set(ts_b)]
 
     # VIF
     if len(x.columns) > 1:
-        vif = [variance_inflation_factor(x, list(x.columns).index(v)) for i, v in enumerate(x.columns)]
+        vif = [variance_inflation_factor(x, list(x.columns).index(v)) for  v in set(x.columns)]
     else:
         vif = 0
 
@@ -228,11 +228,11 @@ def my_auto_linear_regrassion(df:DataFrame, yname:str, cv:int=5, learning_curve:
     ts_b = params / se_b                # t값
 
     # 각 독립수에 대한 pvalue
-    p_values = [2*(1-t.cdf(np.abs(i),(len(design_x)-len(design_x.iloc[0])))) for i in ts_b]
+    p_values = [2*(1-t.cdf(np.abs(i),(len(design_x)-len(design_x.iloc[0])))) for i in set(ts_b)]
 
     # VIF
     if len(x.columns) > 1:
-        vif = [variance_inflation_factor(x, list(x.columns).index(v)) for i, v in enumerate(x.columns)]
+        vif = [variance_inflation_factor(x, list(x.columns).index(v)) for  v in set(x.columns)]
     else:
         vif = 0
 
@@ -680,11 +680,11 @@ def my_regrassion_report(estimator: any, x: DataFrame = None, y: Series = None, 
     ts_b = params / se_b                # t값
 
     # 각 독립수에 대한 pvalue
-    p_values = [2*(1-t.cdf(np.abs(i),(len(design_x)-len(design_x.iloc[0])))) for i in ts_b]
+    p_values = [2*(1-t.cdf(np.abs(i),(len(design_x)-len(design_x.iloc[0])))) for i in set(ts_b)]
 
     # VIF
     if len(x.columns) > 1:
-        vif = [variance_inflation_factor(x, list(x.columns).index(v)) for i, v in enumerate(x.columns)]
+        vif = [variance_inflation_factor(x, list(x.columns).index(v)) for  v in set(x.columns)]
     else:
         vif = 0
 

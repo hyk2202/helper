@@ -627,7 +627,7 @@ def my_poly_features(
     if ignore:
         ignore_df = df[ignore]
         df.drop(ignore, axis=1, inplace=True)
-        columns = [c for c in columns if c not in ignore]
+        columns = [c for c in columns if c not in set(ignore)]
 
     poly = PolynomialFeatures(degree=degree, include_bias=False)
     poly_fit = poly.fit_transform(df[columns])

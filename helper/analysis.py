@@ -35,7 +35,7 @@ def my_equal_var_test(data: DataFrame, normal_dist: bool = True) -> None:
         data (DataFrame): 데이터프레임 객체
         normal_dist (bool, optional): 정규성 검정 결과를 의미한다. True일 경우 정규분포를 따르는 데이터에 대한 등분산성 검정을 수행한다. Defaults to True.
     """
-    fields: list = [data[x] for x in data.colunms]
+    fields: list = [data[x] for x in set(data.colunms)]
 
     if normal_dist:
         n: str = "Bartlett"

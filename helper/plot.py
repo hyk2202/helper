@@ -1063,7 +1063,7 @@ def my_learing_curve(
     # 평가지표가 있는 경우
     else:
         ylabel = scoring
-        if scoring in error_name:
+        if scoring in set(error_name):
             scoring = error_value[error_name.index(scoring)]
         if scoring in ("rmse", "mse"):
             w = -1
@@ -1104,7 +1104,7 @@ def my_learing_curve(
             "fowlkes_mallows_score",
         ]
 
-        if scoring not in scoring_list:
+        if scoring not in set(scoring_list):
             raise Exception(f"\x1b[31m평가지표 {scoring}가 존재하지 않습니다.\x1b[0m")
 
         train_sizes, train_scores, test_scores = learning_curve(
@@ -1433,7 +1433,7 @@ def my_roc_curve_multiclass_ovo(
         df_aux = df_aux[(df_aux["class"] == c1) | (df_aux["class"] == c2)]
 
         # 현재 대조군 데이터 중에서 맞춘 것은 1, 못맞춘 것은 0으로 재설정
-        df_aux["class"] = [1 if y == c1 else 0 for y in df_aux["class"]]
+        df_aux["class"] = [1 if y == c1 else 0 for y in set(df_aux["class"])]
         df_aux = df_aux.reset_index(drop=True)
 
         # my_pretty_table(df_aux.head(10))
@@ -1739,133 +1739,6 @@ def my_roc_curve(
             my_roc_curve_multiclass_ovr(
                 estimator, x, y, hist, roc, pr, figsize, dpi, callback
             )
-
-
-def my_distribution_by_class(
-    data: DataFrame,
-    xnames: list = None,
-    hue: str = None,
-    type: str = "kde",
-    bins: any = 5,
-    palette: str = None,
-    fill: bool = False,
-    figsize: tuple = (10, 5),
-    dpi: int = 100,
-    callback: any = None,
-) -> None:
-    """클래스별로 독립변수의 분포를 출력한다.
-
-    Args:
-        data (DataFrame): 독립변수
-        xnames (list, optional): 독립변수의 이름. Defaults to None.
-        hue (str, optional): 클래스별로 구분할 변수. Defaults to None.
-        type (str, optional): 그래프 종류 (kde, hist, histkde). Defaults to "kde".
-        bins (any, optional): 히스토그램의 구간 수. Defaults to 5.
-        palette (str, optional): 칼라맵. Defaults to None.
-        fill (bool, optional): kde 그래프의 채우기 여부. Defaults to False.
-        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
-        dpi (int, optional): 그래프의 해상도. Defaults to 100.
-        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
-    """
-    if xnames == None:
-        xnames = data.columns
-
-    for i, v in enumerate(xnames):
-        # 종속변수이거나 숫자형이 아닌 경우는 제외
-        if v == hue or data[v].dtype not in [
-            "int",
-            "int32",
-            "int64",
-            "float",
-            "float32",
-            "float64",
-        ]:
-            continue
-
-        if type == "kde":
-            my_kdeplot(
-                data,
-                v,
-                hue=hue,
-                palette=palette,
-                fill=fill,
-                figsize=figsize,
-                dpi=dpi,
-                callback=callback,
-            )
-        elif type == "hist":
-            my_histplot(
-                data,
-                v,
-                hue=hue,
-                bins=bins,
-                kde=False,
-                palette=palette,
-                figsize=figsize,
-                dpi=dpi,
-                callback=callback,
-            )
-        elif type == "histkde":
-            my_histplot(
-                data,
-                v,
-                hue=hue,
-                bins=bins,
-                kde=True,
-                palette=palette,
-                figsize=figsize,
-                dpi=dpi,
-                callback=callback,
-            )
-
-
-def my_scatter_by_class(
-    data: DataFrame,
-    group: list = None,
-    hue: str = None,
-    palette: str = None,
-    outline: bool = False,
-    figsize: tuple = (10, 5),
-    dpi: int = 100,
-    callback: any = None,
-) -> None:
-    """클래스별로 독립변수의 산점도를 출력한다.
-
-    Args:
-        data (DataFrame): 독립변수
-        group (list, optional): 독립변수의 조합. Defaults to None.
-        hue (str, optional): 클래스별로 구분할 변수. Defaults to None.
-        palette (str, optional): 칼라맵. Defaults to None.
-        outline (bool, optional): 테두리 여부. Defaults to False.
-        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
-        dpi (int, optional): 그래프의 해상도. Defaults to 100.
-        callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
-    """
-    if group == None:
-        group = []
-
-        xnames = data.columns
-
-        for i, v in enumerate(xnames):
-            if v == hue or data[v].dtype not in [
-                "int",
-                "int32",
-                "int64",
-                "float",
-                "float32",
-                "float64",
-            ]:
-                continue
-
-            j = (i + 1) % len(xnames)
-            group.append([v, xnames[j]])
-
-    if outline:
-        for i, v in enumerate(group):
-            my_convex_hull(data, v[0], v[1], hue, palette, figsize, dpi, callback)
-    else:
-        for i, v in enumerate(group):
-            my_scatterplot(data, v[0], v[1], hue, palette, figsize, dpi, callback)
 
 
 def my_distribution_by_class(
