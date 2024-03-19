@@ -28,7 +28,6 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import learning_curve
 from sklearn.preprocessing import StandardScaler
-from IPython.display import SVG
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.tree import export_graphviz
 import graphviz
@@ -1862,31 +1861,45 @@ def my_scatter_by_class(
             my_scatterplot(data, v[0], v[1], hue, palette, figsize, dpi, callback)
 
 
-def my_tree(estimator: DecisionTreeClassifier) -> None:
+def my_tree(estimator: DecisionTreeClassifier, save: bool = False) -> None:
     """의사결정나무를 출력한다.
 
     Args:
         estimator (DecisionTreeClassifier): 학습된 의사결정나무 객체
+        save (bool, optional): 저장 여부. Defaults to False
     """
 
     fname = "Malgun Gothic" if sys.platform == "win32" else "AppleGothic"
     xnames = list(estimator.feature_names_in_)
     class_names = estimator.classes_
     class_names = [str(i) for i in class_names]
+    if save:
+        export_graphviz(
+            estimator,
+            out_file="tree.dot",
+            feature_names=list(x_train.columns),
+            class_names=["음성", "양성"],
+            rounded=True,  # 노드의 모서리를 둥글게
+            filled=True,  # 노드의 색상을 다르게
+            fontname=fanme,
+        )
 
-    export_graphviz(
-        estimator,
-        out_file="tree.dot",
-        feature_names=xnames,
-        class_names=class_names,
-        rounded=True,  # 노드의 모서리를 둥글게
-        filled=True,  # 노드의 색상을 다르게
-        fontname=fname,
-    )
-
-    with open("tree.dot") as f:
-        dot = f.read()
-        display(graphviz.Source(dot))
+        with open("tree.dot", encoding="euc-kr") as f:
+            dot = f.read()
+            display(graphviz.Source(dot))
+    else:
+        display(
+            graphviz.Source(
+                export_graphviz(
+                    estimator,
+                    feature_names=xnames,
+                    class_names=class_names,
+                    rounded=True,  # 노드의 모서리를 둥글게
+                    filled=True,  # 노드의 색상을 다르게
+                    fontname=fname,
+                )
+            )
+        )
 
 
 def my_dtreeviz(
@@ -1895,7 +1908,7 @@ def my_dtreeviz(
     y_train: Series,
     target_name: str,
     class_name: list,
-) -> None:
+) -> dtreeviz.utils.DTreeVizRender:
     """의사결정나무를 출력한다.
 
     Args:
@@ -1915,9 +1928,7 @@ def my_dtreeviz(
         class_names=class_name,
     )
 
-    SVG(
-        viz.view(
-            scale=2.0,
-            fontname="AppleGothic" if sys.platform == "darwin" else "Malgun Gothic",
-        ).svg()
+    return viz.view(
+        scale=2.0,
+        fontname="AppleGothic" if sys.platform == "darwin" else "Malgun Gothic",
     )
