@@ -28,7 +28,11 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import learning_curve
 from sklearn.preprocessing import StandardScaler
-
+from IPython.display import SVG
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import export_graphviz
+import graphviz
+import dtreeviz
 import sys
 
 plt.rcParams["font.family"] = (
@@ -1856,3 +1860,64 @@ def my_scatter_by_class(
     else:
         for i, v in enumerate(group):
             my_scatterplot(data, v[0], v[1], hue, palette, figsize, dpi, callback)
+
+
+def my_tree(estimator: DecisionTreeClassifier) -> None:
+    """의사결정나무를 출력한다.
+
+    Args:
+        estimator (DecisionTreeClassifier): 학습된 의사결정나무 객체
+    """
+
+    fname = "Malgun Gothic" if sys.platform == "win32" else "AppleGothic"
+    xnames = list(estimator.feature_names_in_)
+    class_names = estimator.classes_
+    class_names = [str(i) for i in class_names]
+
+    export_graphviz(
+        estimator,
+        out_file="tree.dot",
+        feature_names=xnames,
+        class_names=class_names,
+        rounded=True,  # 노드의 모서리를 둥글게
+        filled=True,  # 노드의 색상을 다르게
+        fontname=fname,
+    )
+
+    with open("tree.dot") as f:
+        dot = f.read()
+        display(graphviz.Source(dot))
+
+
+def my_dtreeviz(
+    estimator: DecisionTreeClassifier,
+    x_train: DataFrame,
+    y_train: Series,
+    target_name: str,
+    class_name: list,
+) -> None:
+    """의사결정나무를 출력한다.
+
+    Args:
+        estimator (DecisionTreeClassifier): 학습된 의사결정나무 객체
+        x_train (DataFrame): 독립변수에 대한 훈련 데이터
+        y_train (Series): 종속변수에 대한 훈련 데이터
+        target_name (str) : 라벨 제목
+        class_name (str) : 라벨링 이름
+    """
+
+    viz = dtreeviz.model(
+        estimator,
+        X_train=x_train,
+        y_train=y_train,
+        target_name=target_name,
+        feature_names=list(x_train.columns),
+        class_names=class_name,
+    )
+
+    SVG(
+        viz.view(
+            scale=2.0,
+            fontname="AppleGothic" if sys.platform == "darwin" else "Malgun Gothic",
+        ).svg()
+    )
