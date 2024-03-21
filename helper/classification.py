@@ -47,6 +47,7 @@ def __my_classification(
     dpi: int = 100,
     sort: str = None,
     is_print: bool = True,
+    pruning: bool = False,
     **params,
 ) -> any:
     """분류분석을 수행하고 결과를 출력한다.
@@ -68,6 +69,7 @@ def __my_classification(
         figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
         dpi (int, optional): 그래프의 해상도. Defaults to 100.
         sort (bool, optional): 독립변수 결과 보고 표의 정렬 기준 (v, p)
+        pruning (bool, optional): 가지치기의 alpha값을 하이퍼 파라미터 튜닝에 포함 할 지 여부. Defaults to False.
         **params (dict, optional): 하이퍼파라미터. Defaults to None.
     Returns:
         any: 분류분석 모델
@@ -88,27 +90,27 @@ def __my_classification(
 
         if "n_jobs" in dict(inspect.signature(classname.__init__).parameters):
             args["n_jobs"] = -1
-            print(f"\033[94m{cn}의 n_jobs 설정됨\033[0m")
+            print(f"\033[94m{cn}의 n_jobs 설정됨\033[94m")
 
         if "random_state" in dict(inspect.signature(classname.__init__).parameters):
             args["random_state"] = 1234
-            print(f"\033[94m{cn}의 random_state 설정됨\033[0m")
+            print(f"\033[94m{cn}의 random_state 설정됨\033[94m")
 
         if "early_stopping" in dict(inspect.signature(classname.__init__).parameters):
             args["early_stopping"] = True
-            print(f"\033[94m{cn}의 early_stopping 설정됨\033[0m")
+            print(f"\033[94m{cn}의 early_stopping 설정됨\033[94m")
 
-        if classname == DecisionTreeClassifier:
+        if classname == DecisionTreeClassifier and pruning:
             try:
                 dtree = DecisionTreeClassifier(**args)
                 path = dtree.cost_complexity_pruning_path(x_train, y_train)
                 ccp_alphas = path.ccp_alphas[1:-1]
                 params["ccp_alpha"] = ccp_alphas
             except Exception as e:
-                print(f"\033[91m{cn}의 가지치기 실패 ({e})\033[0m")
+                print(f"\033[91m{cn}의 가지치기 실패 ({e})\033[91m")
 
         prototype_estimator = classname(**args)
-        print(f"\033[92m{cn} {params}\033[0m".replace("\n", ""))
+        print(f"\033[92m{cn} {params}\033[92m".replace("\n", ""))
 
         # grid = GridSearchCV(
         #     prototype_estimator, param_grid=params, cv=cv, n_jobs=-1
@@ -124,7 +126,7 @@ def __my_classification(
         try:
             grid.fit(x_train, y_train)
         except Exception as e:
-            print(f"\033[91m{cn}에서 에러발생 ({e})\033[0m")
+            print(f"\033[91m{cn}에서 에러발생 ({e})\033[91m")
             return None
 
         result_df = DataFrame(grid.cv_results_["params"])
@@ -945,6 +947,7 @@ def my_dtree_classification(
     y_test: Series = None,
     conf_matrix: bool = True,
     cv: int = 5,
+    pruning:bool = False,
     hist: bool = True,
     roc: bool = True,
     pr: bool = True,
@@ -966,6 +969,7 @@ def my_dtree_classification(
         y_test (Series): 종속변수에 대한 검증 데이터. Defaults to None.
         conf_matrix (bool, optional): 혼동행렬을 출력할지 여부. Defaults to True.
         cv (int, optional): 교차검증 횟수. Defaults to 5.
+        pruning (bool, optional): 가지치기의 alpha값을 하이퍼 파라미터 튜닝에 포함 할 지 여부. Defaults to False.
         learning_curve (bool, optional): 학습곡선을 출력할지 여부. Defaults to True.
         report (bool, optional) : 독립변수 보고를 출력할지 여부. Defaults to True.
         figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
@@ -1004,6 +1008,7 @@ def my_dtree_classification(
         dpi=dpi,
         sort=sort,
         is_print=is_print,
+        pruning=pruning,
         **params,
     )
 
@@ -1249,6 +1254,7 @@ def my_classification(
     dpi: int = 100,
     sort: str = None,
     algorithm: list = None,
+    pruning: bool = False,
     **params,
 ) -> DataFrame:
     """분류분석을 수행하고 결과를 출력한다.
@@ -1269,7 +1275,8 @@ def my_classification(
         figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
         dpi (int, optional): 그래프의 해상도. Defaults to 100.
         sort (str, optional): 독립변수 결과 보고 표의 정렬 기준 (v, p)
-        algorithm (list, optional): 분류분석 알고리즘 리스트. Defaults to None.
+        algorithm (list, optional): 수행하고하자는 알고리즘 리스트 None으로 설정시 모든 알고리즘 수행. Defaults to None.
+        pruning (bool, optional): 의사결정나무에서 가지치기의 alpha값을 하이퍼 파라미터 튜닝에 포함 할 지 여부. Defaults to False.
 
     Returns:
         DataFrame: 분류분석 결과
@@ -1279,7 +1286,7 @@ def my_classification(
     processes = []  # 병렬처리를 위한 프로세스 리스트
     estimators = {}  # 분류분석 모델을 저장할 딕셔너리
     estimator_names = []  # 분류분석 모델의 이름을 저장할 문자열 리스트
-
+    if algorithm: algorithm = [i.lower() for i in algorithm]
     # 병렬처리를 위한 프로세스 생성 -> 분류 모델을 생성하는 함수를 각각 호출한다.
     with futures.ThreadPoolExecutor() as executor:
         if not algorithm or "logistic" in algorithm:
@@ -1410,6 +1417,7 @@ def my_classification(
                     dpi=dpi,
                     sort=sort,
                     is_print=False,
+                    pruning = pruning,
                     **params,
                 )
             )
