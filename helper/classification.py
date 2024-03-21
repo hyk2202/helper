@@ -1202,7 +1202,8 @@ def my_sgd_classification(
         if not params:
             params = {
                 # 손실함수
-                "loss": ["hinge", "log", "modified_huber"],
+                # 'log_loss', 'squared_hinge', 'perceptron', 'squared_error', 'hinge', 'huber', 'squared_epsilon_insensitive', 'epsilon_insensitive', 'modified_huber'
+                "loss": ["hinge", "log_loss", "modified_huber"],
                 # 정규화 종류
                 "penalty": ["l2", "l1", "elasticnet"],
                 # 정규화 강도(값이 낮을 수록 약한 정규화)
@@ -1275,7 +1276,7 @@ def my_classification(
         figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
         dpi (int, optional): 그래프의 해상도. Defaults to 100.
         sort (str, optional): 독립변수 결과 보고 표의 정렬 기준 (v, p)
-        algorithm (list, optional): 수행하고하자는 알고리즘 리스트 None으로 설정시 모든 알고리즘 수행. Defaults to None.
+        algorithm (list, optional): 사용하고자 하는 분류분석 알고리즘 리스트. None으로 설정할 경우 모든 알고리즘 수행 ['logistic', 'knn', 'dtree', 'svc', 'sgd']. Defaults to None.
         pruning (bool, optional): 의사결정나무에서 가지치기의 alpha값을 하이퍼 파라미터 튜닝에 포함 할 지 여부. Defaults to False.
 
     Returns:
