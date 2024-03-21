@@ -205,6 +205,7 @@ def my_read_data(
     categories: list = None,
     save: bool = False,
     timeindex: bool = False,
+    sheet_name:any = 0
 ) -> DataFrame:
     """파일을 데이터 프레임으로 로드하고 정보를 출력한다
 
@@ -229,6 +230,7 @@ def my_read_data(
             categories=categories,
             save=save,
             timeindex=timeindex,
+            sheet_name=sheet_name
         )
 
 
