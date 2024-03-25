@@ -3,8 +3,7 @@ import scipy
 from scipy.stats import shapiro, normaltest, bartlett, levene, ttest_1samp, ttest_ind, ttest_rel, mannwhitneyu, pearsonr, spearmanr
 from statsmodels.formula.api import ols
 from statsmodels.stats.anova import anova_lm
-from pingouin import anova
-from pingouin import welch_anova
+from pingouin import anova, welch_anova, pairwise_tukey, pairwise_tests, pairwise_gameshowell
 from statsmodels.sandbox.stats.multicomp import MultiComparison
 from statsmodels.stats.multicomp import pairwise_tukeyhsd
 from pingouin import pairwise_tukey, pairwise_tests, pairwise_gameshowell

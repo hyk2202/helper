@@ -10,6 +10,8 @@ from scipy.stats import normaltest
 
 from imblearn.over_sampling import SMOTE, RandomOverSampler
 from imblearn.under_sampling import RandomUnderSampler
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+
 
 
 def my_normalize_data(
@@ -708,3 +710,57 @@ def my_balance(xdata: DataFrame, ydata: Series, method: str = "smote") -> DataFr
         )
 
     return xdata, ydata
+
+
+def my_vif_filter(
+    data: DataFrame, yname: str = None, threshold: float = 10
+) -> DataFrame:
+    """독립변수 간 다중공선성을 검사하여 VIF가 threshold 이상인 변수를 제거한다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        yname (str, optional): 종속변수 컬럼명. Defaults to None.
+        threshold (float, optional): VIF 임계값. Defaults to 10.
+
+    Returns:
+        DataFrame: VIF가 threshold 이하인 변수만 남은 데이터프레임
+    """
+    df = data.copy()
+
+    if yname:
+        y = df[yname]
+        df = df.drop(yname, axis=1)
+
+    # 카테고리 타입만 골라냄
+    category_fields = []
+    for f in df.columns:
+        if df[f].dtypes not in ["int", "int32", "int64", "float", "float32", "float64"]:
+            category_fields.append(f)
+
+    cate = df[category_fields]
+    df = df.drop(category_fields, axis=1)
+
+    # VIF 계산
+    while True:
+        xnames = list(df.columns)
+        vif = {}
+
+        for x in xnames:
+            vif[x] = variance_inflation_factor(df, xnames.index(x))
+
+        maxkey = max(vif, key=vif.get)
+
+        if vif[maxkey] <= threshold:
+            break
+
+        df = df.drop(maxkey, axis=1)
+
+    # 분리했던 명목형 변수를 다시 결합
+    if category_fields:
+        df[category_fields] = cate
+
+    # 분리했던 종속 변수를 다시 결합
+    if yname:
+        df[yname] = y
+
+    return df
