@@ -13,7 +13,6 @@ from imblearn.under_sampling import RandomUnderSampler
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 
 
-
 def my_normalize_data(
     mean: float, std: float, size: int = 100, round: int = 2
 ) -> np.ndarray:
@@ -71,7 +70,7 @@ def my_pretty_table(data: DataFrame) -> None:
 def my_read_excel(
     path: str,
     index_col: str = None,
-    sheet_name:'str | int | list[IntStrT] | None' = 0,
+    sheet_name: "str | int | list[IntStrT] | None" = 0,
     info: bool = True,
     categories: list = None,
     save: bool = False,
@@ -92,9 +91,11 @@ def my_read_excel(
 
     try:
         if index_col:
-            data: DataFrame = read_excel(path, index_col=index_col, sheet_name = sheet_name)
+            data: DataFrame = read_excel(
+                path, index_col=index_col, sheet_name=sheet_name
+            )
         else:
-            data: DataFrame = read_excel(path, sheet_name = sheet_name)
+            data: DataFrame = read_excel(path, sheet_name=sheet_name)
     except Exception as e:
         print("\x1b[31m데이터를 로드하는데 실패했습니다.\x1b[0m")
         print(f"\x1b[31m{e}\x1b[0m")
@@ -207,7 +208,7 @@ def my_read_data(
     categories: list = None,
     save: bool = False,
     timeindex: bool = False,
-    sheet_name:any = 0
+    sheet_name: any = 0,
 ) -> DataFrame:
     """파일을 데이터 프레임으로 로드하고 정보를 출력한다
 
@@ -232,7 +233,7 @@ def my_read_data(
             categories=categories,
             save=save,
             timeindex=timeindex,
-            sheet_name=sheet_name
+            sheet_name=sheet_name,
         )
 
 
@@ -301,7 +302,7 @@ def my_train_test_split(
     if yname is not None and yname not in data.columns:
         raise Exception(f"\x1b[31m종속변수 {yname}가 존재하지 않습니다.\x1b[0m")
 
-    if yname is not None :
+    if yname is not None:
         x = data.drop(yname, axis=1)
         y = data[yname]
         x_train, x_test, y_train, y_test = train_test_split(
@@ -311,7 +312,9 @@ def my_train_test_split(
         if scalling:
             scaler = StandardScaler()
             x_train = DataFrame(
-                scaler.fit_transform(x_train), index=x_train.index, columns=x_train.columns
+                scaler.fit_transform(x_train),
+                index=x_train.index,
+                columns=x_train.columns,
             )
             x_test = DataFrame(
                 scaler.transform(x_test), index=x_test.index, columns=x_test.columns
@@ -319,20 +322,29 @@ def my_train_test_split(
 
         return (x_train, x_test, y_train, y_test)
     else:
-        if 'y' in data.columns:
-            return my_train_test_split(data=data, yname='y', test_size=test_size, random_state=random_state, scalling=scalling)
+        if "y" in data.columns:
+            return my_train_test_split(
+                data=data,
+                yname="y",
+                test_size=test_size,
+                random_state=random_state,
+                scalling=scalling,
+            )
         train, test = train_test_split(
             x, test_size=test_size, random_state=random_state
         )
         if scalling:
             scaler = StandardScaler()
             train = DataFrame(
-                scaler.fit_transform(train), index=x_train.index, columns=x_train.columns
+                scaler.fit_transform(train),
+                index=x_train.index,
+                columns=x_train.columns,
             )
             test = DataFrame(
                 scaler.transform(test), index=x_test.index, columns=x_test.columns
             )
         return train, test
+
 
 def my_set_category(data: DataFrame, *args: str) -> DataFrame:
     """카테고리 데이터를 설정한다.
@@ -736,6 +748,8 @@ def my_vif_filter(
     for f in df.columns:
         if df[f].dtypes not in ["int", "int32", "int64", "float", "float32", "float64"]:
             category_fields.append(f)
+        elif len(df[f].unique()) <= 2:
+            category_fields.append(f)
 
     cate = df[category_fields]
     df = df.drop(category_fields, axis=1)
@@ -743,10 +757,7 @@ def my_vif_filter(
     # VIF 계산
     while True:
         xnames = list(df.columns)
-        vif = {}
-
-        for x in xnames:
-            vif[x] = variance_inflation_factor(df, xnames.index(x))
+        vif = {x: variance_inflation_factor(df, xnames.index(x)) for x in xnames}
 
         maxkey = max(vif, key=vif.get)
 

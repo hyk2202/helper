@@ -1,0 +1,5 @@
+/dot_env
+*.bat
+__pycache__/
+/check/
+/__pycache__/

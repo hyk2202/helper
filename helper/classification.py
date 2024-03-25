@@ -1199,7 +1199,7 @@ def my_classification(
     report: bool = True,
     figsize=(10, 5),
     dpi: int = 100,
-    sort: str = 'v',
+    sort: str = "v",
     algorithm: list = None,
     pruning: bool = False,
     scoring: list = ["accuracy", "precision", "recall", "f1", "auc"],
@@ -1236,22 +1236,25 @@ def my_classification(
     estimator_names = []  # 분류분석 모델의 이름을 저장할 문자열 리스트
     callstack = []
 
-    if not algorithm or "logistic" in algorithm:
+    if not algorithm:
+        algorithm = ["logistic", "knn", "dtree", "svc", "sgd", "dtree"]
+
+    if "logistic" in algorithm:
         callstack.append(my_logistic_classification)
 
-    if not algorithm or "knn" in algorithm:
+    if "knn" in algorithm:
         callstack.append(my_knn_classification)
 
-    if not algorithm or "svc" in algorithm:
+    if "svc" in algorithm:
         callstack.append(my_svc_classification)
 
-    if not algorithm or "nb" in algorithm:
+    if "nb" in algorithm:
         callstack.append(my_nb_classification)
 
-    if not algorithm or "dtree" in algorithm:
+    if "dtree" in algorithm:
         callstack.append(my_dtree_classification)
 
-    if not algorithm or "sgd" in algorithm:
+    if "sgd" in algorithm:
         callstack.append(my_sgd_classification)
 
     score_fields = []
@@ -1333,14 +1336,31 @@ def my_classification(
             result_df.sort_values(score_fields, ascending=False, inplace=True)
 
         my_pretty_table(result_df)
-    
+
     # 최고 성능의 모델을 선택
     best_idx = result_df[score_fields[0]].idxmax()
-    estimators['best'] = estimators[best_idx]
-    
+    estimators["best"] = estimators[best_idx]
+
     print("\n\n==================== 최고 성능 모델: %s ====================" % best_idx)
-    my_classification_result(estimators['best'], x_train, y_train, x_test, y_test, conf_matrix=conf_matrix, hist=hist, roc=roc, pr=pr, multiclass=multiclass, learning_curve=learning_curve, figsize=figsize, dpi=dpi, is_print=True)
-    
-    my_classification_report(estimators['best'], x_train, y_train, x_test, y_test, sort=sort)
+    my_classification_result(
+        estimators["best"],
+        x_train,
+        y_train,
+        x_test,
+        y_test,
+        conf_matrix=conf_matrix,
+        hist=hist,
+        roc=roc,
+        pr=pr,
+        multiclass=multiclass,
+        learning_curve=learning_curve,
+        figsize=figsize,
+        dpi=dpi,
+        is_print=True,
+    )
+
+    my_classification_report(
+        estimators["best"], x_train, y_train, x_test, y_test, sort=sort
+    )
 
     return estimators
