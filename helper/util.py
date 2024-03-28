@@ -4,7 +4,7 @@ import numpy as np
 from tabulate import tabulate
 from pandas import DataFrame, read_excel, get_dummies, read_csv, Series, DatetimeIndex
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, PolynomialFeatures, MinMaxScaler
+from sklearn.preprocessing import StandardScaler, PolynomialFeatures
 from sklearn.impute import SimpleImputer
 from scipy.stats import normaltest
 

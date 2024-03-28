@@ -29,6 +29,7 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import learning_curve
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import silhouette_samples, silhouette_score
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 import graphviz
 import dtreeviz
@@ -684,6 +685,7 @@ def my_convex_hull(
     figsize: tuple = (10, 4),
     dpi: int = 150,
     callback: any = None,
+    **params
 ):
     """데이터프레임 내의 컬럼에 대해 외곽선을 그려서 군집을 확인한다.
 
@@ -718,7 +720,7 @@ def my_convex_hull(
         )
         plt.fill(df_c.iloc[points, 0], df_c.iloc[points, 1], alpha=0.1)
 
-    sb.scatterplot(data=data, x=xname, y=yname, hue=hue, palette=palette, ax=ax)
+    sb.scatterplot(data=data, x=xname, y=yname, hue=hue, palette=palette, ax=ax, **params)
 
     ax.grid(plt_grid)
     ax.set_title(plt_title)
