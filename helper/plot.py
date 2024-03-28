@@ -678,7 +678,7 @@ def my_convex_hull(
     yname: str = None,
     *,
     hue: str,
-    cmap: str = "coolwarm",
+    palette: str = "coolwarm",
     plt_grid: bool = True,
     plt_title: str = None,
     figsize: tuple = (10, 4),
@@ -718,7 +718,7 @@ def my_convex_hull(
         )
         plt.fill(df_c.iloc[points, 0], df_c.iloc[points, 1], alpha=0.1)
 
-    sb.scatterplot(data=data, x=xname, y=yname, hue=hue, palette=cmap, ax=ax)
+    sb.scatterplot(data=data, x=xname, y=yname, hue=hue, palette=palette, ax=ax)
 
     ax.grid(plt_grid)
     ax.set_title(plt_title)
