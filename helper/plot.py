@@ -9,6 +9,7 @@ keyword-only(*) / var-keyword parameter(**) -> positional parameter(기본값 �
 위 순서를 지키지 않고 만들고 싶으면 바뀌어지는 사이에 '*' 을 추가하여 해결한다.
 '*' 이후에 오는 파라미터는 반드시 함수 호출시 명시해야한다.
 """
+
 import os
 import numpy as np
 import seaborn as sb
@@ -31,6 +32,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 import graphviz
 import dtreeviz
+import matplotlib.cm as cm
+
 import sys
 
 plt.rcParams["font.family"] = (
@@ -712,9 +715,8 @@ def my_convex_hull(
             df_c.iloc[points, 1],
             linewidth=1,
             linestyle=":",
-            ax=ax,
         )
-        plt.fill(df_c.iloc[points, 0], df_c.iloc[points, 1], alpha=0.1, ax=ax)
+        plt.fill(df_c.iloc[points, 0], df_c.iloc[points, 1], alpha=0.1)
 
     sb.scatterplot(data=data, x=xname, y=yname, hue=hue, palette=cmap, ax=ax)
 
@@ -1860,7 +1862,7 @@ def my_scatter_by_class(
             my_scatterplot(data, v[0], v[1], hue, palette, figsize, dpi, callback)
 
 
-def my_tree(estimator: DecisionTreeClassifier, save:bool=False) -> None:
+def my_tree(estimator: DecisionTreeClassifier, save: bool = False) -> None:
     """의사결정나무를 출력한다.
 
     Args:
@@ -1875,27 +1877,30 @@ def my_tree(estimator: DecisionTreeClassifier, save:bool=False) -> None:
     if save:
         export_graphviz(
             estimator,
-            out_file='tree.dot',
-            feature_names=list(x_train.columns),
-            class_names=['음성', '양성'],
-            rounded=True,   # 노드의 모서리를 둥글게
-            filled=True,     # 노드의 색상을 다르게
-            fontname=fanme)
-
-        with open("tree.dot", encoding='euc-kr') as f:
-            dot = f.read()
-            display(graphviz.Source(dot))
-    else:
-        display(graphviz.Source(export_graphviz(
-            estimator,
+            out_file="tree.dot",
             feature_names=xnames,
             class_names=class_names,
             rounded=True,  # 노드의 모서리를 둥글게
             filled=True,  # 노드의 색상을 다르게
             fontname=fname,
-        )))
+        )
 
-        
+        with open("tree.dot", encoding="euc-kr") as f:
+            dot = f.read()
+            display(graphviz.Source(dot))
+    else:
+        display(
+            graphviz.Source(
+                export_graphviz(
+                    estimator,
+                    feature_names=xnames,
+                    class_names=class_names,
+                    rounded=True,  # 노드의 모서리를 둥글게
+                    filled=True,  # 노드의 색상을 다르게
+                    fontname=fname,
+                )
+            )
+        )
 
 
 def my_dtreeviz(
@@ -1925,6 +1930,6 @@ def my_dtreeviz(
     )
 
     return viz.view(
-            scale=2.0,
-            fontname="AppleGothic" if sys.platform == "darwin" else "Malgun Gothic",
-        )
+        scale=2.0,
+        fontname="AppleGothic" if sys.platform == "darwin" else "Malgun Gothic",
+    )

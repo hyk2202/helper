@@ -237,6 +237,22 @@ def my_read_data(
         )
 
 
+def my_scaler(data: DataFrame, yname: str = None, method: str = "standard"):
+    """데이터프레임의 연속형 변수에 대해 표준화를 수행한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        yname (str, optional): 종속변수의 컬럼명. Defaults to None.
+        method (str, optional): 표준화 수행 방법['standard','minmax'] . Defaults to standard.
+    """
+    if method.lower() == "standard":
+        return my_standard_scaler(data=data, yname=yname)
+    elif method.lower() == "minmax":
+        return my_minmax_scaler(data=data, yname=yname)
+    else:
+        raise Exception(f"\x1b[31m표준화방법 {method}가 존재하지 않습니다.\x1b[0m")
+
+
 def my_standard_scaler(data: DataFrame, yname: str = None) -> DataFrame:
     """데이터프레임의 연속형 변수에 대해 표준화를 수행한다.
 
@@ -273,6 +289,48 @@ def my_standard_scaler(data: DataFrame, yname: str = None) -> DataFrame:
         std_df[category_fields] = cate
 
     # 분리했던 종속변수 결합
+    if yname:
+        std_df[yname] = y
+
+    return std_df
+
+
+def my_minmax_scaler(data: DataFrame, yname: str = None) -> DataFrame:
+    """데이터프레임의 연속형 변수에 대해 MinMax Scaling을 수행한다.
+
+    Args:
+        data (DataFrame): 데이터프레임 객체
+        yname (str, optional): 종속변수의 컬럼명. Defaults to None.
+
+    Returns:
+        DataFrame: 표준화된 데이터프레임
+    """
+    # 원본 데이터 프레임 복사
+    df = data.copy()
+
+    # 종속변수만 별도로 분리
+    if yname:
+        y = df[yname]
+        df = df.drop(yname, axis=1)
+
+    # 카테고리 타입만 골라냄
+    category_fields = []
+    for f in df.columns:
+        if df[f].dtypes not in ["int", "int32", "int64", "float", "float32", "float64"]:
+            category_fields.append(f)
+
+    cate = df[category_fields]
+    df = df.drop(category_fields, axis=1)
+
+    # 표준화 수행
+    scaler = MinMaxScaler()
+    std_df = DataFrame(scaler.fit_transform(df), index=data.index, columns=df.columns)
+
+    # 분리했던 명목형 변수를 다시 결합
+    if category_fields:
+        std_df[category_fields] = cate
+
+    # 분리했던 종속 변수를 다시 결합
     if yname:
         std_df[yname] = y
 
@@ -408,11 +466,15 @@ def my_replace_missing_value(
     Args:
         data (DataFrame): 데이터프레임
         strategy (["median", "mean", "most_frequent", "constant"], optional): 대체방법. Defaults to 'mean'.
-        fill_value (str or numerical value): 상수로 대체할 경우 지정할 값.Defaults to 'None'
+        fill_value (str or numerical value): 상수로 대체할 경우 지정할 값.Defaults to '0'
 
     Returns:
         DataFrame: _description_
     """
+    # 상수로 변환시 default값 0
+    if strategy == "constant" and fill_value is None:
+        fill_value = 0
+
     # 결측치 처리 규칙 생성
     imr = SimpleImputer(missing_values=np.nan, strategy=strategy, fill_value=fill_value)
 
@@ -421,6 +483,21 @@ def my_replace_missing_value(
 
     # 2차원 배열을 데이터프레임으로 변환 후 리턴
     return DataFrame(df_imr, index=data.index, columns=data.columns)
+
+
+def my_drop_outliner(data: DataFrame, *fields: str) -> DataFrame:
+    """이상치를 결측치로 변환한 후 모두 삭제한다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        *fields (str): 컬럼명 목록
+
+    Returns:
+        DataFrame: 이상치가 삭제된 데이터프레임
+    """
+
+    df = my_replace_outliner_to_nan(data, *fields)
+    return df.dropna()
 
 
 def my_outlier_table(data: DataFrame, *fields: str) -> DataFrame:
