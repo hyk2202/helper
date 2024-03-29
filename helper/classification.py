@@ -1236,25 +1236,22 @@ def my_classification(
     estimator_names = []  # 분류분석 모델의 이름을 저장할 문자열 리스트
     callstack = []
 
-    if not algorithm:
-        algorithm = ["logistic", "knn", "dtree", "svc", "sgd", "dtree"]
-
-    if "logistic" in algorithm:
+    if not algorithm or "logistic" in algorithm:
         callstack.append(my_logistic_classification)
 
-    if "knn" in algorithm:
+    if not algorithm or "knn" in algorithm:
         callstack.append(my_knn_classification)
 
-    if "svc" in algorithm:
+    if not algorithm or "svc" in algorithm:
         callstack.append(my_svc_classification)
 
-    if "nb" in algorithm:
+    if not algorithm or "nb" in algorithm:
         callstack.append(my_nb_classification)
 
-    if "dtree" in algorithm:
+    if not algorithm or "dtree" in algorithm:
         callstack.append(my_dtree_classification)
 
-    if "sgd" in algorithm:
+    if not algorithm or "sgd" in algorithm:
         callstack.append(my_sgd_classification)
 
     score_fields = []
@@ -1274,8 +1271,8 @@ def my_classification(
             score_fields.append("특이성(TNR)")
         elif s == "f1":
             score_fields.append("F1 Score")
-        elif s == "auc":
-            score_fields.append("AUC")
+        # elif s == "auc":
+        #     score_fields.append("AUC")
 
     # 병렬처리를 위한 프로세스 생성 -> 분류 모델을 생성하는 함수를 각각 호출한다.
     with futures.ThreadPoolExecutor() as executor:
