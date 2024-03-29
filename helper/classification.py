@@ -27,7 +27,16 @@ from scipy.stats import norm
 from .util import my_pretty_table
 from .plot import my_learing_curve, my_confusion_matrix, my_roc_curve, my_tree
 from .core import __ml
+import matplotlib.pyplot as plt
+import sys
 
+plt.rcParams["font.family"] = (
+    "AppleGothic" if sys.platform == "darwin" else "Malgun Gothic"
+)
+plt.rcParams["font.size"] = 10
+plt.rcParams["figure.figsize"] = (10, 6)
+plt.rcParams["figure.dpi"] = 200
+plt.rcParams["axes.unicode_minus"] = False
 
 def __my_classification(
     classname: any,
@@ -1257,7 +1266,7 @@ def my_classification(
     score_fields = []
 
     for s in scoring:
-        if s == "r2":
+        if s == "r2":   
             score_fields.append("의사결정계수(Pseudo R2)")
         elif s == "accuracy":
             score_fields.append("정확도(Accuracy)")
