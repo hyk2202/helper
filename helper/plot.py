@@ -1,16 +1,5 @@
-"""
-def example(a, b=None, c="w" , d=[], *e, **f):
-    print(a,b,c,d,e,f)
-함수 정의시  
-positional parameter(기본값 미지정) -> optional parameter(기본값 지정) -> keyword-only(*) / var-keyword parameter(**)
-또는
-keyword-only(*) / var-keyword parameter(**) -> positional parameter(기본값 미지정) -> optional parameter(기본값 지정) 
-로 파라미터를 셋팅해야한다.
-위 순서를 지키지 않고 만들고 싶으면 바뀌어지는 사이에 '*' 을 추가하여 해결한다.
-'*' 이후에 오는 파라미터는 반드시 함수 호출시 명시해야한다.
-"""
-
 import os
+import sys
 import numpy as np
 import seaborn as sb
 import matplotlib.pyplot as plt
@@ -35,8 +24,6 @@ import graphviz
 import dtreeviz
 import matplotlib.cm as cm
 
-import sys
-
 plt.rcParams["font.family"] = (
     "AppleGothic" if sys.platform == "darwin" else "Malgun Gothic"
 )
@@ -60,6 +47,7 @@ def my_boxplot(
     plt_xlabel: str = None,
     plt_ylabel: str = None,
     callback: any = None,
+    **params,
 ) -> None:
     """데이터프레임 내의 모든 컬럼에 대해 상자그림을 그려서 분포를 확인한다.
 
@@ -77,9 +65,9 @@ def my_boxplot(
     plt.figure(figsize=figsize, dpi=dpi)
     ax = plt.gca()
     if xname != None and yname != None:
-        sb.boxplot(data=df, x=xname, y=yname, orient=orient, palette=palette, ax=ax)
+        sb.boxplot(data=df, x=xname, y=yname, orient=orient, palette=palette, ax=ax, **params)
     else:
-        sb.boxplot(data=df, orient=orient, palette=palette, ax=ax)
+        sb.boxplot(data=df, orient=orient, palette=palette, ax=ax, **params)
     ax.grid(plt_grid)
     if callback:
         callback(ax)
@@ -105,11 +93,12 @@ def my_lineplot(
     plt_xlabel: str = None,
     plt_ylabel: str = None,
     callback: any = None,
+    **params
 ) -> None:
     plt.figure(figsize=figsize, dpi=dpi)
     ax = plt.gca()
 
-    sb.lineplot(data=df, x=xname, y=yname, hue=hue, palette=palette, ax=ax)
+    sb.lineplot(data=df, x=xname, y=yname, hue=hue, palette=palette, ax=ax, **params)
     ax.grid(plt_grid)
     if plt_title:
         ax.set_title(plt_title)
@@ -138,6 +127,7 @@ def my_kdeplot(
     figsize: tuple = (10, 5),
     dpi: int = 100,
     callback: any = None,
+    **params
 ) -> None:
     """데이터프레임 내의 컬럼에 대해 커널밀도추정을 그려서 분포를 확인한다.
 
@@ -167,6 +157,7 @@ def my_kdeplot(
             alpha=fill_alpha,
             linewidth=linewidth,
             ax=ax,
+            **params
         )
     else:
         sb.kdeplot(
@@ -178,6 +169,7 @@ def my_kdeplot(
             fill=fill,
             linewidth=linewidth,
             ax=ax,
+            **params
         )
     ax.grid(plt_grid)
     if callback:
@@ -202,6 +194,7 @@ def my_histplot(
     plt_grid: bool = True,
     dpi: int = 150,
     callback: any = None,
+    **params
 ) -> None:
     """데이터프레임 내의 컬럼에 대해 히스토그램을 그려서 분포를 확인한다.
 
@@ -220,7 +213,7 @@ def my_histplot(
     plt.figure(figsize=figsize, dpi=dpi)
     ax = plt.gca()
     sb.histplot(
-        data=df, x=xname, y=yname, hue=hue, kde=True, bins=bins, palette=palette, ax=ax
+        data=df, x=xname, y=yname, hue=hue, kde=True, bins=bins, palette=palette, ax=ax, **params
     )
 
     ax.grid(plt_grid)
@@ -244,6 +237,7 @@ def my_stackplot(
     dpi: int = 150,
     plt_title: str = None,
     callback: any = None,
+    **params
 ) -> None:
     """hue로 구분되는 막대 그래프를 비율로 표시한다.
 
@@ -273,6 +267,7 @@ def my_stackplot(
         multiple="fill",  # 전체를 100%로 그리기
         shrink=0.8,
         ax=ax,
+        **params
     )  # 막대의 폭
 
     # 그래프의 x축 항목 수 만큼 반복
@@ -311,6 +306,7 @@ def my_scatterplot(
     plt_grid: bool = True,
     dpi: int = 150,
     callback: any = None,
+    **params
 ) -> None:
     """데이터프레임 내의 두 컬럼에 대해 산점도를 그려서 관계를 확인한다.
 
@@ -325,7 +321,7 @@ def my_scatterplot(
     """
     plt.figure(figsize=figsize, dpi=dpi)
     ax = plt.gca()
-    sb.scatterplot(data=df, x=xname, y=yname, hue=hue, ax=ax)
+    sb.scatterplot(data=df, x=xname, y=yname, hue=hue, ax=ax, **params)
     ax.grid(plt_grid)
     if plt_title:
         ax.set_title(plt_title)
@@ -346,6 +342,7 @@ def my_regplot(
     plt_grid: bool = True,
     dpi: int = 150,
     callback: any = None,
+    **params
 ) -> None:
     """데이터프레임 내의 컬럼에 대해 회귀선을 포함한 산점도를 그려서 관계를 확인한다.
 
@@ -361,7 +358,7 @@ def my_regplot(
     """
     plt.figure(figsize=figsize, dpi=dpi)
     ax = plt.gca()
-    sb.regplot(data=df, x=xname, y=yname, ci=ci, color=palette, ax=ax)
+    sb.regplot(data=df, x=xname, y=yname, ci=ci, color=palette, ax=ax, **params)
     ax.grid(plt_grid)
     if plt_title:
         ax.set_title(plt_title)
@@ -382,6 +379,7 @@ def my_lmplot(
     plt_grid: bool = True,
     dpi: int = 150,
     callback: any = None,
+    **params
 ) -> None:
     """데이터프레임 내의 컬럼에 대해 회귀선을 포함한 산점도를 그려서 관계를 확인한다.
 
@@ -393,7 +391,7 @@ def my_lmplot(
         figsize (tuple, optional): 그래프의 크기. Defaults to (10, 4).
         dpi (int, optional): 그래프의 해상도. Defaults to 150.
     """
-    g = sb.lmplot(data=df, x=xname, y=yname, hue=hue)
+    g = sb.lmplot(data=df, x=xname, y=yname, hue=hue, **params)
     g.fig.set_figwidth(figsize[0])
     g.fig.set_figheight(figsize[1])
     g.fig.set_dpi(dpi)
@@ -413,6 +411,7 @@ def my_pairplot(
     kind: str = "scatter",
     plt_title: str = None,
     dpi: int = 150,
+    **params
 ) -> None:
     """데이터프레임 내의 모든 컬럼에 대해 쌍별 관계를 시각화한다.
 
@@ -424,7 +423,7 @@ def my_pairplot(
         kind (['scatter', 'kde', 'hist', 'reg'], optional ): 그 외 그래프 설정
         dpi (int, optional): 그래프의 해상도. Defaults to 150.
     """
-    sb.pairplot(df, hue=hue, diag_kind=diag_kind, kind=kind)
+    sb.pairplot(df, hue=hue, diag_kind=diag_kind, kind=kind, **params)
     if plt_title:
         plt.title(plt_title)
     plt.show()
@@ -443,6 +442,7 @@ def my_countplot(
     plt_ylabel: str = None,
     dpi: int = 150,
     callback: any = None,
+    **params
 ) -> None:
     """데이터프레임 내의 컬럼에 대해 카운트플롯을 그려서 분포를 확인한다.
 
@@ -456,7 +456,7 @@ def my_countplot(
     """
     plt.figure(figsize=figsize, dpi=dpi)
     ax = plt.gca()
-    sb.countplot(data=df, x=xname, y=yname, hue=hue, ax=ax)
+    sb.countplot(data=df, x=xname, y=yname, hue=hue, ax=ax, **params)
     ax.grid(plt_grid)
     if plt_title:
         ax.set_title(plt_title)
@@ -482,6 +482,7 @@ def my_barplot(
     plt_ylabel: str = None,
     dpi: int = 150,
     callback: any = None,
+    **params
 ) -> None:
     """데이터프레임 내의 컬럼에 대해 바플롯을 그려서 분포를 확인한다.
 
@@ -496,7 +497,7 @@ def my_barplot(
     """
     plt.figure(figsize=figsize, dpi=dpi)
     ax = plt.gca()
-    sb.barplot(data=df, x=xname, y=yname, hue=hue, ax=ax)
+    sb.barplot(data=df, x=xname, y=yname, hue=hue, ax=ax, **params)
     ax.grid(plt_grid)
     if plt_title:
         ax.set_title(plt_title)
@@ -522,6 +523,7 @@ def my_boxenplot(
     plt_ylabel: str = None,
     dpi: int = 150,
     callback: any = None,
+    **params
 ) -> None:
     """데이터프레임 내의 컬럼에 대해 박슨플롯을 그려서 분포를 확인한다.
 
@@ -536,7 +538,7 @@ def my_boxenplot(
     """
     plt.figure(figsize=figsize, dpi=dpi)
     ax = plt.gca()
-    sb.boxenplot(data=df, x=xname, y=yname, hue=hue, ax=ax)
+    sb.boxenplot(data=df, x=xname, y=yname, hue=hue, ax=ax, **params)
     ax.grid(plt_grid)
     if callback:
         callback(ax)
@@ -554,6 +556,7 @@ def my_violinplot(
     plt_title: str = None,
     dpi: int = 150,
     callback: any = None,
+    **params
 ) -> None:
     """데이터프레임 내의 컬럼에 대해 바이올린플롯(상자그림+커널밀도)을 그려서 분포를 확인한다.
 
@@ -568,7 +571,7 @@ def my_violinplot(
     """
     plt.figure(figsize=figsize, dpi=dpi)
     ax = plt.gca()
-    sb.violinplot(data=df, x=xname, y=yname, hue=hue, ax=ax)
+    sb.violinplot(data=df, x=xname, y=yname, hue=hue, ax=ax, **params)
     ax.grid(plt_grid)
     if plt_title:
         ax.set_title(plt_title)
@@ -588,6 +591,7 @@ def my_pointplot(
     plt_title: str = None,
     dpi: int = 150,
     callback: any = None,
+    **params
 ) -> None:
     """데이터프레임 내의 컬럼에 대해 포인트플롯을 그려서 분포를 확인한다.
 
@@ -602,7 +606,7 @@ def my_pointplot(
     """
     plt.figure(figsize=figsize, dpi=dpi)
     ax = plt.gca()
-    sb.pointplot(data=df, x=xname, y=yname, hue=hue, ax=ax)
+    sb.pointplot(data=df, x=xname, y=yname, hue=hue, ax=ax, **params)
     ax.grid(plt_grid)
     ax.set_title(plt_title)
     if callback:
@@ -620,6 +624,7 @@ def my_jointplot(
     plt_title: str = None,
     dpi: int = 150,
     callback: any = None,
+    **params
 ) -> None:
     """데이터프레임 내의 컬럼에 대해 산점도와 히스토그램을 함께 그려서 관계를 확인한다.
 
@@ -632,7 +637,7 @@ def my_jointplot(
         dpi (int, optional): 그래프의 해상도. Defaults to 150.
         callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
     """
-    g = sb.jointplot(data=df, x=xname, y=yname, hue=hue)
+    g = sb.jointplot(data=df, x=xname, y=yname, hue=hue, **params)
     g.fig.set_figwidth(figsize[0])
     g.fig.set_figheight(figsize[1])
     g.fig.set_dpi(dpi)
@@ -652,6 +657,7 @@ def my_heatmap(
     plt_title: str = None,
     dpi: int = 150,
     callback: any = None,
+    **params
 ) -> None:
     """데이터프레임 내의 컬럼에 대해 히트맵을 그려서 관계를 확인한다.
 
@@ -664,7 +670,7 @@ def my_heatmap(
     """
     plt.figure(figsize=figsize, dpi=dpi)
     ax = plt.gca()
-    sb.heatmap(data, annot=True, cmap=cmap, fmt=".2g", ax=ax)
+    sb.heatmap(data, annot=True, cmap=cmap, fmt=".2g", ax=ax, **params)
     if plt_title:
         ax.set_title(plt_title)
     if callback:

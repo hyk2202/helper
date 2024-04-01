@@ -10,10 +10,11 @@ from .util import my_pretty_table
 def __ml(
     classname: any,
     x_train: DataFrame,
-    y_train: Series,
+    y_train: Series = None,
     x_test: DataFrame = None,
     y_test: Series = None,
     cv: int = 5,
+    scoring: any = None,
     is_print: bool = True,
     pruning: bool = False,
     **params,
@@ -73,13 +74,24 @@ def __ml(
         # grid = GridSearchCV(
         #     prototype_estimator, param_grid=params, cv=cv, n_jobs=-1
         # )
-        grid = RandomizedSearchCV(
-            prototype_estimator,
-            param_distributions=params,
-            cv=cv,
-            n_jobs=-1,
-            n_iter=1000,
-        )
+        if scoring is None:
+            grid = RandomizedSearchCV(
+                estimator=prototype_estimator,
+                param_distributions=params,
+                cv=cv,
+                n_jobs=-1,
+                n_iter=1000,
+            )
+        else:
+            print(scoring)
+            grid = RandomizedSearchCV(
+                estimator=prototype_estimator,
+                param_distributions=params,
+                cv=cv,
+                n_jobs=-1,
+                n_iter=1000,
+                scoring=scoring,
+            )
 
         try:
             grid.fit(x_train, y_train)
@@ -87,19 +99,22 @@ def __ml(
             print(f"\033[91m{cn}에서 에러발생 ({e})\033[0m")
             return None
 
+        print(grid.cv_results_)
+
         result_df = DataFrame(grid.cv_results_["params"])
-        result_df["mean_test_score"] = grid.cv_results_["mean_test_score"]
+        # result_df["mean_test_score"] = grid.cv_results_["mean_test_score"]
 
         estimator = grid.best_estimator_
         estimator.best_params = grid.best_params_
 
         if is_print:
             print("[교차검증 TOP5]")
-            my_pretty_table(
-                result_df.dropna(subset=["mean_test_score"])
-                .sort_values(by="mean_test_score", ascending=False)
-                .head()
-            )
+            # my_pretty_table(
+            #     result_df.dropna(subset=["mean_test_score"])
+            #     .sort_values(by="mean_test_score", ascending=False)
+            #     .head()
+            # )
+            my_pretty_table(result_df)
             print("")
 
             print("[Best Params]")
@@ -138,9 +153,13 @@ def __ml(
     estimator.x = x_test if x_test is not None else x_train
     estimator.y = y_test if y_test is not None else y_train
     estimator.y_pred = y_pred if y_test is not None else estimator.predict(x_train)
-    estimator.resid = (
-        y_test - y_pred if y_test is not None else y_train - estimator.predict(x_train)
-    )
+
+    if y_test is not None or y_train is not None:
+        estimator.resid = (
+            y_test - y_pred
+            if y_test is not None
+            else y_train - estimator.predict(x_train)
+        )
 
     if hasattr(estimator, "predict_proba"):
         estimator.y_pred_proba = (
