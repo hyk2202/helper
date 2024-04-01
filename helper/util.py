@@ -12,6 +12,11 @@ from imblearn.over_sampling import SMOTE, RandomOverSampler
 from imblearn.under_sampling import RandomUnderSampler
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 
+import sys
+from pca import pca
+from matplotlib import pyplot as plt
+
+__RANDOM_STATE__ = 0
 
 def my_normalize_data(
     mean: float, std: float, size: int = 100, round: int = 2
@@ -341,7 +346,7 @@ def my_train_test_split(
     data: DataFrame,
     yname: str = None,
     test_size: float = 0.2,
-    random_state: int = 123,
+    random_state: int = __RANDOM_STATE__,
     scalling: bool = False,
 ) -> tuple:
     """데이터프레임을 학습용 데이터와 테스트용 데이터로 나눈다.
@@ -785,13 +790,13 @@ def my_balance(xdata: DataFrame, ydata: Series, method: str = "smote") -> DataFr
     """
 
     if method == "smote":
-        smote = SMOTE(random_state=0)
+        smote = SMOTE(random_state=__RANDOM_STATE__)
         xdata, ydata = smote.fit_resample(xdata, ydata)
     elif method == "over":
-        ros = RandomOverSampler(random_state=0)
+        ros = RandomOverSampler(random_state=__RANDOM_STATE__)
         xdata, ydata = ros.fit_resample(xdata, ydata)
     elif method == "under":
-        rus = RandomUnderSampler(random_state=0)
+        rus = RandomUnderSampler(random_state=__RANDOM_STATE__)
         xdata, ydata = rus.fit_resample(xdata, ydata)
     else:
         raise Exception(
@@ -852,3 +857,63 @@ def my_vif_filter(
         df[yname] = y
 
     return df
+
+
+def my_pca(
+    data: DataFrame,
+    n_components: int | float = 0.95,
+    standardize: bool = False,
+    plot: bool = True,
+    figsize: tuple = (15, 7),
+    dpi: int = 100,
+) -> DataFrame:
+    """PCA를 수행하여 차원을 축소한다.
+
+    Args:
+        data (DataFrame): 데이터프레임
+        n_components (int, optional): 축소할 차원 수[float : 설명할 비율, int : 표시할 차원의 수(주성분 갯수)]. Defaults to 0.95.
+        standardize (bool, optional): True일 경우 표준화를 수행한다. Defaults to False.
+        
+    Returns:
+        DataFrame: PCA를 수행한 데이터프레임
+    """
+    if standardize:
+        df = my_standard_scaler(data)
+    else:
+        df = data.copy()
+
+    model = pca(n_components=n_components, random_state=__RANDOM_STATE__)
+    result = model.fit_transform(X=df)
+
+    my_pretty_table(result["loadings"])
+    my_pretty_table(result["topfeat"])
+
+    if plot:
+        fig, ax = model.biplot(figsize=figsize, fontsize=12, dpi=dpi)
+        ax.set_title(ax.get_title(), fontsize=14)
+        ax.set_xlabel(ax.get_xlabel(), fontsize=12)
+        ax.set_ylabel(ax.get_ylabel(), fontsize=12)
+        ax.set_xticklabels(ax.get_xticklabels(), fontsize=11)
+        ax.set_yticklabels(ax.get_yticklabels(), fontsize=11)
+        plt.show()
+        plt.close()
+
+        fig, ax = model.plot(figsize=figsize)
+        fig.set_dpi(dpi)
+        ax.set_title(ax.get_title(), fontsize=14)
+        ax.set_xlabel(ax.get_xlabel(), fontsize=12)
+        ax.set_ylabel(ax.get_ylabel(), fontsize=12)
+
+        labels = ax.get_xticklabels()
+        pc_labels = [f"PC{i+1}" for i in range(len(labels))]
+        ax.set_xticklabels(pc_labels, fontsize=11, rotation=0)
+
+        ax.set_yticklabels(ax.get_yticklabels(), fontsize=11)
+        plt.show()
+        plt.close()
+
+        plt.rcParams["font.family"] = (
+            "AppleGothic" if sys.platform == "darwin" else "Malgun Gothic"
+        )
+
+    return result["PC"]
