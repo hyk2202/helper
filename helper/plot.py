@@ -23,6 +23,7 @@ from sklearn.tree import DecisionTreeClassifier, export_graphviz
 import graphviz
 import dtreeviz
 import matplotlib.cm as cm
+from .core import get_random_state
 
 plt.rcParams["font.family"] = (
     "AppleGothic" if sys.platform == "darwin" else "Malgun Gothic"
@@ -1019,7 +1020,7 @@ def my_learing_curve(
     scoring: str = None,
     figsize: tuple = (10, 5),
     dpi: int = 150,
-    random_state: int = 123,
+    random_state = get_random_state(),
     callback: any = None,
 ) -> None:
     """학습곡선을 출력한다.

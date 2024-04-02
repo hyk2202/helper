@@ -14,8 +14,8 @@ from scipy.spatial import ConvexHull
 from scipy.cluster.hierarchy import dendrogram
 
 from .plot import my_lineplot, my_convex_hull
+from .core import get_random_state
 
-__RANDOM_STATE__ = 0
 
 
 def my_kmeans_cluster(
@@ -23,7 +23,7 @@ def my_kmeans_cluster(
     n_clusters: int,
     init: Literal["k-means++", "random"] = "k-means++",
     max_iter: int = 500,
-    random_state=__RANDOM_STATE__,
+    random_state=get_random_state(),
     algorithm: Literal["lloyd", "elkan", "auto", "full"] = "lloyd",
     plot: bool = True,
     figsize: tuple = (10, 5),
@@ -318,7 +318,7 @@ def my_kmeans(
     n_clusters: int | list = 10,
     init: Literal["k-means++", "random"] = "k-means++",
     max_iter: int = 500,
-    random_state=__RANDOM_STATE__,
+    random_state=get_random_state(),
     algorithm: Literal["lloyd", "elkan", "auto", "full"] = "lloyd",
     scoring: Literal["elbow", "e", "silhouette", "s"] = "elbow",
     plot: bool = True,

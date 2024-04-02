@@ -7,8 +7,9 @@ from pingouin import anova, welch_anova, pairwise_tukey, pairwise_tests, pairwis
 from statsmodels.sandbox.stats.multicomp import MultiComparison
 from statsmodels.stats.multicomp import pairwise_tukeyhsd
 from pingouin import pairwise_tukey, pairwise_tests, pairwise_gameshowell
-from helper.util import my_pretty_table, my_unmelt
-from helper.plot import my_heatmap
+from .util import my_pretty_table, my_unmelt
+from .plot import my_heatmap
+from .core import *
 
 def my_normal_test(data: DataFrame, method: str = "n") -> None:
     """데이터프레임 내의 모든 컬럼에 대해 정규성 검정을 수행하고 결과를 출력한다.

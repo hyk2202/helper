@@ -23,8 +23,7 @@ from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from scipy.stats import t, f
 from .util import my_pretty_table, my_trend, my_train_test_split
 from .plot import my_residplot, my_qqplot, my_learing_curve
-from .core import __ml
-
+from .core import *
 
 def __my_regression(
     classname: any,

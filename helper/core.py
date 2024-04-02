@@ -4,7 +4,65 @@ import numpy as np
 from pandas import DataFrame, Series
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
-from .util import my_pretty_table
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import LinearSVC, SVC
+from sklearn.naive_bayes import GaussianNB
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import SGDClassifier
+
+# from .util import *
+
+__RANDOM_STATE__ = 0
+
+__MAX_ITER__ = 1000
+
+__N_JOBS__ = -1
+
+__LOGISTIC_REGRESSION_HYPER_PARAMS__ = {
+    "penalty": ["l1", "l2", "elasticnet"],
+    "C": [0.001, 0.01, 0.1, 1, 10, 100],
+}
+
+__KNN_CLASSFICATION_HYPER_PARAMS__ = {
+    "n_neighbors": np.arange(2, stop=10),
+    "weights": ["uniform", "distance"],
+    "metric": ["euclidean", "manhattan", "minkowski"],
+}
+
+__NB_HYPER_PARAMS__ = {
+    # "priors" : None,
+    "var_smoothing": [1e-9, 1e-8, 1e-7, 1e-6, 1e-5]
+}
+
+__DTREE_HYPER_PARAMS__ = {
+    "criterion": ["gini", "entropy"],
+    "max_depth": np.arange(1, stop=10),
+    "min_samples_split": np.arange(2, stop=10),
+    "min_samples_leaf": np.arange(1, stop=10),
+    "max_features": ["auto", "sqrt", "log2"],
+    "ccp_alpha": [0.0],
+}
+
+__LINEAR_SVC_HYPER_PARAMS__ = {
+    "penalty": ["l1", "l2"],
+    "C": [0.001, 0.01, 0.1, 1, 10, 100],
+}
+
+__SVC_HYPER_PARAMS__ = {
+    "C": [0.001, 0.01, 0.1, 1, 10, 100],
+    "kernel": ["poly", "rbf", "sigmoid"],
+    "degree": np.arange(2, stop=10),
+    "gamma": ["scale", "auto"],
+}
+
+__SGD_HYPER_PARAMS__ = {
+    "loss": ["hinge", "log", "modified_huber", "squared_hinge", "perceptron"],
+    "penalty": ["l2", "l1", "elasticnet"],
+    "alpha": [0.0001, 0.001, 0.01, 0.1],
+    "learning_rate": ["constant", "optimal", "invscaling", "adaptive"],
+}
 
 
 def __ml(
@@ -46,16 +104,19 @@ def __ml(
         cn = c[p + 1 : -2]
 
         if "n_jobs" in dict(inspect.signature(classname.__init__).parameters):
-            args["n_jobs"] = -1
-            # print(f"\033[94m{cn}의 n_jobs 설정됨\033[0m")
+            args["n_jobs"] = __N_JOBS__
+
+        if "max_iter" in dict(inspect.signature(classname.__init__).parameters):
+            args["max_iter"] = __MAX_ITER__
 
         if "random_state" in dict(inspect.signature(classname.__init__).parameters):
-            args["random_state"] = 1234
-            # print(f"\033[94m{cn}의 random_state 설정됨\033[0m")
+            args["random_state"] = __RANDOM_STATE__
 
         if "early_stopping" in dict(inspect.signature(classname.__init__).parameters):
             args["early_stopping"] = True
-            # print(f"\033[94m{cn}의 early_stopping 설정됨\033[0m")
+
+        if "probability" in dict(inspect.signature(classname.__init__).parameters):
+            args["probability"] = True
 
         prototype_estimator = classname(**args)
         print(f"\033[92m{cn}({args}) {params}\033[0m".replace("\n", ""))
@@ -79,17 +140,16 @@ def __ml(
                 estimator=prototype_estimator,
                 param_distributions=params,
                 cv=cv,
-                n_jobs=-1,
-                n_iter=1000,
+                n_jobs=__N_JOBS__,
+                n_iter=__MAX_ITER__,
             )
         else:
-            print(scoring)
             grid = RandomizedSearchCV(
                 estimator=prototype_estimator,
                 param_distributions=params,
                 cv=cv,
-                n_jobs=-1,
-                n_iter=1000,
+                n_jobs=__N_JOBS__,
+                n_iter=__MAX_ITER__,
                 scoring=scoring,
             )
 
@@ -99,7 +159,7 @@ def __ml(
             print(f"\033[91m{cn}에서 에러발생 ({e})\033[0m")
             return None
 
-        print(grid.cv_results_)
+        # print(grid.cv_results_)
 
         result_df = DataFrame(grid.cv_results_["params"])
         # result_df["mean_test_score"] = grid.cv_results_["mean_test_score"]
@@ -108,13 +168,13 @@ def __ml(
         estimator.best_params = grid.best_params_
 
         if is_print:
-            print("[교차검증 TOP5]")
+            # print("[교차검증 TOP5]")
             # my_pretty_table(
             #     result_df.dropna(subset=["mean_test_score"])
             #     .sort_values(by="mean_test_score", ascending=False)
             #     .head()
             # )
-            my_pretty_table(result_df)
+            # my_pretty_table(result_df)
             print("")
 
             print("[Best Params]")
@@ -122,12 +182,12 @@ def __ml(
             print("")
     else:
         if "n_jobs" in dict(inspect.signature(classname.__init__).parameters):
-            params["n_jobs"] = -1
+            params["n_jobs"] = __N_JOBS__
         else:
             print("%s는 n_jobs를 허용하지 않음" % classname)
 
         if "random_state" in dict(inspect.signature(classname.__init__).parameters):
-            params["random_state"] = 1234
+            params["random_state"] = __RANDOM_STATE__
         else:
             print("%s는 random_state를 허용하지 않음" % classname)
 
@@ -167,3 +227,40 @@ def __ml(
         )
 
     return estimator
+
+
+def get_random_state() -> int:
+    """랜덤 시드를 반환한다.
+
+    Returns:
+        int: 랜덤 시드
+    """
+    return __RANDOM_STATE__
+
+
+def get_hyper_params(classname: any) -> dict:
+    """분류분석 추정기의 하이퍼파라미터를 반환한다.
+
+    Args:
+        classname (any): 분류분석 추정기
+
+    Returns:
+        dict: 하이퍼파라미터
+    """
+
+    if classname == LogisticRegression:
+        return __LOGISTIC_REGRESSION_HYPER_PARAMS__
+    elif classname == KNeighborsClassifier:
+        return __KNN_CLASSFICATION_HYPER_PARAMS__
+    elif classname == GaussianNB:
+        return __NB_HYPER_PARAMS__
+    elif classname == DecisionTreeClassifier:
+        return __DTREE_HYPER_PARAMS__
+    elif classname == LinearSVC:
+        return __LINEAR_SVC_HYPER_PARAMS__
+    elif classname == SVC:
+        return __SVC_HYPER_PARAMS__
+    elif classname == SGDClassifier:
+        return __SGD_HYPER_PARAMS__
+    else:
+        return {}
