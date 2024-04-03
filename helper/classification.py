@@ -21,12 +21,13 @@ from sklearn.naive_bayes import GaussianNB
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import SGDClassifier
+from sklearn.ensemble import VotingClassifier
 
 from scipy.stats import norm
 
 from .util import my_pretty_table
 from .plot import my_learing_curve, my_confusion_matrix, my_roc_curve, my_tree
-from .core import *
+from .core import __ml, get_hyper_params, get_estimator
 import matplotlib.pyplot as plt
 import sys
 
@@ -1327,3 +1328,106 @@ def my_classification(
     )
 
     return estimators
+
+def my_voting_classification(
+    x_train: DataFrame,
+    y_train: Series,
+    x_test: DataFrame = None,
+    y_test: Series = None,
+    hard: bool = True,
+    soft: bool = True,
+    lr: bool = True,
+    knn: bool = True,
+    nb: bool = True,
+    dtree: bool = True,
+    svc: bool = True,
+    sgd: bool = True,
+    conf_matrix: bool = True,
+    hist: bool = True,
+    roc: bool = True,
+    pr: bool = True,
+    multiclass: str = None,
+    learning_curve=True,
+    report: bool = True,
+    figsize=(10, 5),
+    dpi: int = 100,
+    is_print: bool = True,
+) -> VotingClassifier:
+    """Voting 분류분석을 수행하고 결과를 출력한다.
+
+    Args:
+        x_train (DataFrame): 훈련 데이터의 독립변수
+        y_train (Series): 훈련 데이터의 종속변수
+        x_test (DataFrame, optional): 검증 데이터의 독립변수. Defaults to None.
+        y_test (Series, optional): 검증 데이터의 종속변수. Defaults to None.
+        hard (bool, optional): hard voting을 수행할지 여부. Defaults to True.
+        soft (bool, optional): soft voting을 수행할지 여부. Defaults to True.
+        lr (bool, optional): 로지스틱 회귀분석을 수행할지 여부. Defaults to True.
+        knn (bool, optional): KNN 분류분석을 수행할지 여부. Defaults to True.
+        nb (bool, optional): 나이브베이즈 분류분석을 수행할지 여부. Defaults to True.
+        dtree (bool, optional): 의사결정나무 분류분석을 수행할지 여부. Defaults to True.
+        conf_matrix (bool, optional): 혼동행렬을 출력할지 여부. Defaults to True.
+        hist (bool, optional): 히스토그램을 출력할지 여부. Defaults to False.
+        roc (bool, optional): ROC Curve를 출력할지 여부. Defaults to False.
+        pr (bool, optional): PR Curve를 출력할지 여부. Defaults to False.
+        multiclass (str, optional): 다항분류일 경우, 다항분류 방법. Defaults to None.
+        learning_curve (bool, optional): 학습곡선을 출력할지 여부. Defaults to False.
+        report (bool, optional): 독립변수 보고를 출력할지 여부. Defaults to False.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        is_print (bool, optional): 출력 여부. Defaults to True.
+    """
+
+    params = {"voting": []}
+
+    if hard:
+        params["voting"].append("hard")
+
+    if soft:
+        params["voting"].append("soft")
+
+    estimators = []
+
+    if lr:
+        estimators.append(("lr", get_estimator(LogisticRegression)))
+        params.update(get_hyper_params(classname=LogisticRegression, key="lr"))
+
+    if knn:
+        estimators.append(("knn", get_estimator(KNeighborsClassifier)))
+        params.update(get_hyper_params(classname=KNeighborsClassifier, key="knn"))
+
+    if nb:
+        estimators.append(("nb", get_estimator(GaussianNB)))
+        params.update(get_hyper_params(classname=GaussianNB, key="nb"))
+
+    if dtree:
+        estimators.append(("dtree", get_estimator(DecisionTreeClassifier)))
+        params.update(get_hyper_params(classname=DecisionTreeClassifier, key="dtree"))
+
+    if svc:
+        estimators.append(("svc", get_estimator(SVC)))
+        params.update(get_hyper_params(classname=SVC, key="svc"))
+
+    if sgd and soft == False:
+        estimators.append(("sgd", get_estimator(SGDClassifier)))
+        params.update(get_hyper_params(classname=SGDClassifier, key="sgd"))
+
+    return __my_classification(
+        classname=VotingClassifier,
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        conf_matrix=conf_matrix,
+        hist=hist,
+        roc=roc,
+        pr=pr,
+        multiclass=multiclass,
+        learning_curve=learning_curve,
+        report=report,
+        figsize=figsize,
+        dpi=dpi,
+        is_print=is_print,
+        estimators=estimators,
+        **params,
+    )

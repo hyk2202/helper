@@ -1,17 +1,18 @@
 import inspect
+import sys, os
 
 import numpy as np
 from pandas import DataFrame, Series
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
 
-from sklearn.linear_model import LogisticRegression
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import LinearSVC, SVC
+from sklearn.linear_model import LinearRegression, Ridge, Lasso, LogisticRegression
+from sklearn.neighbors import KNeighborsRegressor, KNeighborsClassifier
+from sklearn.svm import SVR, LinearSVC, SVC
 from sklearn.naive_bayes import GaussianNB
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.linear_model import SGDClassifier
-
+from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
+from sklearn.linear_model import SGDRegressor, SGDClassifier
+from tabulate import tabulate
 # from .util import *
 
 __RANDOM_STATE__ = 0
@@ -19,6 +20,52 @@ __RANDOM_STATE__ = 0
 __MAX_ITER__ = 1000
 
 __N_JOBS__ = -1
+
+__LINEAR_REGRESSION_HYPER_PARAMS__ = {"fit_intercept": [True, False]}
+
+__RIDGE_HYPER_PARAMS__ = {
+    "alpha": [0.001, 0.01, 0.1, 1, 10, 100],
+    "solver": ["auto", "svd", "cholesky", "lsqr", "sparse_cg", "sag", "saga"],
+}
+
+__LASSO_HYPER_PARAMS__ = {
+    "alpha": [0.001, 0.01, 0.1, 1, 10, 100],
+    "selection": ["cyclic", "random"],
+}
+
+__KNN_REGRESSION_HYPER_PARAMS__ = {
+    "n_neighbors": np.arange(2, stop=10),
+    "weights": ["uniform", "distance"],
+    "metric": ["euclidean", "manhattan", "minkowski"],
+}
+
+__DTREE_REGRESSION_HYPER_PARAMS__ = {
+    "criterion": ["squared_error", "friedman_mse", "absolute_error", "poisson"],
+    "splitter": ["best", "random"],
+    # "min_samples_split": np.arange(2, stop=10),
+    # "min_samples_leaf": np.arange(1, stop=10),
+    # "max_features": ["auto", "sqrt", "log2"]
+}
+
+__SVR_HYPER_PARAMS__ = {
+    "kernel": ["linear", "poly", "rbf", "sigmoid"],
+    "C": [0.001, 0.01, 0.1, 1, 10],
+    "epsilon": [0.1, 0.2, 0.3, 0.4, 0.5],
+    "gamma": ["scale", "auto"],
+}
+
+__SGD_REGRESSION_HYPER_PARAMS__ = {
+    "loss": [
+        "squared_loss",
+        "huber",
+        "epsilon_insensitive",
+        "squared_epsilon_insensitive",
+    ],
+    "penalty": ["l2", "l1", "elasticnet"],
+    "alpha": [0.001, 0.01, 0.1],
+    "learning_rate": ["constant", "optimal", "invscaling", "adaptive"],
+}
+
 
 __LOGISTIC_REGRESSION_HYPER_PARAMS__ = {
     "penalty": ["l1", "l2", "elasticnet"],
@@ -41,8 +88,7 @@ __DTREE_HYPER_PARAMS__ = {
     "max_depth": np.arange(1, stop=10),
     "min_samples_split": np.arange(2, stop=10),
     "min_samples_leaf": np.arange(1, stop=10),
-    "max_features": ["auto", "sqrt", "log2"],
-    "ccp_alpha": [0.0],
+    "max_features": ["auto", "sqrt", "log2"]
 }
 
 __LINEAR_SVC_HYPER_PARAMS__ = {
@@ -51,19 +97,47 @@ __LINEAR_SVC_HYPER_PARAMS__ = {
 }
 
 __SVC_HYPER_PARAMS__ = {
-    "C": [0.001, 0.01, 0.1, 1, 10, 100],
+    "C": [0.001, 0.01, 0.1, 1, 10],
     "kernel": ["poly", "rbf", "sigmoid"],
     "degree": np.arange(2, stop=10),
     "gamma": ["scale", "auto"],
 }
 
-__SGD_HYPER_PARAMS__ = {
+__SGD_CLASSFICATION_HYPER_PARAMS__ = {
     "loss": ["hinge", "log", "modified_huber", "squared_hinge", "perceptron"],
     "penalty": ["l2", "l1", "elasticnet"],
-    "alpha": [0.0001, 0.001, 0.01, 0.1],
+    "alpha": [0.001, 0.01, 0.1],
     "learning_rate": ["constant", "optimal", "invscaling", "adaptive"],
 }
 
+def get_estimator(classname: any, estimators: list = None) -> any:
+    c = str(classname)
+    p = c.rfind(".")
+    cn = c[p + 1 : -2]
+
+    args = {}
+
+    if "estimators" in dict(inspect.signature(classname.__init__).parameters):
+        args["estimators"] = estimators
+
+    if "n_jobs" in dict(inspect.signature(classname.__init__).parameters):
+        args["n_jobs"] = __N_JOBS__
+
+    if "max_iter" in dict(inspect.signature(classname.__init__).parameters):
+        args["max_iter"] = __MAX_ITER__
+
+    if "random_state" in dict(inspect.signature(classname.__init__).parameters):
+        args["random_state"] = __RANDOM_STATE__
+
+    if "early_stopping" in dict(inspect.signature(classname.__init__).parameters):
+        args["early_stopping"] = True
+
+    if "probability" in dict(inspect.signature(classname.__init__).parameters):
+        args["probability"] = True
+
+    prototype_estimator = classname(**args)
+    # print(f"\033[92m{cn}({args})\033[0m".replace("\n", ""))
+    return prototype_estimator
 
 def __ml(
     classname: any,
@@ -73,8 +147,8 @@ def __ml(
     y_test: Series = None,
     cv: int = 5,
     scoring: any = None,
+    estimators: list = None,
     is_print: bool = True,
-    pruning: bool = False,
     **params,
 ) -> any:
     """머신러닝 분석을 수행하고 결과를 출력한다.
@@ -97,44 +171,10 @@ def __ml(
         if not params:
             params = {}
 
-        args = {}
+        prototype_estimator = get_estimator(
+            classname=classname, estimators=estimators
+        )  # 모델 객체 생성
 
-        c = str(classname)
-        p = c.rfind(".")
-        cn = c[p + 1 : -2]
-
-        if "n_jobs" in dict(inspect.signature(classname.__init__).parameters):
-            args["n_jobs"] = __N_JOBS__
-
-        if "max_iter" in dict(inspect.signature(classname.__init__).parameters):
-            args["max_iter"] = __MAX_ITER__
-
-        if "random_state" in dict(inspect.signature(classname.__init__).parameters):
-            args["random_state"] = __RANDOM_STATE__
-
-        if "early_stopping" in dict(inspect.signature(classname.__init__).parameters):
-            args["early_stopping"] = True
-
-        if "probability" in dict(inspect.signature(classname.__init__).parameters):
-            args["probability"] = True
-
-        prototype_estimator = classname(**args)
-        print(f"\033[92m{cn}({args}) {params}\033[0m".replace("\n", ""))
-
-        if pruning and (
-            classname == DecisionTreeClassifier or classname == DecisionTreeRegressor
-        ):
-            try:
-                dtree = classname(**args)
-                path = dtree.cost_complexity_pruning_path(x_train, y_train)
-                ccp_alphas = path.ccp_alphas[1:-1]
-                params["ccp_alpha"] = ccp_alphas
-            except Exception as e:
-                print(f"\033[91m{cn}의 가지치기 실패 ({e})\033[0m")
-
-        # grid = GridSearchCV(
-        #     prototype_estimator, param_grid=params, cv=cv, n_jobs=-1
-        # )
         if scoring is None:
             grid = RandomizedSearchCV(
                 estimator=prototype_estimator,
@@ -142,7 +182,15 @@ def __ml(
                 cv=cv,
                 n_jobs=__N_JOBS__,
                 n_iter=__MAX_ITER__,
+                random_state=__RANDOM_STATE__,
             )
+            # grid = GridSearchCV(
+            #     estimator=prototype_estimator,
+            #     param_grid=params,
+            #     cv=cv,
+            #     n_jobs=__N_JOBS__,
+            #     n_iter=__MAX_ITER__,
+            # )
         else:
             grid = RandomizedSearchCV(
                 estimator=prototype_estimator,
@@ -150,48 +198,59 @@ def __ml(
                 cv=cv,
                 n_jobs=__N_JOBS__,
                 n_iter=__MAX_ITER__,
+                random_state=__RANDOM_STATE__,
                 scoring=scoring,
             )
+            # grid = GridSearchCV(
+            #     estimator=prototype_estimator,
+            #     param_grid=params,
+            #     cv=cv,
+            #     n_jobs=__N_JOBS__,
+            #     n_iter=__MAX_ITER__,
+            #     scoring=scoring,
+            # )
 
         try:
             grid.fit(x_train, y_train)
         except Exception as e:
-            print(f"\033[91m{cn}에서 에러발생 ({e})\033[0m")
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(
+                f"\033[91m[{fname}:{exc_tb.tb_lineno}] {str(exc_type)} {exc_obj}\033[0m"
+            )
             return None
 
         # print(grid.cv_results_)
 
         result_df = DataFrame(grid.cv_results_["params"])
-        # result_df["mean_test_score"] = grid.cv_results_["mean_test_score"]
+
+        if "mean_test_score" in grid.cv_results_:
+            result_df["mean_test_score"] = grid.cv_results_["mean_test_score"]
+            result_df = result_df.dropna(subset=["mean_test_score"]).sort_values(
+                by="mean_test_score", ascending=False
+            )
 
         estimator = grid.best_estimator_
         estimator.best_params = grid.best_params_
 
         if is_print:
-            # print("[교차검증 TOP5]")
-            # my_pretty_table(
-            #     result_df.dropna(subset=["mean_test_score"])
-            #     .sort_values(by="mean_test_score", ascending=False)
-            #     .head()
-            # )
-            # my_pretty_table(result_df)
+            print("[교차검증 TOP5]")
+            print(
+                tabulate(
+                    result_df.head().reset_index(drop=True),
+                    headers="keys",
+                    tablefmt="psql",
+                    showindex=True,
+                    numalign="right",
+                )
+            )
             print("")
 
             print("[Best Params]")
             print(grid.best_params_)
             print("")
     else:
-        if "n_jobs" in dict(inspect.signature(classname.__init__).parameters):
-            params["n_jobs"] = __N_JOBS__
-        else:
-            print("%s는 n_jobs를 허용하지 않음" % classname)
-
-        if "random_state" in dict(inspect.signature(classname.__init__).parameters):
-            params["random_state"] = __RANDOM_STATE__
-        else:
-            print("%s는 random_state를 허용하지 않음" % classname)
-
-        estimator = classname(**params)
+        estimator = get_estimator(classname=classname, estimators=estimators)
         estimator.fit(x_train, y_train)
 
     # ------------------------------------------------------
@@ -237,8 +296,25 @@ def get_random_state() -> int:
     """
     return __RANDOM_STATE__
 
+def get_max_iter() -> int:
+    """최대 반복 횟수를 반환한다.
 
-def get_hyper_params(classname: any) -> dict:
+    Returns:
+        int: 최대 반복 횟수
+    """
+    return __MAX_ITER__
+
+
+def get_n_jobs() -> int:
+    """병렬 처리 개수를 반환한다.
+
+    Returns:
+        int: 병렬 처리 개수
+    """
+    return __N_JOBS__
+
+
+def get_hyper_params(classname: any, key: str = None) -> dict:
     """분류분석 추정기의 하이퍼파라미터를 반환한다.
 
     Args:
@@ -248,19 +324,40 @@ def get_hyper_params(classname: any) -> dict:
         dict: 하이퍼파라미터
     """
 
-    if classname == LogisticRegression:
-        return __LOGISTIC_REGRESSION_HYPER_PARAMS__
+    params = {}
+
+    if classname == LinearRegression:
+        params = __LINEAR_REGRESSION_HYPER_PARAMS__.copy()
+    elif classname == Ridge:
+        params = __RIDGE_HYPER_PARAMS__.copy()
+    elif classname == Lasso:
+        params = __LASSO_HYPER_PARAMS__.copy()
+    elif classname == SVR:
+        params = __SVR_HYPER_PARAMS__.copy()
+    elif classname == DecisionTreeRegressor:
+        params = __DTREE_REGRESSION_HYPER_PARAMS__.copy()
+    elif classname == SGDRegressor:
+        params = __SGD_REGRESSION_HYPER_PARAMS__.copy()
+    elif classname == LogisticRegression:
+        params = __LOGISTIC_REGRESSION_HYPER_PARAMS__.copy()
     elif classname == KNeighborsClassifier:
-        return __KNN_CLASSFICATION_HYPER_PARAMS__
+        params = __KNN_CLASSFICATION_HYPER_PARAMS__.copy()
     elif classname == GaussianNB:
-        return __NB_HYPER_PARAMS__
+        params = __NB_HYPER_PARAMS__.copy()
     elif classname == DecisionTreeClassifier:
-        return __DTREE_HYPER_PARAMS__
+        params = __DTREE_HYPER_PARAMS__.copy()
     elif classname == LinearSVC:
-        return __LINEAR_SVC_HYPER_PARAMS__
+        params = __LINEAR_SVC_HYPER_PARAMS__.copy()
     elif classname == SVC:
-        return __SVC_HYPER_PARAMS__
+        params = __SVC_HYPER_PARAMS__.copy()
     elif classname == SGDClassifier:
-        return __SGD_HYPER_PARAMS__
-    else:
-        return {}
+        params = __SGD_CLASSFICATION_HYPER_PARAMS__.copy()
+
+    key_list = list(params.keys())
+
+    if params and key is not None:
+        for p in key_list:
+            params[f"{key}__{p}"] = params[p]
+            del params[p]
+
+    return params

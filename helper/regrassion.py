@@ -7,7 +7,6 @@ import concurrent.futures as futures
 from pandas import DataFrame, Series, concat
 
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, SGDRegressor
-from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.svm import SVR
