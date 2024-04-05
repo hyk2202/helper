@@ -17,6 +17,10 @@ from sklearn.ensemble import (
     BaggingRegressor,
     RandomForestClassifier,
     RandomForestRegressor,
+    AdaBoostClassifier,
+    AdaBoostRegressor,
+    GradientBoostingClassifier,
+    GradientBoostingRegressor,
 )
 from tabulate import tabulate
 
@@ -126,46 +130,76 @@ __RANDOM_FOREST_REGRESSION_HYPER_PARAMS__ = {
     "n_estimators": [10, 20, 50, 100],
     "criterion": ["squared_error", "absolute_error", "friedman_mse", "poisson"],
     "max_features": ["sqrt", "log2"],
-    "max_depth": [2, 5, 10, 20, 50, None],
+    "max_depth": [10, 20, 50, None],
 }
 
 __RANDOM_FOREST_CLASSIFICATION_HYPER_PARAMS__ = {
     "n_estimators": [10, 20, 50, 100],
     "criterion": ["gini", "entropy"],
     "max_features": ["sqrt", "log2", None],
-    "max_depth": [2, 5, 10, 20, None],
+    "max_depth": [10, 20, None],
+}
+
+__ADA_BOOSTING_CLASSIFICATION_HYPER_PARAMS__ = {
+    "n_estimators": [10, 20, 50, 100],
+    "learning_rate": [0.001, 0.01, 0.1, 1],
+}
+
+__ADA_BOOSTING_REGRESSION_HYPER_PARAMS__ = {
+    "n_estimators": [10, 20, 50, 100],
+    "learning_rate": [0.001, 0.01, 0.1, 1],
+}
+
+__GRADIENT_BOOSTING_CLASSIFICATION_HYPER_PARAMS__ = {
+    "n_estimators": [10, 20, 50, 100],
+    "learning_rate": [0.001, 0.01, 0.1, 1],
+    "subsample": [0.5, 0.7, 1.0],
+}
+
+__GRADIENT_BOOSTING_REGRESSION_HYPER_PARAMS__ = {
+    "n_estimators": [10, 20, 50, 100],
+    "learning_rate": [0.001, 0.01, 0.1, 1],
+    "subsample": [0.5, 0.7, 1.0],
 }
 
 
-
-def get_estimator(classname: any, estimators: list = None) -> any:
-    c = str(classname)
+def get_estimator(
+    classname: any, estimators: list = None, base_estimator: any = None
+) -> any:
+    c = str(object=classname)
     p = c.rfind(".")
     cn = c[p + 1 : -2]
 
     args = {}
 
-    if "estimators" in dict(inspect.signature(classname.__init__).parameters):
+    # VottingClassifier, VotingRegressor
+    if "estimators" in dict(inspect.signature(obj=classname.__init__).parameters):
         args["estimators"] = estimators
 
-    if "n_jobs" in dict(inspect.signature(classname.__init__).parameters):
+    # BaggingClassifier, BaggingRegressor
+    if "estimator" in dict(inspect.signature(obj=classname.__init__).parameters):
+        args["estimator"] = base_estimator
+
+    # 공통 속성들
+    if "n_jobs" in dict(inspect.signature(obj=classname.__init__).parameters):
         args["n_jobs"] = __N_JOBS__
 
-    if "max_iter" in dict(inspect.signature(classname.__init__).parameters):
-        args["max_iter"] = __MAX_ITER__
+    # if "max_iter" in dict(inspect.signature(obj=classname.__init__).parameters):
+    #     args["max_iter"] = __MAX_ITER__
 
-    if "random_state" in dict(inspect.signature(classname.__init__).parameters):
+    if "random_state" in dict(inspect.signature(obj=classname.__init__).parameters):
         args["random_state"] = __RANDOM_STATE__
 
-    if "early_stopping" in dict(inspect.signature(classname.__init__).parameters):
+    if "early_stopping" in dict(inspect.signature(obj=classname.__init__).parameters):
         args["early_stopping"] = True
 
-    if "probability" in dict(inspect.signature(classname.__init__).parameters):
+    if "probability" in dict(inspect.signature(obj=classname.__init__).parameters):
         args["probability"] = True
 
-    prototype_estimator = classname(**args)
-    # print(f"\033[92m{cn}({args})\033[0m".replace("\n", ""))
-    return prototype_estimator
+    if "verbose" in dict(inspect.signature(obj=classname.__init__).parameters):
+        args["verbose"] = False
+
+    return classname(**args)
 
 
 def __ml(
@@ -389,12 +423,22 @@ def get_hyper_params(classname: any, key: str = None) -> dict:
         params = __RANDOM_FOREST_REGRESSION_HYPER_PARAMS__.copy()
     elif classname == RandomForestClassifier:
         params = __RANDOM_FOREST_CLASSIFICATION_HYPER_PARAMS__.copy()
+    elif classname == AdaBoostRegressor:
+        params = __ADA_BOOSTING_REGRESSION_HYPER_PARAMS__.copy()
+    elif classname == AdaBoostClassifier:
+        params = __ADA_BOOSTING_CLASSIFICATION_HYPER_PARAMS__.copy()
+    elif classname == GradientBoostingRegressor:
+        params = __GRADIENT_BOOSTING_REGRESSION_HYPER_PARAMS__.copy()
+    elif classname == GradientBoostingClassifier:
+        params = __GRADIENT_BOOSTING_CLASSIFICATION_HYPER_PARAMS__.copy()
 
-    key_list = list(params.keys())
+    if params:
+        key_list = list(params.keys())
 
-    if params and key is not None:
-        for p in key_list:
-            params[f"{key}__{p}"] = params[p]
-            del params[p]
+        if params and key is not None:
+            for p in key_list:
+                params[f"{key}__{p}"] = params[p]
+                del params[p]
 
+    # print(f"[{classname}] {params}")
     return params

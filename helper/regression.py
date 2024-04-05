@@ -13,7 +13,13 @@ from sklearn.svm import SVR
 
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import VotingRegressor, BaggingRegressor, RandomForestRegressor
+from sklearn.ensemble import (
+    VotingRegressor,
+    BaggingRegressor,
+    RandomForestRegressor,
+    AdaBoostRegressor,
+    GradientBoostingRegressor,
+)
 
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from statsmodels.stats.stattools import durbin_watson
@@ -120,7 +126,6 @@ def __my_regression(
 
     return estimator
 
-
 def __regression_report_plot(ax: plt.Axes, x, y, xname, yname, y_pred, deg) -> None:
     if deg == 1:
         sb.regplot(x=x, y=y, ci=95, label="관측치", ax=ax)
@@ -145,7 +150,7 @@ def __regression_report_plot(ax: plt.Axes, x, y, xname, yname, y_pred, deg) -> N
     ax.legend()
     ax.grid()
 
-def my_auto_linear_regrassion(df:DataFrame, yname:str, cv:int=5, learning_curve: bool = True, degree : int = 1, plot: bool = True, report=True, resid_test=False, figsize=(10, 4), dpi=150, sort: str = None,order: str = None,p_value_num:float=0.05) -> LinearRegression:
+def my_auto_linear_regression(df:DataFrame, yname:str, cv:int=5, learning_curve: bool = True, degree : int = 1, plot: bool = True, report=True, resid_test=False, figsize=(10, 4), dpi=150, sort: str = None,order: str = None,p_value_num:float=0.05) -> LinearRegression:
     """선형회귀분석을 수행하고 결과를 출력한다.
 
     Args:
@@ -291,13 +296,13 @@ def my_auto_linear_regrassion(df:DataFrame, yname:str, cv:int=5, learning_curve:
         # print('-'*50)
         # print('뺀 변수 :',result_df['독립변수'][result_df['VIF'].idxmax()])
         # print('-'*50)
-        return my_auto_linear_regrassion(df.drop(result_df['독립변수'][result_df['VIF'].idxmax()],axis=1), yname, cv, degree,plot,report,resid_test, figsize, dpi, order,p_value_num )
+        return my_auto_linear_regression(df.drop(result_df['독립변수'][result_df['VIF'].idxmax()],axis=1), yname, cv, degree,plot,report,resid_test, figsize, dpi, order,p_value_num )
     else:
         if result_df["유의확률"].max() >= p_value_num:
             # print('-'*50)
             # print('뺀 변수 :',result_df['독립변수'][result_df['유의확률'].idxmax()])
             # print('-'*50)
-            return my_auto_linear_regrassion(df.drop(result_df['독립변수'][result_df['유의확률'].idxmax()],axis=1), yname,cv, degree,plot,report,resid_test, figsize, dpi, order,p_value_num )
+            return my_auto_linear_regression(df.drop(result_df['독립변수'][result_df['유의확률'].idxmax()],axis=1), yname,cv, degree,plot,report,resid_test, figsize, dpi, order,p_value_num )
     
     x_train, x_test, y_train, y_test = my_train_test_split(df, yname, test_size=0.2)
     
@@ -431,7 +436,7 @@ def my_auto_linear_regrassion(df:DataFrame, yname:str, cv:int=5, learning_curve:
     print("")
     return fit
     
-def my_linear_regrassion(x_train: DataFrame, y_train: Series, x_test: DataFrame = None, y_test: Series = None, cv: int = 5,  learning_curve: bool = True, deg:int = 1,degree : int = 1, plot: bool = True, is_print:bool = True,report=True, resid_test=False, figsize=(10, 4), dpi=150, sort: str = None,order: str = None,p_value_num:float=0.05 ) -> LinearRegression:
+def my_linear_regression(x_train: DataFrame, y_train: Series, x_test: DataFrame = None, y_test: Series = None, cv: int = 5,  learning_curve: bool = True, deg:int = 1,degree : int = 1, plot: bool = True, is_print:bool = True,report=True, resid_test=False, figsize=(10, 4), dpi=150, sort: str = None,order: str = None,p_value_num:float=0.05 ) -> LinearRegression:
     """선형회귀분석을 수행하고 결과를 출력한다.
 
     Args:
@@ -486,7 +491,7 @@ def my_linear_regrassion(x_train: DataFrame, y_train: Series, x_test: DataFrame 
         **params,
     )
 
-def my_ridge_regrassion(x_train: DataFrame, y_train: Series, x_test: DataFrame = None, y_test: Series = None, cv: int = 5, learning_curve: bool = True, report=False, plot: bool = False, degree: int = 1, resid_test=False, figsize=(10, 5), dpi: int = 100, sort: str = None, params: dict = {'alpha': [0.01, 0.1, 1, 10, 100]}) -> LinearRegression:
+def my_ridge_regression(x_train: DataFrame, y_train: Series, x_test: DataFrame = None, y_test: Series = None, cv: int = 5, learning_curve: bool = True, report=False, plot: bool = False, degree: int = 1, resid_test=False, figsize=(10, 5), dpi: int = 100, sort: str = None, params: dict = {'alpha': [0.01, 0.1, 1, 10, 100]}) -> LinearRegression:
     """릿지회귀분석을 수행하고 결과를 출력한다.
 
     Args:
@@ -570,7 +575,7 @@ def my_ridge_regrassion(x_train: DataFrame, y_train: Series, x_test: DataFrame =
 
     return estimator
 
-def my_lasso_regrassion(x_train: DataFrame, y_train: Series, x_test: DataFrame = None, y_test: Series = None, cv: int = 5, learning_curve: bool = True, report=False, plot: bool = False, degree: int = 1, resid_test=False, figsize=(10, 5), dpi: int = 100, sort: str = None, params: dict = {'alpha': [0.01, 0.1, 1, 10, 100]}) -> LinearRegression:
+def my_lasso_regression(x_train: DataFrame, y_train: Series, x_test: DataFrame = None, y_test: Series = None, cv: int = 5, learning_curve: bool = True, report=False, plot: bool = False, degree: int = 1, resid_test=False, figsize=(10, 5), dpi: int = 100, sort: str = None, params: dict = {'alpha': [0.01, 0.1, 1, 10, 100]}) -> LinearRegression:
     """라쏘회귀분석을 수행하고 결과를 출력한다.
 
     Args:
@@ -1069,7 +1074,6 @@ def my_resid_test(x: DataFrame, y: Series, y_pred: Series, figsize: tuple=(10, 4
     my_resid_independence(y, y_pred)
 
 
-
 def my_ridge_regression(
     x_train: DataFrame,
     y_train: Series,
@@ -1134,7 +1138,6 @@ def my_ridge_regression(
         **params,
     )
 
-
 def my_lasso_regression(
     x_train: DataFrame,
     y_train: Series,
@@ -1198,7 +1201,6 @@ def my_lasso_regression(
         is_print=is_print,
         **params,
     )
-
 
 def my_knn_regression(
     x_train: DataFrame,
@@ -1267,7 +1269,6 @@ def my_knn_regression(
         is_print=is_print,
         **params,
     )
-
 
 def my_dtree_regression(
     x_train: DataFrame,
@@ -1343,7 +1344,6 @@ def my_dtree_regression(
         **params,
     )
 
-
 def my_svr_regression(
     x_train: DataFrame,
     y_train: Series,
@@ -1417,7 +1417,6 @@ def my_svr_regression(
         is_print=is_print,
         **params,
     )
-
 
 def my_sgd_regression(
     x_train: DataFrame,
@@ -1496,6 +1495,69 @@ def my_sgd_regression(
         is_print=is_print,
         **params,
     )
+def my_rf_regression(
+    x_train: DataFrame,
+    y_train: Series,
+    x_test: DataFrame = None,
+    y_test: Series = None,
+    cv: int = 5,
+    learning_curve: bool = True,
+    report=True,
+    plot: bool = False,
+    deg: int = 1,
+    resid_test=False,
+    figsize=(10, 5),
+    dpi: int = 100,
+    sort: str = None,
+    is_print: bool = True,
+    **params,
+) -> RandomForestRegressor:
+    """RandomForest 회귀분석을 수행하고 결과를 출력한다.
+
+    Args:
+        x_train (DataFrame): 독립변수에 대한 훈련 데이터
+        y_train (Series): 종속변수에 대한 훈련 데이터
+        x_test (DataFrame): 독립변수에 대한 검증 데이터. Defaults to None.
+        y_test (Series): 종속변수에 대한 검증 데이터. Defaults to None.
+        cv (int, optional): 교차검증 횟수. Defaults to 0.
+        learning_curve (bool, optional): 학습곡선을 출력할지 여부. Defaults to False.
+        report (bool, optional): 회귀분석 결과를 보고서로 출력할지 여부. Defaults to True.
+        plot (bool, optional): 시각화 여부. Defaults to True.
+        deg (int, optional): 다항회귀분석의 차수. Defaults to 1.
+        resid_test (bool, optional): 잔차의 가정을 확인할지 여부. Defaults to False.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        sort (bool, optional): 독립변수 결과 보고 표의 정렬 기준 (v, p)
+        is_print (bool, optional): 출력 여부. Defaults to True.
+        **params (dict, optional): 하이퍼파라미터. Defaults to None.
+
+    Returns:
+        SGDRegressor
+    """
+
+    # 교차검증 설정
+    if cv > 0:
+        if not params:
+            params = get_hyper_params(classname=RandomForestRegressor)
+
+    return __my_regression(
+        classname=RandomForestRegressor,
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        cv=cv,
+        learning_curve=learning_curve,
+        report=report,
+        plot=plot,
+        deg=deg,
+        resid_test=resid_test,
+        figsize=figsize,
+        dpi=dpi,
+        sort=sort,
+        is_print=is_print,
+        **params,
+    )
 
 def my_regression(
     x_train: DataFrame,
@@ -1545,26 +1607,32 @@ def my_regression(
     estimator_names = []  # 분류분석 모델의 이름을 저장할 문자열 리스트
     callstack = []
 
-    if not algorithm or "linear" in algorithm:
+    if not algorithm:
+        algorithm = ["linear", "ridge", "lasso", "knn", "dtree", "svr", "sgd", "rf"]
+
+    if "linear" in algorithm:
         callstack.append(my_linear_regression)
 
-    if not algorithm or "ridge" in algorithm:
+    if "ridge" in algorithm:
         callstack.append(my_ridge_regression)
 
-    if not algorithm or "lasso" in algorithm:
+    if "lasso" in algorithm:
         callstack.append(my_lasso_regression)
 
-    if not algorithm or "knn" in algorithm:
+    if "knn" in algorithm:
         callstack.append(my_knn_regression)
 
-    if not algorithm or "dtree" in algorithm:
+    if "dtree" in algorithm:
         callstack.append(my_dtree_regression)
 
-    if not algorithm or "svr" in algorithm:
+    if "svr" in algorithm:
         callstack.append(my_svr_regression)
 
-    if not algorithm or "sgd" in algorithm:
+    if "sgd" in algorithm:
         callstack.append(my_sgd_regression)
+
+    if "rf" in algorithm:
+        callstack.append(my_rf_regression)
 
     score_fields = []
     score_method = []
@@ -1672,7 +1740,6 @@ def my_regression(
     )
 
     return estimators
-
 
 
 def my_voting_regression(
@@ -1864,5 +1931,163 @@ def my_bagging_regression(
         sort=sort,
         is_print=True,
         base_estimator=estimator,
+        **params,
+    )
+
+
+
+def my_ada_regression(
+    x_train: DataFrame,
+    y_train: Series,
+    x_test: DataFrame = None,
+    y_test: Series = None,
+    estimator: type = None,
+    cv: int = 5,
+    learning_curve: bool = True,
+    report=True,
+    plot: bool = True,
+    deg: int = 1,
+    resid_test=False,
+    figsize=(10, 5),
+    dpi: int = 100,
+    sort: str = None,
+    algorithm: list = None,
+    scoring: list = ["rmse", "mse", "r2", "mae", "mape", "mpe"],
+    **params,
+) -> AdaBoostRegressor:
+    """AdaBoost 앙상블 회귀분석을 수행하고 결과를 출력한다.
+
+    Args:
+        estimator (type): 기본 회귀분석 알고리즘
+        x_train (DataFrame): 훈련 데이터의 독립변수
+        y_train (Series): 훈련 데이터의 종속변수
+        x_test (DataFrame, optional): 검증 데이터의 독립변수. Defaults to None.
+        y_test (Series, optional): 검증 데이터의 종속변수. Defaults to None.
+        cv (int, optional): 교차검증 횟수. Defaults to 0.
+        learning_curve (bool, optional): 학습곡선을 출력할지 여부. Defaults to False.
+        report (bool, optional): 회귀분석 결과를 보고서로 출력할지 여부. Defaults to True.
+        plot (bool, optional): 시각화 여부. Defaults to True.
+        deg (int, optional): 다항회귀분석의 차수. Defaults to 1.
+        resid_test (bool, optional): 잔차의 가정을 확인할지 여부. Defaults to False.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        sort (bool, optional): 독립변수 결과 보고 표의 정렬 기준 (v, p)
+        algorithm: list = None,
+        **params (dict, optional): 하이퍼파라미터. Defaults to None.
+
+    Returns:
+        AdaBoostRegressor
+    """
+
+    if estimator is None:
+        estimator = my_regression(
+            x_train=x_train,
+            y_train=y_train,
+            x_test=x_test,
+            y_test=y_test,
+            cv=cv,
+            learning_curve=learning_curve,
+            report=False,
+            plot=False,
+            deg=deg,
+            resid_test=False,
+            figsize=figsize,
+            dpi=dpi,
+            sort=sort,
+            algorithm=algorithm,
+            scoring=scoring,
+            **params,
+        )
+
+        estimator = estimator["best"]
+
+    if type(estimator) is type:
+        params = get_hyper_params(classname=estimator, key="estimator")
+        estimator = get_estimator(classname=estimator)
+    else:
+        params = get_hyper_params(classname=estimator.__class__, key="estimator")
+
+    bagging_params = get_hyper_params(classname=AdaBoostRegressor)
+    params.update(bagging_params)
+
+    return __my_regression(
+        classname=AdaBoostRegressor,
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        cv=cv,
+        learning_curve=learning_curve,
+        report=report,
+        plot=plot,
+        deg=deg,
+        resid_test=resid_test,
+        figsize=figsize,
+        dpi=dpi,
+        sort=sort,
+        is_print=True,
+        base_estimator=estimator,
+        **params,
+    )
+
+
+def my_gbm_regression(
+    x_train: DataFrame,
+    y_train: Series,
+    x_test: DataFrame = None,
+    y_test: Series = None,
+    cv: int = 5,
+    learning_curve: bool = True,
+    report=True,
+    plot: bool = True,
+    deg: int = 1,
+    resid_test=False,
+    figsize=(10, 5),
+    dpi: int = 100,
+    sort: str = None,
+    scoring: list = ["rmse", "mse", "r2", "mae", "mape", "mpe"],
+    **params,
+) -> GradientBoostingRegressor:
+    """GradientBoosting 앙상블 회귀분석을 수행하고 결과를 출력한다.
+
+    Args:
+        x_train (DataFrame): 훈련 데이터의 독립변수
+        y_train (Series): 훈련 데이터의 종속변수
+        x_test (DataFrame, optional): 검증 데이터의 독립변수. Defaults to None.
+        y_test (Series, optional): 검증 데이터의 종속변수. Defaults to None.
+        cv (int, optional): 교차검증 횟수. Defaults to 0.
+        learning_curve (bool, optional): 학습곡선을 출력할지 여부. Defaults to False.
+        report (bool, optional): 회귀분석 결과를 보고서로 출력할지 여부. Defaults to True.
+        plot (bool, optional): 시각화 여부. Defaults to True.
+        deg (int, optional): 다항회귀분석의 차수. Defaults to 1.
+        resid_test (bool, optional): 잔차의 가정을 확인할지 여부. Defaults to False.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        sort (bool, optional): 독립변수 결과 보고 표의 정렬 기준 (v, p)
+        algorithm: list = None,
+        **params (dict, optional): 하이퍼파라미터. Defaults to None.
+
+    Returns:
+        GradientBoostingRegressor
+    """
+
+    params = get_hyper_params(classname=AdaBoostRegressor)
+
+    return __my_regression(
+        classname=GradientBoostingRegressor,
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        cv=cv,
+        learning_curve=learning_curve,
+        report=report,
+        plot=plot,
+        deg=deg,
+        resid_test=resid_test,
+        figsize=figsize,
+        dpi=dpi,
+        sort=sort,
+        is_print=True,
         **params,
     )

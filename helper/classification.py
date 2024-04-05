@@ -21,12 +21,11 @@ from sklearn.naive_bayes import GaussianNB
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import SGDClassifier
-from sklearn.ensemble import VotingClassifier, BaggingClassifier, RandomForestClassifier
-
+from sklearn.ensemble import AdaBoostClassifier, GradientBoostingClassifier, VotingClassifier,BaggingClassifier, RandomForestClassifier
 from scipy.stats import norm
 
 from .util import my_pretty_table
-from .plot import my_learing_curve, my_confusion_matrix, my_roc_curve, my_tree
+from .plot import my_learing_curve, my_confusion_matrix, my_roc_curve, my_tree, my_barplot
 from .core import __ml, get_hyper_params, get_estimator
 import matplotlib.pyplot as plt
 import sys
@@ -1150,6 +1149,72 @@ def my_sgd_classification(
         **params,
     )
 
+def my_rf_classification(
+    x_train: DataFrame,
+    y_train: Series,
+    x_test: DataFrame = None,
+    y_test: Series = None,
+    conf_matrix: bool = True,
+    cv: int = 5,
+    hist: bool = True,
+    roc: bool = True,
+    pr: bool = True,
+    multiclass: str = None,
+    learning_curve=True,
+    report: bool = True,
+    figsize=(10, 5),
+    dpi: int = 100,
+    sort: str = None,
+    is_print: bool = True,
+    **params,
+) -> RandomForestClassifier:
+    """랜덤포레스트 분류분석을 수행하고 결과를 출력한다.
+
+    Args:
+        x_train (DataFrame): 독립변수에 대한 훈련 데이터
+        y_train (Series): 종속변수에 대한 훈련 데이터
+        x_test (DataFrame): 독립변수에 대한 검증 데이터. Defaults to None.
+        y_test (Series): 종속변수에 대한 검증 데이터. Defaults to None.
+        conf_matrix (bool, optional): 혼동행렬을 출력할지 여부. Defaults to True.
+        cv (int, optional): 교차검증 횟수. Defaults to 5.
+        learning_curve (bool, optional): 학습곡선을 출력할지 여부. Defaults to True.
+        report (bool, optional) : 독립변수 보고를 출력할지 여부. Defaults to True.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        sort (bool, optional): 독립변수 결과 보고 표의 정렬 기준 (v, p)
+        is_print (bool, optional): 출력 여부. Defaults to True.
+        **params (dict, optional): 하이퍼파라미터. Defaults to None.
+    Returns:
+        RandomForestClassifier
+    """
+
+    # 교차검증 설정
+    if cv > 0:
+        if not params:
+            params = get_hyper_params(classname=RandomForestClassifier)
+
+    return __my_classification(
+        classname=RandomForestClassifier,
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        conf_matrix=conf_matrix,
+        cv=cv,
+        hist=hist,
+        roc=roc,
+        pr=pr,
+        multiclass=multiclass,
+        learning_curve=learning_curve,
+        report=report,
+        figsize=figsize,
+        dpi=dpi,
+        sort=sort,
+        is_print=is_print,
+        **params,
+    )
+
+
 
 def my_classification(
     x_train: DataFrame,
@@ -1203,23 +1268,30 @@ def my_classification(
     estimator_names = []  # 분류분석 모델의 이름을 저장할 문자열 리스트
     callstack = []
 
-    if not algorithm or "logistic" in algorithm:
+    if not algorithm:
+        # algorithm = ["logistic", "knn", "dtree", "svc", "sgd", "rf"]
+        algorithm = ["logistic", "knn", "dtree", "svc", "sgd"]
+
+    if "logistic" in algorithm:
         callstack.append(my_logistic_classification)
 
-    if not algorithm or "knn" in algorithm:
+    if "knn" in algorithm:
         callstack.append(my_knn_classification)
 
-    if not algorithm or "svc" in algorithm:
+    if "svc" in algorithm:
         callstack.append(my_svc_classification)
 
-    if not algorithm or "nb" in algorithm:
+    if "nb" in algorithm:
         callstack.append(my_nb_classification)
 
-    if not algorithm or "dtree" in algorithm:
+    if "dtree" in algorithm:
         callstack.append(my_dtree_classification)
 
-    if not algorithm or "sgd" in algorithm:
+    if "sgd" in algorithm:
         callstack.append(my_sgd_classification)
+
+    if "rf" in algorithm:
+        callstack.append(my_rf_classification)
 
     score_fields = []
 
@@ -1530,5 +1602,172 @@ def my_bagging_classification(
         sort=sort,
         is_print=True,
         base_estimator=estimator,
+        **params,
+    )
+
+
+
+def my_ada_classification(
+    x_train: DataFrame,
+    y_train: Series,
+    x_test: DataFrame = None,
+    y_test: Series = None,
+    estimator: type = None,
+    conf_matrix: bool = True,
+    cv: int = 5,
+    hist: bool = True,
+    roc: bool = True,
+    pr: bool = True,
+    multiclass: str = None,
+    learning_curve=True,
+    report: bool = True,
+    figsize=(10, 5),
+    dpi: int = 100,
+    sort: str = "v",
+    algorithm: list = None,
+    scoring: list = ["accuracy", "precision", "recall", "f1", "auc"],
+    **params,
+) -> AdaBoostClassifier:
+    """AdaBoosting 앙상블 분류분석을 수행하고 결과를 출력한다.
+
+    Args:
+        estimator (type): 기본 분류분석 알고리즘
+        x_train (DataFrame): 훈련 데이터의 독립변수
+        y_train (Series): 훈련 데이터의 종속변수
+        x_test (DataFrame, optional): 검증 데이터의 독립변수. Defaults to None.
+        y_test (Series, optional): 검증 데이터의 종속변수. Defaults to None.
+        conf_matrix (bool, optional): 혼동행렬을 출력할지 여부. Defaults to True.
+        cv (int, optional): 교차검증 횟수. Defaults to 5.
+        hist (bool, optional): 히스토그램을 출력할지 여부. Defaults to False.
+        roc (bool, optional): ROC Curve를 출력할지 여부. Defaults to False.
+        pr (bool, optional): PR Curve를 출력할지 여부. Defaults to False.
+        multiclass (str, optional): 다항분류일 경우, 다항분류 방법. Defaults to None.
+        learning_curve (bool, optional): 학습곡선을 출력할지 여부. Defaults to False.
+        report (bool, optional): 독립변수 보고를 출력할지 여부. Defaults to False.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        sort (str, optional): 독립변수 결과 보고 표의 정렬 기준 (v, p)
+        algorithm (list, optional): 사용하고자 하는 분류분석 알고리즘 리스트. None으로 설정할 경우 모든 알고리즘 수행 ['logistic', 'knn', 'dtree', 'svc', 'sgd']. Defaults to None.
+
+    Returns:
+        DataFrame: 분류분석 결과
+    """
+
+    if estimator is None:
+        estimator = my_classification(
+            x_train=x_train,
+            y_train=y_train,
+            x_test=x_test,
+            y_test=y_test,
+            conf_matrix=False,
+            cv=cv,
+            hist=False,
+            roc=False,
+            pr=False,
+            multiclass=None,
+            learning_curve=False,
+            report=False,
+            figsize=figsize,
+            dpi=dpi,
+            sort=sort,
+            algorithm=algorithm,
+            scoring=scoring,
+            **params,
+        )
+
+        estimator = estimator["best"]
+
+    if type(estimator) is type:
+        params = get_hyper_params(classname=estimator, key="estimator")
+        estimator = get_estimator(classname=estimator)
+    else:
+        params = get_hyper_params(classname=estimator.__class__, key="estimator")
+
+    params = get_hyper_params(classname=AdaBoostClassifier)
+
+    return __my_classification(
+        classname=AdaBoostClassifier,
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        conf_matrix=conf_matrix,
+        hist=hist,
+        roc=roc,
+        pr=pr,
+        multiclass=multiclass,
+        learning_curve=learning_curve,
+        report=report,
+        figsize=figsize,
+        dpi=dpi,
+        sort=sort,
+        is_print=True,
+        base_estimator=estimator,
+        **params,
+    )
+
+
+def my_gbm_classification(
+    x_train: DataFrame,
+    y_train: Series,
+    x_test: DataFrame = None,
+    y_test: Series = None,
+    conf_matrix: bool = True,
+    cv: int = 5,
+    hist: bool = True,
+    roc: bool = True,
+    pr: bool = True,
+    multiclass: str = None,
+    learning_curve=True,
+    report: bool = True,
+    figsize=(10, 5),
+    dpi: int = 100,
+    sort: str = "v",
+    algorithm: list = None,
+    scoring: list = ["accuracy", "precision", "recall", "f1", "auc"],
+    **params,
+) -> GradientBoostingClassifier:
+    """GradientBoosting 앙상블 분류분석을 수행하고 결과를 출력한다.
+
+    Args:
+        x_train (DataFrame): 훈련 데이터의 독립변수
+        y_train (Series): 훈련 데이터의 종속변수
+        x_test (DataFrame, optional): 검증 데이터의 독립변수. Defaults to None.
+        y_test (Series, optional): 검증 데이터의 종속변수. Defaults to None.
+        conf_matrix (bool, optional): 혼동행렬을 출력할지 여부. Defaults to True.
+        cv (int, optional): 교차검증 횟수. Defaults to 5.
+        hist (bool, optional): 히스토그램을 출력할지 여부. Defaults to False.
+        roc (bool, optional): ROC Curve를 출력할지 여부. Defaults to False.
+        pr (bool, optional): PR Curve를 출력할지 여부. Defaults to False.
+        multiclass (str, optional): 다항분류일 경우, 다항분류 방법. Defaults to None.
+        learning_curve (bool, optional): 학습곡선을 출력할지 여부. Defaults to False.
+        report (bool, optional): 독립변수 보고를 출력할지 여부. Defaults to False.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        sort (str, optional): 독립변수 결과 보고 표의 정렬 기준 (v, p)
+        algorithm (list, optional): 사용하고자 하는 분류분석 알고리즘 리스트. None으로 설정할 경우 모든 알고리즘 수행 ['logistic', 'knn', 'dtree', 'svc', 'sgd']. Defaults to None.
+
+    Returns:
+        DataFrame: 분류분석 결과
+    """
+    params = get_hyper_params(classname=GradientBoostingClassifier)
+
+    return __my_classification(
+        classname=GradientBoostingClassifier,
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        conf_matrix=conf_matrix,
+        hist=hist,
+        roc=roc,
+        pr=pr,
+        multiclass=multiclass,
+        learning_curve=learning_curve,
+        report=report,
+        figsize=figsize,
+        dpi=dpi,
+        sort=sort,
+        is_print=True,
         **params,
     )
