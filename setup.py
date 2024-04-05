@@ -9,10 +9,11 @@ setup(
     license="MIT",
     packages=find_packages(exclude=[]),
     keywords=["data",  "helper", ],
-    python_requires=">=3.11",
+    python_requires=">=3.10",
     zip_safe=False,
     url="https://github.com/hyk2202/helper",
     install_requires=[
+        "tqdm",
         "tabulate",
         "pandas",
         "matplotlib",
@@ -25,8 +26,9 @@ setup(
         "pdoc3",
         "pmdarima",
         "prophet",
-        'bs4',
-        'nltk',
-        'pmdarima'
+        "graphviz",
+        "dtreeviz",
+        "pca",
+        "statannotations",
     ],
 )

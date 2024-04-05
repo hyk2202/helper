@@ -23,16 +23,28 @@ from sklearn.tree import DecisionTreeClassifier, export_graphviz
 import graphviz
 import dtreeviz
 import matplotlib.cm as cm
-from .core import get_random_state
+from .core import get_random_state, get_n_jobs
 
-plt.rcParams["font.family"] = (
-    "AppleGothic" if sys.platform == "darwin" else "Malgun Gothic"
-)
+
+try:
+    import google.colab
+
+    IN_COLAB = True
+except:
+    IN_COLAB = False
+
+__FONT_NAME__ = "Malgun Gothic"
+
+if sys.platform == "darwin":
+    __FONT_NAME__ = "AppleGothic"
+elif IN_COLAB:
+    __FONT_NAME__ = "NanumGothic"
+
+plt.rcParams["font.family"] = __FONT_NAME__
 plt.rcParams["font.size"] = 10
 plt.rcParams["figure.figsize"] = (10, 6)
 plt.rcParams["figure.dpi"] = 200
 plt.rcParams["axes.unicode_minus"] = False
-
 
 def my_boxplot(
     df: DataFrame,

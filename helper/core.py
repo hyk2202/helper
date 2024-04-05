@@ -3,7 +3,7 @@ import sys, os
 
 import numpy as np
 from pandas import DataFrame, Series
-from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
 
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, LogisticRegression
@@ -12,8 +12,13 @@ from sklearn.svm import SVR, LinearSVC, SVC
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
 from sklearn.linear_model import SGDRegressor, SGDClassifier
+from sklearn.ensemble import (
+    BaggingClassifier,
+    BaggingRegressor,
+    RandomForestClassifier,
+    RandomForestRegressor,
+)
 from tabulate import tabulate
-# from .util import *
 
 __RANDOM_STATE__ = 0
 
@@ -25,7 +30,7 @@ __LINEAR_REGRESSION_HYPER_PARAMS__ = {"fit_intercept": [True, False]}
 
 __RIDGE_HYPER_PARAMS__ = {
     "alpha": [0.001, 0.01, 0.1, 1, 10, 100],
-    "solver": ["auto", "svd", "cholesky", "lsqr", "sparse_cg", "sag", "saga"],
+    "solver": ["svd", "cholesky", "lsqr", "sparse_cg", "sag", "saga"],
 }
 
 __LASSO_HYPER_PARAMS__ = {
@@ -34,14 +39,14 @@ __LASSO_HYPER_PARAMS__ = {
 }
 
 __KNN_REGRESSION_HYPER_PARAMS__ = {
-    "n_neighbors": np.arange(2, stop=10),
+    "n_neighbors": np.arange(2, stop=6),
     "weights": ["uniform", "distance"],
-    "metric": ["euclidean", "manhattan", "minkowski"],
+    "metric": ["euclidean", "manhattan"],
 }
 
 __DTREE_REGRESSION_HYPER_PARAMS__ = {
     "criterion": ["squared_error", "friedman_mse", "absolute_error", "poisson"],
-    "splitter": ["best", "random"],
+    # "splitter": ["best", "random"],
     # "min_samples_split": np.arange(2, stop=10),
     # "min_samples_leaf": np.arange(1, stop=10),
     # "max_features": ["auto", "sqrt", "log2"]
@@ -49,14 +54,14 @@ __DTREE_REGRESSION_HYPER_PARAMS__ = {
 
 __SVR_HYPER_PARAMS__ = {
     "kernel": ["linear", "poly", "rbf", "sigmoid"],
-    "C": [0.001, 0.01, 0.1, 1, 10],
-    "epsilon": [0.1, 0.2, 0.3, 0.4, 0.5],
-    "gamma": ["scale", "auto"],
+    # "C": [0.001, 0.01, 0.1, 1, 10, 100],
+    # "epsilon": [0.1, 0.2, 0.3, 0.4, 0.5],
+    # "gamma": ["scale", "auto"],
 }
 
 __SGD_REGRESSION_HYPER_PARAMS__ = {
     "loss": [
-        "squared_loss",
+        "squared_error",
         "huber",
         "epsilon_insensitive",
         "squared_epsilon_insensitive",
@@ -68,27 +73,26 @@ __SGD_REGRESSION_HYPER_PARAMS__ = {
 
 
 __LOGISTIC_REGRESSION_HYPER_PARAMS__ = {
-    "penalty": ["l1", "l2", "elasticnet"],
-    "C": [0.001, 0.01, 0.1, 1, 10, 100],
+    # "C": [0.001, 0.01, 0.1, 1, 10, 100],
 }
 
 __KNN_CLASSFICATION_HYPER_PARAMS__ = {
-    "n_neighbors": np.arange(2, stop=10),
+    "n_neighbors": np.arange(2, stop=6),
     "weights": ["uniform", "distance"],
-    "metric": ["euclidean", "manhattan", "minkowski"],
+    "metric": ["euclidean", "manhattan"],
 }
 
 __NB_HYPER_PARAMS__ = {
     # "priors" : None,
-    "var_smoothing": [1e-9, 1e-8, 1e-7, 1e-6, 1e-5]
+    # "var_smoothing": [1e-9, 1e-8, 1e-7, 1e-6, 1e-5]
 }
 
-__DTREE_HYPER_PARAMS__ = {
+__DTREE_CLASSIFICATION_HYPER_PARAMS__ = {
     "criterion": ["gini", "entropy"],
-    "max_depth": np.arange(1, stop=10),
-    "min_samples_split": np.arange(2, stop=10),
-    "min_samples_leaf": np.arange(1, stop=10),
-    "max_features": ["auto", "sqrt", "log2"]
+    # "max_depth": np.arange(1, stop=10),
+    # "min_samples_split": np.arange(2, stop=10),
+    # "min_samples_leaf": np.arange(1, stop=10),
+    # "max_features": ["auto", "sqrt", "log2"],
 }
 
 __LINEAR_SVC_HYPER_PARAMS__ = {
@@ -97,18 +101,42 @@ __LINEAR_SVC_HYPER_PARAMS__ = {
 }
 
 __SVC_HYPER_PARAMS__ = {
-    "C": [0.001, 0.01, 0.1, 1, 10],
+    # "C": [0.001, 0.01, 0.1, 1, 10, 100],
     "kernel": ["poly", "rbf", "sigmoid"],
-    "degree": np.arange(2, stop=10),
-    "gamma": ["scale", "auto"],
+    # "degree": np.arange(2, stop=6),
+    # "gamma": ["scale", "auto"],
 }
 
 __SGD_CLASSFICATION_HYPER_PARAMS__ = {
-    "loss": ["hinge", "log", "modified_huber", "squared_hinge", "perceptron"],
-    "penalty": ["l2", "l1", "elasticnet"],
-    "alpha": [0.001, 0.01, 0.1],
-    "learning_rate": ["constant", "optimal", "invscaling", "adaptive"],
+    # "loss": ["hinge", "log", "modified_huber", "squared_hinge", "perceptron"],
+    # "penalty": ["l2", "l1", "elasticnet"],
+    "penalty": ["l2", "l1"],
+    # "alpha": [0.001, 0.01, 0.1],
+    # "learning_rate": ["constant", "optimal", "invscaling", "adaptive"],
 }
+
+__BAGGING_HYPER_PARAMS__ = {
+    "bootstrap_features": [False, True],
+    "n_estimators": [10, 20, 50, 100],
+    "max_features": [0.5, 0.7, 1.0],
+    "max_samples": [0.5, 0.7, 1.0],
+}
+
+__RANDOM_FOREST_REGRESSION_HYPER_PARAMS__ = {
+    "n_estimators": [10, 20, 50, 100],
+    "criterion": ["squared_error", "absolute_error", "friedman_mse", "poisson"],
+    "max_features": ["sqrt", "log2"],
+    "max_depth": [2, 5, 10, 20, 50, None],
+}
+
+__RANDOM_FOREST_CLASSIFICATION_HYPER_PARAMS__ = {
+    "n_estimators": [10, 20, 50, 100],
+    "criterion": ["gini", "entropy"],
+    "max_features": ["sqrt", "log2", None],
+    "max_depth": [2, 5, 10, 20, None],
+}
+
+
 
 def get_estimator(classname: any, estimators: list = None) -> any:
     c = str(classname)
@@ -138,6 +166,7 @@ def get_estimator(classname: any, estimators: list = None) -> any:
     prototype_estimator = classname(**args)
     # print(f"\033[92m{cn}({args})\033[0m".replace("\n", ""))
     return prototype_estimator
+
 
 def __ml(
     classname: any,
@@ -226,9 +255,8 @@ def __ml(
 
         if "mean_test_score" in grid.cv_results_:
             result_df["mean_test_score"] = grid.cv_results_["mean_test_score"]
-            result_df = result_df.dropna(subset=["mean_test_score"]).sort_values(
-                by="mean_test_score", ascending=False
-            )
+            result_df = result_df.dropna(subset=["mean_test_score"])
+            result_df = result_df.sort_values(by="mean_test_score", ascending=False)
 
         estimator = grid.best_estimator_
         estimator.best_params = grid.best_params_
@@ -296,6 +324,7 @@ def get_random_state() -> int:
     """
     return __RANDOM_STATE__
 
+
 def get_max_iter() -> int:
     """최대 반복 횟수를 반환한다.
 
@@ -332,6 +361,8 @@ def get_hyper_params(classname: any, key: str = None) -> dict:
         params = __RIDGE_HYPER_PARAMS__.copy()
     elif classname == Lasso:
         params = __LASSO_HYPER_PARAMS__.copy()
+    elif classname == KNeighborsRegressor:
+        params = __KNN_REGRESSION_HYPER_PARAMS__.copy()
     elif classname == SVR:
         params = __SVR_HYPER_PARAMS__.copy()
     elif classname == DecisionTreeRegressor:
@@ -345,13 +376,19 @@ def get_hyper_params(classname: any, key: str = None) -> dict:
     elif classname == GaussianNB:
         params = __NB_HYPER_PARAMS__.copy()
     elif classname == DecisionTreeClassifier:
-        params = __DTREE_HYPER_PARAMS__.copy()
+        params = __DTREE_CLASSIFICATION_HYPER_PARAMS__.copy()
     elif classname == LinearSVC:
         params = __LINEAR_SVC_HYPER_PARAMS__.copy()
     elif classname == SVC:
         params = __SVC_HYPER_PARAMS__.copy()
     elif classname == SGDClassifier:
         params = __SGD_CLASSFICATION_HYPER_PARAMS__.copy()
+    elif classname == BaggingRegressor or classname == BaggingClassifier:
+        params = __BAGGING_HYPER_PARAMS__.copy()
+    elif classname == RandomForestRegressor:
+        params = __RANDOM_FOREST_REGRESSION_HYPER_PARAMS__.copy()
+    elif classname == RandomForestClassifier:
+        params = __RANDOM_FOREST_CLASSIFICATION_HYPER_PARAMS__.copy()
 
     key_list = list(params.keys())
 
