@@ -175,22 +175,27 @@ __XGBOOST_CLASSIFICATION_HYPER_PARAMS__ = {
 }
 
 
-def get_estimator(
-    classname: any, estimators: list = None, base_estimator: any = None, **params
-) -> any:
-    c = str(object=classname)
-    p = c.rfind(".")
-    cn = c[p + 1 : -2]
+
+def get_estimator(classname: any, est: any = None, **params) -> any:
+    """분류분석 추정기 객체를 생성한다. 고정적으로 사용되는 속성들을 일괄 설정한다.
+
+    Args:
+        classname (any): 분류분석 추정기 클래스
+        est (list | any, optional): Voting, Bagging에서 사용될 추정기 객체. Defaults to None.
+
+    Returns:
+        any: _description_
+    """
 
     args = {}
 
     # VottingClassifier, VotingRegressor
     if "estimators" in dict(inspect.signature(obj=classname.__init__).parameters):
-        args["estimators"] = estimators
+        args["estimators"] = est
 
     # BaggingClassifier, BaggingRegressor
     if "estimator" in dict(inspect.signature(obj=classname.__init__).parameters):
-        args["estimator"] = base_estimator
+        args["estimator"] = est
 
     # 공통 속성들
     if "n_jobs" in dict(inspect.signature(obj=classname.__init__).parameters):
@@ -211,18 +216,21 @@ def get_estimator(
     if "verbose" in dict(inspect.signature(obj=classname.__init__).parameters):
         args["verbose"] = False
 
+    if classname == AdaBoostClassifier:
+        args["algorithm"] = "SAMME"
 
     if classname == XGBClassifier:
         # general params
-        args['booster'] ="gbtree"
-        args['device'] = "cpu"
-        args['verbosity'] = 0
- 
+        args["booster"] = "gbtree"
+        args["device"] = "cpu"
+        args["verbosity"] = 0
+        args["early_stopping_rounds"] = 10
+
     if params:
         args.update(params)
 
-
     return classname(**args)
+
 
 
 def __ml(
@@ -233,7 +241,7 @@ def __ml(
     y_test: Series = None,
     cv: int = 5,
     scoring: any = None,
-    estimators: list = None,
+    est: any = None,
     is_print: bool = True,
     **params,
 ) -> any:
@@ -246,6 +254,8 @@ def __ml(
         x_test (DataFrame): 독립변수에 대한 검증 데이터. Defaults to None.
         y_test (Series): 종속변수에 대한 검증 데이터. Defaults to None.
         cv (int, optional): 교차검증 횟수. Defaults to 5.
+        scoring (any, optional): 교차검증 시 사용할 평가지표. Defaults to None.
+        est (list | any, optional): Voting, Bagging에서 사용될 추정기 리스트. Defaults to None.
         is_print (bool, optional): 출력 여부. Defaults to True.
 
     Returns:
