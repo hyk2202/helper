@@ -18,13 +18,12 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import learning_curve
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import silhouette_samples, silhouette_score
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 import graphviz
 import dtreeviz
 import matplotlib.cm as cm
 from .core import get_random_state, get_n_jobs
-from xgboost import plot_importance as xgb_plot_importance
+from xgboost import plot_importance as xgb_plot_importance, XGBClassifier
 
 try:
     import google.colab
@@ -1022,23 +1021,94 @@ def my_qqplot(
     plt.close()
 
 
+
+def my_loss_curve(
+    estimator: any,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+    callback: any = None,
+) -> None:
+    # 손실률 데이터 가져오기
+    results = estimator.evals_result()
+
+    result_df = DataFrame(
+        {
+            "train": results["validation_0"][estimator.eval_metric],
+            "test": results["validation_1"][estimator.eval_metric],
+        }
+    )
+
+    result_df2 = result_df.reset_index(drop=False, names="epoch")
+    result_df3 = result_df2.melt(
+        id_vars="epoch", var_name="dataset", value_name="error"
+    )
+
+    def my_callback(ax):
+        ax.set_title("Model Loss")
+
+        if callback:
+            callback(ax)
+
+    my_lineplot(
+        result_df3,
+        xname="epoch",
+        yname="error",
+        hue="dataset",
+        figsize=figsize,
+        dpi=dpi,
+        callback=my_callback,
+    )
+
+
+
+def my_learing_curve2(
+    estimator: any,
+    data: DataFrame,
+    yname: str = "target",
+    scalling: bool = False,
+    cv: int = 5,
+    train_sizes: np.ndarray = np.array([0.1, 0.3, 0.5, 0.7, 1]),
+    scoring: str = None,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+    random_state: int = get_random_state(),
+    callback: any = None,
+) -> None:
+    if estimator.__class__.__name__ in ["XGBRegressor", "XGBClassifier"]:
+        my_loss_curve(estimator=estimator, figsize=figsize, dpi=dpi, callback=callback)
+    else:
+        my_learing_curve(
+            estimator=estimator,
+            data=data,
+            yname=yname,
+            scalling=scalling,
+            cv=cv,
+            train_sizes=train_sizes,
+            scoring=scoring,
+            figsize=figsize,
+            dpi=dpi,
+            random_state=random_state,
+            callback=callback,
+        )
+
+
 def my_learing_curve(
     estimator: any,
     data: DataFrame,
     yname: str = "target",
     scalling: bool = False,
-    cv: int = 10,
-    train_sizes: np.ndarray = np.linspace(0.01, 1.0, 10),
+    cv: int = 5,
+    train_sizes: np.ndarray = np.array([0.1, 0.3, 0.5, 0.7, 1]),
     scoring: str = None,
     figsize: tuple = (10, 5),
-    dpi: int = 150,
-    random_state = get_random_state(),
+    dpi: int = 100,
+    random_state: int = get_random_state(),
     callback: any = None,
 ) -> None:
-    """학습곡선을 출력한다.
+    """일반적인 머신러닝 알고리즘에 대한 학습곡선을 출력한다.
 
     Args:
-        fit (_type_): 학습모델 객체
+        estimator (any): 학습모델 객체
         data (DataFrame): 독립변수
         yname (Series): 종속변수
         scaling (bool, optional): 스케일링 여부. Defaults to False.
@@ -1047,6 +1117,7 @@ def my_learing_curve(
         scoring (str, optional): 평가지표. Defaults to None.
         figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
         dpi (int, optional): 그래프의 해상도. Defaults to 200.
+        random_state (int, optional): 난수 시드값. Defaults to 123.
         callback (any, optional): ax객체를 전달받아 추가적인 옵션을 처리할 수 있는 콜백함수. Defaults to None.
     """
     if yname not in data.columns:
@@ -1055,21 +1126,11 @@ def my_learing_curve(
     x = data.drop(yname, axis=1)
     y = data[yname]
     w = 1
+    cv = 3
+
     if scalling:
         scaler = StandardScaler()
         x = DataFrame(scaler.fit_transform(x), index=x.index, columns=x.columns)
-
-    error_name = ["MAE", "MAPE", "MSE", "MSE_log", "RMSE", "RMSE_log", "R2"]
-
-    error_value = [
-        "neg_mean_absolute_error",
-        "neg_mean_absolute_percentage_error",
-        "neg_mean_squared_error",
-        "neg_mean_squared_log_error",
-        "neg_root_mean_squared_error",
-        "neg_root_mean_squared_log_error",
-        "r2",
-    ]
 
     # 평가지표가 없는 경우
     if scoring == None:
@@ -1094,11 +1155,17 @@ def my_learing_curve(
 
     # 평가지표가 있는 경우
     else:
-        ylabel = scoring
-        if scoring in set(error_name):
-            scoring = error_value[error_name.index(scoring)]
-        if scoring in ("rmse", "mse"):
+        scoring = scoring.lower()
+
+        if scoring == "rmse":
+            scoring = "neg_root_mean_squared_error"
             w = -1
+        elif scoring == "mse":
+            scoring = "neg_mean_squared_error"
+            w = -1
+        elif scoring == "r2":
+            scoring = "r2"
+
         scoring_list = [
             "r2",
             "max_error",
@@ -1136,9 +1203,8 @@ def my_learing_curve(
             "fowlkes_mallows_score",
         ]
 
-        if scoring not in set(scoring_list):
+        if scoring not in scoring_list:
             raise Exception(f"\x1b[31m평가지표 {scoring}가 존재하지 않습니다.\x1b[0m")
-
 
         ylabel = scoring.upper()
 
@@ -1167,6 +1233,7 @@ def my_learing_curve(
 
     plt.figure(figsize=figsize, dpi=dpi)
     ax = plt.gca()
+
     # 훈련 데이터 수에 따른 훈련 데이터의 score 평균
     sb.lineplot(
         x=train_sizes,
@@ -1178,9 +1245,9 @@ def my_learing_curve(
         ax=ax,
     )
     ax.fill_between(
-        train_sizes,
-        train_mean + train_std,
-        train_mean - train_std,
+        x=train_sizes,
+        y1=train_mean + train_std,
+        y2=train_mean - train_std,
         alpha=0.15,
         color="#ff2200",
     )
@@ -1197,20 +1264,23 @@ def my_learing_curve(
         ax=ax,
     )
     ax.fill_between(
-        train_sizes,
-        test_mean + test_std,
-        test_mean - test_std,
+        x=train_sizes,
+        y1=test_mean + test_std,
+        y2=test_mean - test_std,
         alpha=0.15,
         color="#0066ff",
     )
 
     ax.grid()
-    ax.set_xlabel("훈련 셋트 크기")
-    ax.set_ylabel(ylabel)
+    ax.set_xlabel(xlabel="훈련 셋트 크기")
+    ax.set_ylabel(ylabel=ylabel)
+    ax.set_title(label="Learning Curve")
     ax.legend()
+
     if callback:
         callback(ax)
-    # plt.tight_layout()
+
+    plt.tight_layout()
     plt.show()
     plt.close()
 
