@@ -31,6 +31,7 @@ from .util import my_pretty_table, my_trend, my_train_test_split
 from .plot import my_residplot, my_qqplot, my_learing_curve, my_barplot
 from .core import __ml, get_estimator, get_hyper_params
 
+
 def __my_regression(
     classname: any,
     x_train: DataFrame,
@@ -47,13 +48,13 @@ def __my_regression(
     dpi: int = 100,
     sort: str = None,
     is_print: bool = True,
-    pruning: bool = False,
+    est: any = None,
     **params,
-) -> LinearRegression:
+) -> any:
     """회귀분석을 수행하고 결과를 출력한다.
 
     Args:
-        classname (any): 분류분석 추정기 (모델 객체)
+        classname (any): 회귀분석 추정기 (모델 객체)
         x_train (DataFrame): 독립변수에 대한 훈련 데이터
         y_train (Series): 종속변수에 대한 훈련 데이터
         x_test (DataFrame): 독립변수에 대한 검증 데이터. Defaults to None.
@@ -68,9 +69,11 @@ def __my_regression(
         dpi (int, optional): 그래프의 해상도. Defaults to 100.
         sort (bool, optional): 독립변수 결과 보고 표의 정렬 기준 (v, p)
         is_print (bool, optional): 출력 여부. Defaults to True.
+        est (any, optional): Voting, Bagging 앙상블 모델의 기본 추정기. Defaults to None.
+        **params (dict, optional): 하이퍼파라미터. Defaults to None.
 
     Returns:
-        any: 분류분석 모델
+        any: 회귀분석 모델
     """
 
     # ------------------------------------------------------
@@ -83,13 +86,18 @@ def __my_regression(
         y_test=y_test,
         cv=cv,
         is_print=is_print,
+        est=est,
         **params,
     )
+
+    if estimator is None:
+        print(f"\033[91m[{classname} 모델의 학습에 실패했습니다.\033[0m")
+        return None
 
     # ------------------------------------------------------
     # 성능평가
     my_regression_result(
-        estimator,
+        estimator=estimator,
         x_train=x_train,
         y_train=y_train,
         x_test=x_test,
@@ -106,10 +114,10 @@ def __my_regression(
     if report and is_print:
         print("")
         my_regression_report(
-            estimator,
-            estimator.x,
-            estimator.y,
-            sort,
+            estimator=estimator,
+            x_train=estimator.x,
+            y_train=estimator.y,
+            x_test=sort,
             plot=plot,
             deg=deg,
             figsize=figsize,
@@ -121,34 +129,11 @@ def __my_regression(
     if resid_test and is_print:
         print("\n\n[잔차의 가정 확인] ==============================")
         my_resid_test(
-            estimator.x, estimator.y, estimator.y_pred, figsize=figsize, dpi=dpi
+            x=estimator.x, y=estimator.y, y_pred=estimator.y_pred, figsize=figsize, dpi=dpi
         )
 
     return estimator
 
-def __regression_report_plot(ax: plt.Axes, x, y, xname, yname, y_pred, deg) -> None:
-    if deg == 1:
-        sb.regplot(x=x, y=y, ci=95, label="관측치", ax=ax)
-        sb.regplot(x=x, y=y_pred, ci=0, label="추정치", ax=ax)
-    else:
-        sb.scatterplot(x=x, y=y, label="관측치", ax=ax)
-        sb.scatterplot(x=x, y=y_pred, label="추정치", ax=ax)
-
-        t1 = my_trend(x, y, degree=deg)
-        sb.lineplot(
-            x=t1[0], y=t1[1], color="blue", linestyle="--", label="관측치 추세선", ax=ax
-        )
-
-        t2 = my_trend(x, y_pred, degree=deg)
-        sb.lineplot(
-            x=t2[0], y=t2[1], color="red", linestyle="--", label="추정치 추세선", ax=ax
-        )
-
-        ax.set_xlabel(xname)
-        ax.set_ylabel(yname)
-
-    ax.legend()
-    ax.grid()
 
 def my_auto_linear_regression(df:DataFrame, yname:str, cv:int=5, learning_curve: bool = True, degree : int = 1, plot: bool = True, report=True, resid_test=False, figsize=(10, 4), dpi=150, sort: str = None,order: str = None,p_value_num:float=0.05) -> LinearRegression:
     """선형회귀분석을 수행하고 결과를 출력한다.
@@ -436,7 +421,7 @@ def my_auto_linear_regression(df:DataFrame, yname:str, cv:int=5, learning_curve:
     print("")
     return fit
     
-def my_linear_regression(x_train: DataFrame, y_train: Series, x_test: DataFrame = None, y_test: Series = None, cv: int = 5,  learning_curve: bool = True, deg:int = 1,degree : int = 1, plot: bool = True, is_print:bool = True,report=True, resid_test=False, figsize=(10, 4), dpi=150, sort: str = None,order: str = None,p_value_num:float=0.05 ) -> LinearRegression:
+def my_linear_regression(x_train: DataFrame, y_train: Series, x_test: DataFrame = None, y_test: Series = None, cv: int = 5,  learning_curve: bool = True, deg:int = 1,degree : int = 1, plot: bool = True, is_print:bool = True,report=True, resid_test=False, figsize=(10, 4), dpi=150, sort: str = None,order: str = None,p_value_num:float=0.05, **params ) -> LinearRegression:
     """선형회귀분석을 수행하고 결과를 출력한다.
 
     Args:
@@ -469,8 +454,7 @@ def my_linear_regression(x_train: DataFrame, y_train: Series, x_test: DataFrame 
     # 교차검증 설정
     if cv > 0:
         if not params:
-
-            params = {}
+            params = get_hyper_params(LinearRegression)
         
     return __my_regression(
         classname=LinearRegression,
@@ -516,66 +500,45 @@ def my_ridge_regression(x_train: DataFrame, y_train: Series, x_test: DataFrame =
     
     #------------------------------------------------------
     # 교차검증 설정
-    if cv > 0:   
-        # 분석모델 생성
-        prototype_estimator = Ridge()     
-        
-        print("[%s 하이퍼파라미터]" % prototype_estimator.__class__.__name__)
-        my_pretty_table(DataFrame(params))
-        print("")
-        
-        grid = GridSearchCV(prototype_estimator, param_grid=params, cv=cv, n_jobs=-1)
-        grid.fit(x_train, y_train)
-        
-        result_df = DataFrame(grid.cv_results_['params'])
-        result_df['mean_test_score'] = grid.cv_results_['mean_test_score']
-        
-        print("[교차검증]")
-        my_pretty_table(result_df.sort_values(by='mean_test_score', ascending=False))
-        print("")
-        
-        estimator = grid.best_estimator_
-        estimator.best_params = grid.best_params_
-    else:
-        # 분석모델 생성
-        estimator = Ridge(**params) 
-        estimator.fit(x_train, y_train)
-    
-    #------------------------------------------------------
-    xnames = x_train.columns
-    yname = y_train.name
-    
-    # 훈련 데이터에 대한 추정치 생성
-    y_pred = estimator.predict(x_test) if x_test is not None else estimator.predict(x_train)
-    
-    # 도출된 결과를 회귀모델 객체에 포함시킴
-    estimator.x = x_test if x_test is not None else x_train
-    estimator.y = y_test if y_test is not None else y_train
-    estimator.y_pred = y_pred if y_test is not None else estimator.predict(x_train)
-    estimator.resid = y_test - y_pred if y_test is not None else y_train - estimator.predict(x_train)
+    if cv > 0:
+        if not params:
+            params = get_hyper_params(classname=Ridge)
 
-    #------------------------------------------------------
-    # 성능평가
-    if x_test is not None and y_test is not None:
-        my_regression_result(estimator, x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, learning_curve=learning_curve, cv=cv, figsize=figsize, dpi=dpi)
-    else:
-        my_regression_result(estimator, x_train=x_train, y_train=y_train, learning_curve=learning_curve, cv=cv, figsize=figsize, dpi=dpi)
+    return __my_regression(
+        classname=Ridge,
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        cv=cv,
+        learning_curve=learning_curve,
+        report=report,
+        plot=plot,
+        deg=deg,
+        resid_test=resid_test,
+        figsize=figsize,
+        dpi=dpi,
+        sort=sort,
+        is_print=is_print,
+        **params,
+    )
 
-    #------------------------------------------------------
-    # 보고서 출력
-    if report:
-        print("")
-        my_regression_report(estimator, estimator.x, estimator.y, sort, plot=plot, degree=degree, figsize=figsize, dpi=dpi)
-    
-    #------------------------------------------------------
-    # 잔차 가정 확인  
-    if resid_test:
-        print("\n\n[잔차의 가정 확인] ==============================")
-        my_resid_test(estimator.x, estimator.y, estimator.y_pred, figsize=figsize, dpi=dpi)
-
-    return estimator
-
-def my_lasso_regression(x_train: DataFrame, y_train: Series, x_test: DataFrame = None, y_test: Series = None, cv: int = 5, learning_curve: bool = True, report=False, plot: bool = False, degree: int = 1, resid_test=False, figsize=(10, 5), dpi: int = 100, sort: str = None, params: dict = {'alpha': [0.01, 0.1, 1, 10, 100]}) -> LinearRegression:
+def my_lasso_regression(    
+    x_train: DataFrame,
+    y_train: Series,
+    x_test: DataFrame = None,
+    y_test: Series = None,
+    cv: int = 5,
+    learning_curve: bool = True,
+    report=True,
+    plot: bool = False,
+    deg: int = 1,
+    resid_test=False,
+    figsize=(10, 5),
+    dpi: int = 100,
+    sort: str = None,
+    is_print: bool = True,
+    **params)-> Lasso:
     """라쏘회귀분석을 수행하고 결과를 출력한다.
 
     Args:
@@ -600,66 +563,66 @@ def my_lasso_regression(x_train: DataFrame, y_train: Series, x_test: DataFrame =
     
     #------------------------------------------------------
     # 교차검증 설정
-    if cv > 0:   
-        # 분석모델 생성
-        prototype_estimator = Lasso()     
-        
-        print("[%s 하이퍼파라미터]" % prototype_estimator.__class__.__name__)
-        my_pretty_table(DataFrame(params))
-        print("")
-        
-        grid = GridSearchCV(prototype_estimator, param_grid=params, cv=cv, n_jobs=-1)
-        grid.fit(x_train, y_train)
-        
-        result_df = DataFrame(grid.cv_results_['params'])
-        result_df['mean_test_score'] = grid.cv_results_['mean_test_score']
-        
-        print("[교차검증]")
-        my_pretty_table(result_df.sort_values(by='mean_test_score', ascending=False))
-        print("")
-        
-        estimator = grid.best_estimator_
-        estimator.best_params = grid.best_params_
+    if cv > 0:
+        if not params:
+            params = get_hyper_params(classname=Lasso)
+
+    return __my_regression(
+        classname=Lasso,
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        cv=cv,
+        learning_curve=learning_curve,
+        report=report,
+        plot=plot,
+        deg=deg,
+        resid_test=resid_test,
+        figsize=figsize,
+        dpi=dpi,
+        sort=sort,
+        is_print=is_print,
+        **params,
+    )
+
+
+def __regression_report_plot(ax: plt.Axes, x, y, xname, yname, y_pred, deg) -> None:
+    if deg == 1:
+        sb.regplot(x=x, y=y, ci=95, label="관측치", ax=ax)
+        sb.regplot(x=x, y=y_pred, ci=0, label="추정치", ax=ax)
     else:
-        # 분석모델 생성
-        estimator = Lasso(**params) 
-        estimator.fit(x_train, y_train)
-    
-    #------------------------------------------------------
-    xnames = x_train.columns
-    yname = y_train.name
-    
-    # 훈련 데이터에 대한 추정치 생성
-    y_pred = estimator.predict(x_test) if x_test is not None else estimator.predict(x_train)
-    
-    # 도출된 결과를 회귀모델 객체에 포함시킴
-    estimator.x = x_test if x_test is not None else x_train
-    estimator.y = y_test if y_test is not None else y_train
-    estimator.y_pred = y_pred if y_test is not None else estimator.predict(x_train)
-    estimator.resid = y_test - y_pred if y_test is not None else y_train - estimator.predict(x_train)
+        sb.scatterplot(x=x, y=y, label="관측치", ax=ax)
+        sb.scatterplot(x=x, y=y_pred, label="추정치", ax=ax)
 
-    #------------------------------------------------------
-    # 성능평가
-    if x_test is not None and y_test is not None:
-        my_regression_result(estimator, x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test, learning_curve=learning_curve, cv=cv, figsize=figsize, dpi=dpi)
-    else:
-        my_regression_result(estimator, x_train=x_train, y_train=y_train, learning_curve=learning_curve, cv=cv, figsize=figsize, dpi=dpi)
+        t1 = my_trend(x, y, degree=deg)
+        sb.lineplot(
+            x=t1[0], y=t1[1], color="blue", linestyle="--", label="관측치 추세선", ax=ax
+        )
 
-    #------------------------------------------------------
-    # 보고서 출력
-    if report:
-        print("")
-        my_regression_report(estimator, estimator.x, estimator.y, sort, plot=plot, degree=degree, figsize=figsize, dpi=dpi)
-    
-    #------------------------------------------------------
-    # 잔차 가정 확인  
-    if resid_test:
-        print("\n\n[잔차의 가정 확인] ==============================")
-        my_resid_test(estimator.x, estimator.y, estimator.y_pred, figsize=figsize, dpi=dpi)
+        t2 = my_trend(x, y_pred, degree=deg)
+        sb.lineplot(
+            x=t2[0], y=t2[1], color="red", linestyle="--", label="추정치 추세선", ax=ax
+        )
 
-    return estimator
+        ax.set_xlabel(xname)
+        ax.set_ylabel(yname)
 
-def my_regression_result(estimator: any, x_train: DataFrame = None, y_train: Series = None, x_test: DataFrame = None, y_test: Series = None, learning_curve: bool = True, cv: int = 10, figsize: tuple = (10, 5), dpi: int = 100, is_print:bool = True) -> None:
+    ax.legend()
+    ax.grid()
+
+def my_regression_result(
+    estimator: any,
+    x_train: DataFrame = None,
+    y_train: Series = None,
+    x_test: DataFrame = None,
+    y_test: Series = None,
+    learning_curve: bool = True,
+    cv: int = 10,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+    is_print: bool = True,
+) -> None:
     """회귀분석 결과를 출력한다.
 
     Args:
@@ -672,11 +635,12 @@ def my_regression_result(estimator: any, x_train: DataFrame = None, y_train: Ser
         cv (int, optional): 교차검증 횟수. Defaults to 10.
         figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
         dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        is_print (bool, optional): 출력 여부. Defaults to True.
     """
-    
+
     scores = []
     score_names = []
-    
+
     if x_train is not None and y_train is not None:
         y_train_pred = estimator.predict(x_train)
 
@@ -686,13 +650,15 @@ def my_regression_result(estimator: any, x_train: DataFrame = None, y_train: Ser
             "평균절대오차(MAE)": mean_absolute_error(y_train, y_train_pred),
             "평균제곱오차(MSE)": mean_squared_error(y_train, y_train_pred),
             "평균오차(RMSE)": np.sqrt(mean_squared_error(y_train, y_train_pred)),
-            "평균 절대 백분오차 비율(MAPE)": np.mean(np.abs((y_train - y_train_pred) / y_train) * 100),
-            "평균 비율 오차(MPE)": np.mean((y_train - y_train_pred) / y_train * 100)
+            "평균 절대 백분오차 비율(MAPE)": np.mean(
+                np.abs((y_train - y_train_pred) / y_train) * 100
+            ),
+            "평균 비율 오차(MPE)": np.mean((y_train - y_train_pred) / y_train * 100),
         }
-        
+
         scores.append(result)
         score_names.append("훈련데이터")
-        
+
     if x_test is not None and y_test is not None:
         y_test_pred = estimator.predict(x_test)
 
@@ -702,37 +668,58 @@ def my_regression_result(estimator: any, x_train: DataFrame = None, y_train: Ser
             "평균절대오차(MAE)": mean_absolute_error(y_test, y_test_pred),
             "평균제곱오차(MSE)": mean_squared_error(y_test, y_test_pred),
             "평균오차(RMSE)": np.sqrt(mean_squared_error(y_test, y_test_pred)),
-            "평균 절대 백분오차 비율(MAPE)": np.mean(np.abs((y_test - y_test_pred) / y_test) * 100),
-            "평균 비율 오차(MPE)": np.mean((y_test - y_test_pred) / y_test * 100)
+            "평균 절대 백분오차 비율(MAPE)": np.mean(
+                np.abs((y_test - y_test_pred) / y_test) * 100
+            ),
+            "평균 비율 오차(MPE)": np.mean((y_test - y_test_pred) / y_test * 100),
         }
-        
+
         scores.append(result)
         score_names.append("검증데이터")
-        
 
-    print("[회귀분석 성능평가]")
-    result_df = DataFrame(scores, index=score_names)
-    my_pretty_table(result_df.T)
-    
-    # 학습곡선
-    if learning_curve:
-        print("\n[학습곡선]")
-        yname = y_train.name
-        
-        if x_test is not None and y_test is not None:
-            y_df = concat([y_train, y_test])
-            x_df = concat([x_train, x_test])
-        else:
-            y_df = y_train.copy()
-            x_df = x_train.copy()
-            
-        x_df[yname] = y_df 
-        x_df.sort_index(inplace=True)
-        
-        if cv > 0:
-            my_learing_curve(estimator, data=x_df, yname=yname, cv=cv, scoring='RMSE', figsize=figsize, dpi=dpi)
-        else:
-            my_learing_curve(estimator, data=x_df, yname=yname, scoring='RMSE', figsize=figsize, dpi=dpi)
+    # 결과값을 모델 객체에 포함시킴
+    estimator.scores = scores[-1]
+
+    if is_print:
+        print("[회귀분석 성능평가]")
+        result_df = DataFrame(scores, index=score_names)
+        my_pretty_table(result_df.T)
+
+        # 학습곡선
+        if learning_curve:
+            print("\n[학습곡선]")
+            yname = y_train.name
+
+            if x_test is not None and y_test is not None:
+                y_df = concat([y_train, y_test])
+                x_df = concat([x_train, x_test])
+            else:
+                y_df = y_train.copy()
+                x_df = x_train.copy()
+
+            x_df[yname] = y_df
+            x_df.sort_index(inplace=True)
+
+            if cv > 0:
+                my_learing_curve(
+                    estimator,
+                    data=x_df,
+                    yname=yname,
+                    cv=cv,
+                    scoring="RMSE",
+                    figsize=figsize,
+                    dpi=dpi,
+                )
+            else:
+                my_learing_curve(
+                    estimator,
+                    data=x_df,
+                    yname=yname,
+                    scoring="RMSE",
+                    figsize=figsize,
+                    dpi=dpi,
+                )
+
 
 def my_regression_report(
     estimator: any,
@@ -1245,12 +1232,7 @@ def my_knn_regression(
     # 교차검증 설정
     if cv > 0:
         if not params:
-            params = {
-                "n_neighbors": [3, 5, 7],
-                "weights": ["uniform", "distance"],
-                "metric": ["euclidean", "manhattan"],
-            }
-
+            params = get_hyper_params(classname=KNeighborsRegressor)
     return __my_regression(
         classname=KNeighborsRegressor,
         x_train=x_train,
@@ -1315,14 +1297,24 @@ def my_dtree_regression(
     # 교차검증 설정
     if cv > 0:
         if not params:
-            params = {
-                "criterion": [
-                    "squared_error",
-                    "friedman_mse",
-                    "absolute_error",
-                    "poisson",
-                ]
-            }
+            params = get_hyper_params(classname=DecisionTreeRegressor)
+
+        if pruning:
+            print("\033[91m가지치기를 위한 alpha값을 탐색합니다.\033[0m")
+
+            try:
+                dtree = get_estimator(classname=DecisionTreeRegressor)
+                path = dtree.cost_complexity_pruning_path(x_train, y_train)
+                ccp_alphas = path.ccp_alphas[1:-1]
+                params["ccp_alpha"] = ccp_alphas
+            except Exception as e:
+                print(f"\033[91m가지치기 실패 ({e})\033[0m")
+                e.with_traceback()
+        else:
+            if "ccp_alpha" in params:
+                del params["ccp_alpha"]
+
+            print("\033[91m가지치기를 하지 않습니다.\033[0m")
 
     return __my_regression(
         classname=DecisionTreeRegressor,
@@ -1388,17 +1380,7 @@ def my_svr_regression(
     # 교차검증 설정
     if cv > 0:
         if not params:
-            params = {
-                "C": [0.1, 1, 10],
-                # "kernel": ["rbf", "linear", "poly", "sigmoid"],
-                "kernel": ["rbf", "poly", "sigmoid"],
-                "degree": [2, 3, 4, 5],
-                # "gamma": ["scale", "auto"],
-                # "coef0": [0.01, 0.1, 1, 10],
-                # "shrinking": [True, False],
-                # "probability": [True],  # AUC 값 확인을 위해서는 True로 설정
-            }
-
+            params = get_hyper_params(classname=SVR)
     return __my_regression(
         classname=SVR,
         x_train=x_train,
@@ -1462,20 +1444,7 @@ def my_sgd_regression(
     # 교차검증 설정
     if cv > 0:
         if not params:
-            params = {
-                # 손실함수
-                "loss": ["squared_error", "huber", "epsilon_insensitive"],
-                # 정규화 종류
-                "penalty": ["l2", "l1", "elasticnet"],
-                # 정규화 강도(값이 낮을 수록 약한 정규화)
-                "alpha": [0.0001, 0.001, 0.01, 0.1],
-                # 최대 반복 수행 횟수
-                "max_iter": [1000, 2000, 3000, 4000, 5000],
-                # 학습률 스케줄링 전략
-                "learning_rate": ["optimal", "constant", "invscaling", "adaptive"],
-                # 초기 학습률
-                "eta0": [0.01, 0.1, 0.5],
-            }
+            params = get_hyper_params(classname=SGDRegressor)
 
     return __my_regression(
         classname=SGDRegressor,
@@ -1574,7 +1543,7 @@ def my_regression(
     dpi: int = 100,
     sort: str = None,
     algorithm: list = None,
-    scoring: list = ["rmse", "mse", "r2", "mae", "mape", "mpe"],
+    scoring: list = ["rmse", "mse", "r2", "mae", "mape", "mpe", "rf"],
     **params,
 ) -> any:
     """회귀분석을 수행하고 결과를 출력한다.
@@ -1593,8 +1562,7 @@ def my_regression(
         figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
         dpi (int, optional): 그래프의 해상도. Defaults to 100.
         sort (bool, optional): 독립변수 결과 보고 표의 정렬 기준 (v, p)
-        algorithm: list = None,
-        pruning (bool, optional): 의사결정나무에서 가지치기의 alpha값을 하이퍼 파라미터 튜닝에 포함 할지 여부. Default to False.
+        algorithm (list, optional): 사용할 알고리즘 ["linear", "ridge", "lasso", "knn", "dtree", "svr", "sgd"]. Defaults to None.
         **params (dict, optional): 하이퍼파라미터. Defaults to None.
 
     Returns:
@@ -1603,12 +1571,14 @@ def my_regression(
 
     results = []  # 결과값을 저장할 리스트
     processes = []  # 병렬처리를 위한 프로세스 리스트
-    estimators = {}  # 분류분석 모델을 저장할 딕셔너리
-    estimator_names = []  # 분류분석 모델의 이름을 저장할 문자열 리스트
+    estimators = {}  # 회귀분석 모델을 저장할 딕셔너리
+    estimator_names = []  # 회귀분석 모델의 이름을 저장할 문자열 리스트
     callstack = []
+    result_scores = []
 
     if not algorithm:
-        algorithm = ["linear", "ridge", "lasso", "knn", "dtree", "svr", "sgd", "rf"]
+        # algorithm = ["linear", "ridge", "lasso", "knn", "dtree", "svr", "sgd", "rf"]
+        algorithm = ["linear", "ridge", "lasso", "knn", "dtree", "svr", "sgd"]
 
     if "linear" in algorithm:
         callstack.append(my_linear_regression)
@@ -1657,9 +1627,18 @@ def my_regression(
             score_fields.append("평균 비율 오차(MPE)")
             score_method.append(False)
 
-    # 병렬처리를 위한 프로세스 생성 -> 분류 모델을 생성하는 함수를 각각 호출한다.
+    # 병렬처리를 위한 프로세스 생성 -> 회귀 모델을 생성하는 함수를 각각 호출한다.
     with futures.ThreadPoolExecutor() as executor:
         for c in callstack:
+            if params:
+                p = params.copy()
+
+                if c != my_dtree_regression:
+                    del p["pruning"]
+
+            else:
+                p = {}
+
             processes.append(
                 executor.submit(
                     c,
@@ -1677,33 +1656,57 @@ def my_regression(
                     dpi=dpi,
                     sort=False,
                     is_print=False,
-                    # pruning=pruning,
-                    **params,
+                    **p,
                 )
             )
 
         # 병렬처리 결과를 기다린다.
         for p in futures.as_completed(processes):
-            # 각 분류 함수의 결과값(분류모형 객체)을 저장한다.
+            # 각 회귀 함수의 결과값(회귀모형 객체)을 저장한다.
             estimator = p.result()
 
-            if estimator is not None:
-                # 분류모형 객체가 포함하고 있는 성능 평가지표(딕셔너리)를 복사한다.
-                scores = estimator.scores
-                # 분류모형의 이름과 객체를 저장한다.
-                n = estimator.__class__.__name__
-                estimator_names.append(n)
-                estimators[n] = estimator
-                # 성능평가 지표 딕셔너리를 리스트에 저장
-                results.append(scores)
+            if estimator is None:
+                continue
+
+            # 회귀모형 객체가 포함하고 있는 성능 평가지표(딕셔너리)를 복사한다.
+            scores = estimator.scores
+            # 회귀모형의 이름과 객체를 저장한다.
+            n = estimator.__class__.__name__
+            estimator_names.append(n)
+            estimators[n] = estimator
+            # 성능평가 지표 딕셔너리를 리스트에 저장
+            results.append(scores)
+
+            result_scores.append(
+                {
+                    "model": n,
+                    "train": estimator.train_score,
+                    "test": estimator.test_score,
+                }
+            )
 
         # 결과값을 데이터프레임으로 변환
+        print("\n\n==================== 모델 성능 비교 ====================")
         result_df = DataFrame(results, index=estimator_names)
 
         if score_fields:
             result_df.sort_values(score_fields, ascending=score_method, inplace=True)
 
         my_pretty_table(result_df)
+
+        score_df = DataFrame(data=result_scores, index=estimator_names).sort_values(
+            by="test", ascending=False
+        )
+        score_df = score_df.melt(id_vars="model", var_name="data", value_name="score")
+        my_barplot(
+            df=score_df,
+            yname="model",
+            xname="score",
+            hue="data",
+            figsize=figsize,
+            dpi=dpi,
+            callback=lambda ax: ax.set_title("모델 성능 비교"),
+        )
 
     # 최고 성능의 모델을 선택
     if score_fields[0] == "결정계수(R2)":
@@ -1714,11 +1717,11 @@ def my_regression(
     estimators["best"] = estimators[best_idx]
 
     my_regression_result(
-        estimators["best"],
-        x_train,
-        y_train,
-        x_test,
-        y_test,
+        estimator=estimators["best"],
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
         learning_curve=learning_curve,
         cv=cv,
         figsize=figsize,
@@ -1726,18 +1729,28 @@ def my_regression(
         is_print=True,
     )
 
-    my_regression_report(
-        estimators["best"],
-        x_train,
-        y_train,
-        x_test,
-        y_test,
-        sort=sort,
-        plot=plot,
-        deg=deg,
-        figsize=figsize,
-        dpi=dpi,
-    )
+    if report:
+        my_regression_report(
+            estimator=estimators["best"],
+            x_train=x_train,
+            y_train=y_train,
+            x_test=x_test,
+            y_test=y_test,
+            sort=sort,
+            plot=plot,
+            deg=deg,
+            figsize=figsize,
+            dpi=dpi,
+        )
+
+    if resid_test:
+        my_resid_test(
+            x=x_train,
+            y=y_train,
+            y_pred=estimators["best"].predict(x_train),
+            figsize=figsize,
+            dpi=dpi,
+        )
 
     return estimators
 

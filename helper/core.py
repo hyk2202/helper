@@ -266,37 +266,39 @@ def __ml(
     if cv > 0:
         if not params:
             params = {}
+
         if classname == XGBClassifier:
             classes = y_train.unique()
             n_classes = len(classes)
 
             if n_classes == 2:
                 objective = "binary:logistic"
-                eval_metric='error'
+                eval_metric = "error"
             else:
                 objective = "multi:softmax"
-                eval_metric='merror'
+                eval_metric = "merror"
 
             prototype_estimator = get_estimator(
                 classname=classname, objective=objective, eval_metric=eval_metric
             )
         else:
             prototype_estimator = get_estimator(classname=classname, est=est)
+
         if scoring is None:
             grid = RandomizedSearchCV(
                 estimator=prototype_estimator,
                 param_distributions=params,
                 cv=cv,
                 n_jobs=__N_JOBS__,
-                n_iter=__MAX_ITER__,
+                # n_iter=__MAX_ITER__,
                 random_state=__RANDOM_STATE__,
+                verbose=0,
             )
             # grid = GridSearchCV(
             #     estimator=prototype_estimator,
             #     param_grid=params,
             #     cv=cv,
             #     n_jobs=__N_JOBS__,
-            #     n_iter=__MAX_ITER__,
             # )
         else:
             grid = RandomizedSearchCV(
@@ -304,32 +306,38 @@ def __ml(
                 param_distributions=params,
                 cv=cv,
                 n_jobs=__N_JOBS__,
-                n_iter=__MAX_ITER__,
+                # n_iter=__MAX_ITER__,
                 random_state=__RANDOM_STATE__,
                 scoring=scoring,
+                verbose=0,
             )
             # grid = GridSearchCV(
             #     estimator=prototype_estimator,
             #     param_grid=params,
             #     cv=cv,
             #     n_jobs=__N_JOBS__,
-            #     n_iter=__MAX_ITER__,
             #     scoring=scoring,
             # )
 
         try:
-            grid.fit(x_train, y_train)
+            if classname == XGBClassifier:
+                grid.fit(
+                    X=x_train,
+                    y=y_train,
+                    eval_set=[(x_train, y_train), (x_test, y_test)],
+                    verbose=True,
+                )
+            else:
+                grid.fit(X=x_train, y=y_train)
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(
-                f"\033[91m[{fname}:{exc_tb.tb_lineno}] {str(exc_type)} {exc_obj}\033[0m"
+                f"\033[91m[{fname}:{exc_tb.tb_lineno}] {str(object=exc_type)} {exc_obj}\033[0m"
             )
             return None
 
-        # print(grid.cv_results_)
-
-        result_df = DataFrame(grid.cv_results_["params"])
+        result_df = DataFrame(data=grid.cv_results_["params"])
 
         if "mean_test_score" in grid.cv_results_:
             result_df["mean_test_score"] = grid.cv_results_["mean_test_score"]
@@ -343,7 +351,7 @@ def __ml(
             print("[교차검증 TOP5]")
             print(
                 tabulate(
-                    result_df.head().reset_index(drop=True),
+                    tabular_data=result_df.head().reset_index(drop=True),
                     headers="keys",
                     tablefmt="psql",
                     showindex=True,
@@ -378,6 +386,17 @@ def __ml(
     estimator.x = x_test if x_test is not None else x_train
     estimator.y = y_test if y_test is not None else y_train
     estimator.y_pred = y_pred if y_test is not None else estimator.predict(x_train)
+
+    estimator.train_score = (
+        estimator.score(x_train, y_train)
+        if x_train is not None and y_train is not None
+        else None
+    )
+    estimator.test_score = (
+        estimator.score(x_test, y_test)
+        if x_test is not None and y_test is not None
+        else None
+    )
 
     if y_test is not None or y_train is not None:
         estimator.resid = (
