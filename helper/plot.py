@@ -23,7 +23,7 @@ import graphviz
 import dtreeviz
 import matplotlib.cm as cm
 from .core import get_random_state, get_n_jobs
-from xgboost import plot_importance as xgb_plot_importance, XGBClassifier
+from xgboost import plot_importance as xgb_plot_importance, XGBClassifier, to_graphviz
 
 try:
     import google.colab
@@ -1060,8 +1060,7 @@ def my_loss_curve(
     )
 
 
-
-def my_learing_curve2(
+def my_learing_curve(
     estimator: any,
     data: DataFrame,
     yname: str = "target",
@@ -1077,7 +1076,7 @@ def my_learing_curve2(
     if estimator.__class__.__name__ in ["XGBRegressor", "XGBClassifier"]:
         my_loss_curve(estimator=estimator, figsize=figsize, dpi=dpi, callback=callback)
     else:
-        my_learing_curve(
+        my_ml_learing_curve(
             estimator=estimator,
             data=data,
             yname=yname,
@@ -1092,7 +1091,7 @@ def my_learing_curve2(
         )
 
 
-def my_learing_curve(
+def my_ml_learing_curve(
     estimator: any,
     data: DataFrame,
     yname: str = "target",
@@ -1283,6 +1282,28 @@ def my_learing_curve(
     plt.tight_layout()
     plt.show()
     plt.close()
+
+
+def my_loss_curve(
+    estimator: any,
+    figsize: tuple = (10, 5),
+    dpi: int = 100,
+    callback: any = None,
+) -> None:
+    # 손실률 데이터 가져오기
+    results = estimator.evals_result()
+
+    result_df = DataFrame(
+        {
+            "train": results["validation_0"][estimator.eval_metric],
+            "test": results["validation_1"][estimator.eval_metric],
+        }
+    )
+
+    result_df2 = result_df.reset_index(drop=False, names="epoch")
+    result_df3 = result_df2.melt(
+        id_vars="epoch", var_name="dataset", value_name="error"
+    )
 
 
 def my_confusion_matrix(
@@ -2049,3 +2070,9 @@ def my_plot_importance(estimator: any, importance_type: str = "weight", figsize:
     plt.tight_layout()
     plt.show()
     plt.close()
+
+def my_xgb_tree(booster: XGBClassifier) -> None:
+    image = to_graphviz(booster=booster)
+    image.graph_attr = {"dpi": "400"}
+    image.render("tree", format="png")
+    display.Image(filename="tree.png")

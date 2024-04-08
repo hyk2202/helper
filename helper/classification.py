@@ -25,7 +25,7 @@ from sklearn.ensemble import AdaBoostClassifier, GradientBoostingClassifier, Vot
 from scipy.stats import norm
 
 from .util import my_pretty_table
-from .plot import my_learing_curve, my_confusion_matrix, my_roc_curve, my_tree, my_barplot,my_plot_importance
+from .plot import my_learing_curve, my_confusion_matrix, my_roc_curve, my_tree, my_barplot,my_plot_importance,my_xgb_tree
 from .core import __ml, get_hyper_params, get_estimator
 
 from xgboost import XGBClassifier
@@ -167,15 +167,25 @@ def my_classification_result(
     """
 
     # ------------------------------------------------------
-    # 성능평가
-
+    # 성능평가 시작
     scores = []
     score_names = []
 
+    # ------------------------------------------------------
     # 이진분류인지 다항분류인지 구분
-    labels = list(estimator.classes_)
+    if hasattr(estimator, "classes_"):
+        labels = list(estimator.classes_)
+    elif hasattr(estimator, "n_clusters"):
+        labels = list(range(estimator.n_clusters))
+    elif hasattr(estimator, "n_classes_"):
+        labels = list(estimator.n_classes_)
+    else:
+        labels = list(set(y_train))
+
     is_binary = len(labels) == 2
 
+    # ------------------------------------------------------
+    # 훈련데이터
     if x_train is not None and y_train is not None:
         # 추정치
         y_train_pred = estimator.predict(x_train)
@@ -240,6 +250,8 @@ def my_classification_result(
         scores.append(result)
         score_names.append("훈련데이터")
 
+    # ------------------------------------------------------
+    # 검증데이터
     if x_test is not None and y_test is not None:
         # 추정치
         y_test_pred = estimator.predict(x_test)
@@ -301,6 +313,7 @@ def my_classification_result(
         scores.append(result)
         score_names.append("검증데이터")
 
+    # ------------------------------------------------------
     # 각 항목의 설명 추가
     if is_binary:
         result = {
@@ -335,6 +348,7 @@ def my_classification_result(
     scores.append(result)
     score_names.append("설명")
 
+    # ------------------------------------------------------
     if is_print:
         print("[분류분석 성능평가]")
         result_df = DataFrame(scores, index=score_names)
@@ -359,10 +373,30 @@ def my_classification_result(
             my_confusion_matrix(y_train, y_train_pred, figsize=figsize, dpi=dpi)
 
     # ------------------------------------------------------
+    if is_print and estimator.__class__.__name__ == "XGBClassifier":
+        print("\n[변수 중요도]")
+        my_plot_importance(estimator=estimator)
+
+        feature_important = estimator.get_booster().get_score(importance_type="weight")
+        keys = list(feature_important.keys())
+        values = list(feature_important.values())
+
+        data = DataFrame(data=values, index=keys, columns=["score"]).sort_values(
+            by="score", ascending=False
+        )
+
+        data["rate"] = data["score"] / data["score"].sum()
+        data["cumsum"] = data["rate"].cumsum()
+
+        my_pretty_table(data)
+
+        # print("\n[TREE]")
+        my_xgb_tree(booster=estimator)
+
+    # ------------------------------------------------------
     # curve
     if is_print:
         if hasattr(estimator, "predict_proba"):
-
             if x_test is None or y_test is None:
                 print("\n[Roc Curve]")
                 my_roc_curve(
@@ -405,15 +439,25 @@ def my_classification_result(
 
             if cv > 0:
                 my_learing_curve(
-                    estimator, data=x_df, yname=yname, cv=cv, figsize=figsize, dpi=dpi
+                    estimator=estimator,
+                    data=x_df,
+                    yname=yname,
+                    cv=cv,
+                    figsize=figsize,
+                    dpi=dpi,
                 )
             else:
                 my_learing_curve(
-                    estimator, data=x_df, yname=yname, figsize=figsize, dpi=dpi
+                    estimator=estimator,
+                    data=x_df,
+                    yname=yname,
+                    figsize=figsize,
+                    dpi=dpi,
                 )
 
         if estimator.__class__.__name__ == "DecisionTreeClassifier":
-            my_tree(estimator)
+            my_tree(estimator=estimator)
+
 
 
 def my_classification_report(
