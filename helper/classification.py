@@ -25,8 +25,12 @@ from sklearn.ensemble import AdaBoostClassifier, GradientBoostingClassifier, Vot
 from scipy.stats import norm
 
 from .util import my_pretty_table
-from .plot import my_learing_curve, my_confusion_matrix, my_roc_curve, my_tree, my_barplot
+from .plot import my_learing_curve, my_confusion_matrix, my_roc_curve, my_tree, my_barplot,my_plot_importance
 from .core import __ml, get_hyper_params, get_estimator
+
+from xgboost import XGBClassifier
+
+
 import matplotlib.pyplot as plt
 import sys
 
@@ -1759,6 +1763,48 @@ def my_gbm_classification(
         x_test=x_test,
         y_test=y_test,
         conf_matrix=conf_matrix,
+        hist=hist,
+        roc=roc,
+        pr=pr,
+        multiclass=multiclass,
+        learning_curve=learning_curve,
+        report=report,
+        figsize=figsize,
+        dpi=dpi,
+        sort=sort,
+        is_print=True,
+        **params,
+    )
+
+
+def my_xgb_classification(
+    x_train: DataFrame,
+    y_train: Series,
+    x_test: DataFrame = None,
+    y_test: Series = None,
+    conf_matrix: bool = True,
+    cv: int = 5,
+    hist: bool = True,
+    roc: bool = True,
+    pr: bool = True,
+    multiclass: str = None,
+    learning_curve=True,
+    report: bool = True,
+    figsize=(10, 5),
+    dpi: int = 100,
+    sort: str = "v",
+    **params
+) -> XGBClassifier:
+    params = get_hyper_params(classname=XGBClassifier)
+
+    return __my_classification(
+        classname=XGBClassifier,
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        conf_matrix=conf_matrix,
+        cv=cv,
         hist=hist,
         roc=roc,
         pr=pr,

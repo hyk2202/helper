@@ -24,7 +24,7 @@ import graphviz
 import dtreeviz
 import matplotlib.cm as cm
 from .core import get_random_state, get_n_jobs
-
+from xgboost import plot_importance as xgb_plot_importance
 
 try:
     import google.colab
@@ -1073,17 +1073,24 @@ def my_learing_curve(
 
     # 평가지표가 없는 경우
     if scoring == None:
-        train_sizes, train_scores, test_scores = learning_curve(
-            estimator,
-            x,
-            y,
-            cv=cv,
-            n_jobs=-1,
-            train_sizes=train_sizes,
-            random_state=random_state,
-        )
+        try:
+            train_sizes, train_scores, test_scores = learning_curve(
+                estimator=estimator,
+                X=x,
+                y=y,
+                cv=cv,
+                n_jobs=get_n_jobs(),
+                train_sizes=train_sizes,
+                random_state=random_state,
+                # explore_incremental_learning=True,
+            )
 
-        ylabel = "Score"
+            ylabel = "Score"
+        except Exception as e:
+            print(
+                f"\x1b[31m이 데이터는 학습곡선을 도출하는데 적합하지 않습니다.\n\n\x1b[0m"
+            )
+            return
 
     # 평가지표가 있는 경우
     else:
@@ -1132,16 +1139,26 @@ def my_learing_curve(
         if scoring not in set(scoring_list):
             raise Exception(f"\x1b[31m평가지표 {scoring}가 존재하지 않습니다.\x1b[0m")
 
-        train_sizes, train_scores, test_scores = learning_curve(
-            estimator,
-            x,
-            y,
-            cv=cv,
-            n_jobs=-1,
-            train_sizes=train_sizes,
-            scoring=scoring,
-            random_state=random_state,
-        )
+
+        ylabel = scoring.upper()
+
+        try:
+            train_sizes, train_scores, test_scores = learning_curve(
+                estimator=estimator,
+                X=x,
+                y=y,
+                cv=cv,
+                n_jobs=get_n_jobs(),
+                train_sizes=train_sizes,
+                scoring=scoring,
+                random_state=get_random_state(),
+                # explore_incremental_learning=True,
+            )
+        except Exception as e:
+            print(
+                f"\x1b[31m이 데이터는 학습곡선을 도출하는데 적합하지 않습니다.\x1b[0m\n\n"
+            )
+            return
 
     train_mean = w * np.mean(train_scores, axis=1)
     train_std = w * np.std(train_scores, axis=1)
@@ -1954,3 +1971,11 @@ def my_dtreeviz(
         scale=2.0,
         fontname="AppleGothic" if sys.platform == "darwin" else "Malgun Gothic",
     )
+
+def my_plot_importance(estimator: any, importance_type: str = "weight", figsize: tuple = (10, 5), dpi: int = 100) -> None:
+    fig = plt.figure(figsize=figsize, dpi=dpi)
+    ax = fig.gca()
+    xgb_plot_importance(booster=estimator, importance_type=importance_type, ax=ax)
+    plt.tight_layout()
+    plt.show()
+    plt.close()

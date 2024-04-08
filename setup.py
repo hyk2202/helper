@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="helper_hyk",
-    version="0.0.1",
+    name="helper",
+    version="0.1.0",
     description="hyk_test_pip",
     author="Kim Han-Youl",
     author_email="hyk2202@gmail.com",

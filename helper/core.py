@@ -23,6 +23,7 @@ from sklearn.ensemble import (
     GradientBoostingRegressor,
 )
 from tabulate import tabulate
+from xgboost import XGBClassifier
 
 __RANDOM_STATE__ = 0
 
@@ -161,10 +162,21 @@ __GRADIENT_BOOSTING_REGRESSION_HYPER_PARAMS__ = {
     "learning_rate": [0.001, 0.01, 0.1, 1],
     "subsample": [0.5, 0.7, 1.0],
 }
+__XGBOOST_CLASSIFICATION_HYPER_PARAMS__ = {
+    "learning_rate": [0.1, 0.3, 0.5, 0.7, 1],
+    "n_estimators": [100, 200, 300, 400, 500],
+    "min_child_weight": [1, 3, 5, 7, 9],
+    "gamma": [0, 1, 2, 3, 4, 5],
+    "max_depth": [0, 2, 4, 6],
+    "subsample": [0.5, 0.7, 1],
+    "colsample_bytree": [0.6, 0.7, 0.8, 0.9],
+    "reg_alpha": [1, 3, 5, 7, 9],
+    "reg_lambda": [1, 3, 5, 7, 9]
+}
 
 
 def get_estimator(
-    classname: any, estimators: list = None, base_estimator: any = None
+    classname: any, estimators: list = None, base_estimator: any = None, **params
 ) -> any:
     c = str(object=classname)
     p = c.rfind(".")
@@ -198,6 +210,17 @@ def get_estimator(
 
     if "verbose" in dict(inspect.signature(obj=classname.__init__).parameters):
         args["verbose"] = False
+
+
+    if classname == XGBClassifier:
+        # general params
+        args['booster'] ="gbtree"
+        args['device'] = "cpu"
+        args['verbosity'] = 0
+ 
+    if params:
+        args.update(params)
+
 
     return classname(**args)
 
@@ -233,11 +256,22 @@ def __ml(
     if cv > 0:
         if not params:
             params = {}
+        if classname == XGBClassifier:
+            classes = y_train.unique()
+            n_classes = len(classes)
 
-        prototype_estimator = get_estimator(
-            classname=classname, estimators=estimators
-        )  # 모델 객체 생성
+            if n_classes == 2:
+                objective = "binary:logistic"
+                eval_metric='error'
+            else:
+                objective = "multi:softmax"
+                eval_metric='merror'
 
+            prototype_estimator = get_estimator(
+                classname=classname, objective=objective, eval_metric=eval_metric
+            )
+        else:
+            prototype_estimator = get_estimator(classname=classname, est=est)
         if scoring is None:
             grid = RandomizedSearchCV(
                 estimator=prototype_estimator,
@@ -431,7 +465,9 @@ def get_hyper_params(classname: any, key: str = None) -> dict:
         params = __GRADIENT_BOOSTING_REGRESSION_HYPER_PARAMS__.copy()
     elif classname == GradientBoostingClassifier:
         params = __GRADIENT_BOOSTING_CLASSIFICATION_HYPER_PARAMS__.copy()
-
+    elif classname == XGBClassifier:
+        params = __XGBOOST_CLASSIFICATION_HYPER_PARAMS__.copy()
+        
     if params:
         key_list = list(params.keys())
 
