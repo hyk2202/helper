@@ -1,5 +1,5 @@
+from pycallgraphix.wrapper import register_method
 from pandas import DataFrame
-import scipy
 from scipy.stats import shapiro, normaltest, bartlett, levene, ttest_1samp, ttest_ind, ttest_rel, mannwhitneyu, pearsonr, spearmanr
 from statsmodels.formula.api import ols
 from statsmodels.stats.anova import anova_lm
@@ -11,6 +11,7 @@ from .util import my_pretty_table, my_unmelt
 from .plot import my_heatmap
 from .core import *
 
+@register_method
 def my_normal_test(data: DataFrame, method: str = "n") -> None:
     """데이터프레임 내의 모든 컬럼에 대해 정규성 검정을 수행하고 결과를 출력한다.
 
@@ -28,6 +29,7 @@ def my_normal_test(data: DataFrame, method: str = "n") -> None:
             
         print(f"[{n}-{c}] statistic: {s:.3f}, p-value: {p:.3f}, 정규성 충족 여부: {p > 0.05}")
 
+@register_method
 def my_equal_var_test(data: DataFrame, normal_dist: bool = True) -> None:
     """데이터프레임 내에 있는 모든 컬럼들에 대해 등분산성 검정을 수행하고 결과를 출력한다.
 
@@ -46,6 +48,7 @@ def my_equal_var_test(data: DataFrame, normal_dist: bool = True) -> None:
         
     print(f"{n} 검정: statistic: {s:.3f}, p-value: {p:.3f}, 등분산성 충족 여부: {p > 0.05}")
 
+@register_method
 def my_normal_equal_var_1field(data: DataFrame, xname: str = 'x', hue: str = 'hue') -> None:
     """데이터프레임 내에 있는 한 종류의 명목형 변수에 따라 종속변수의 정규성과 등분산성을 검정하고 결과를 출력한다.
 
@@ -79,6 +82,7 @@ def my_normal_equal_var_1field(data: DataFrame, xname: str = 'x', hue: str = 'hu
     report_df = DataFrame(report).set_index('field')
     my_pretty_table(report_df)
     
+@register_method
 def my_normal_equal_var_2field(data: DataFrame, xname: str = 'x', hue: list = ['h1', 'h2']) -> None:
     """데이터프레임 내에 있는 두 종류의 명목형 변수에 따라 종속변수의 정규성과 등분산성을 검정하고 결과를 출력한다.
 
@@ -114,6 +118,7 @@ def my_normal_equal_var_2field(data: DataFrame, xname: str = 'x', hue: list = ['
     report_df = DataFrame(report).set_index('field')
     my_pretty_table(report_df)
 
+@register_method
 def my_ttest_1samp(data: DataFrame, mean_value: int = 0) -> None:
     """데이터프레임 내에 있는 모든 컬럼에 대해 일표본 t-검정을 수행하고 결과를 출력한다.
 
@@ -150,6 +155,7 @@ def my_ttest_1samp(data: DataFrame, mean_value: int = 0) -> None:
     rdf = DataFrame(result).set_index(["field", "alternative"])
     my_pretty_table(rdf)
 
+@register_method
 def my_ttest_ind(data: DataFrame, xname: str, yname: str, equal_var: bool = True) -> None:
     """독립표본 t-검정을 수행하고 결과를 출력한다.
 
@@ -191,6 +197,7 @@ def my_ttest_ind(data: DataFrame, xname: str, yname: str, equal_var: bool = True
     rdf = DataFrame(result).set_index(["test", "alternative"])
     my_pretty_table(rdf)
 
+@register_method
 def my_ttest_rel(data: DataFrame, xname: str, yname: str, equal_var: bool = True) -> None:
     """대응표본 t-검정 또는 Mann-Whitney U 검정을 수행하고 결과를 출력한다.
 
@@ -236,6 +243,7 @@ def my_ttest_rel(data: DataFrame, xname: str, yname: str, equal_var: bool = True
     rdf = DataFrame(result).set_index(["test", "alternative"])
     my_pretty_table(rdf)
     
+@register_method
 def my_anova(data: DataFrame, target: str, hue: any, equal_var: bool = True, post : bool = False) -> None:
     """분산분석을 수행하고 결과를 출력한다.
 
@@ -313,6 +321,7 @@ def my_anova(data: DataFrame, target: str, hue: any, equal_var: bool = True, pos
             result = pairwise_gameshowell(data=data, dv=target, between=hue)
             my_pretty_table(result)
    
+@register_method
 def my_correlation(data: DataFrame, method: str = "p", heatmap: bool = True, figsize: list=(10, 8), dpi: int=150) -> None:
     """데이터프레임 내에 있는 모든 컬럼들에 대해 상관계수를 계산하고 결과를 출력한다.
 

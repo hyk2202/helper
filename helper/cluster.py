@@ -9,7 +9,7 @@ from kneed import KneeLocator
 from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering
 from sklearn.metrics import silhouette_score, silhouette_samples
 from sklearn.neighbors import NearestNeighbors
-
+from pycallgraphix.wrapper import register_method
 from scipy.spatial import ConvexHull
 from scipy.cluster.hierarchy import dendrogram
 
@@ -17,7 +17,7 @@ from .plot import my_lineplot, my_convex_hull
 from .core import get_random_state
 
 
-
+@register_method
 def my_kmeans_cluster(
     data: DataFrame,
     n_clusters: int,
@@ -60,7 +60,7 @@ def my_kmeans_cluster(
 
     return estimator
 
-
+@register_method
 def my_elbow_point(
     x: list,
     y: list,
@@ -148,7 +148,7 @@ def my_elbow_point(
 
     return (best_x, best_y)
 
-
+@register_method
 def __silhouette_plot(cluster: any, data: DataFrame, ax: plt.Axes) -> None:
     """실루엣 계수를 파라미터로 전달받은 ax에 시각화 한다.
 
@@ -192,7 +192,7 @@ def __silhouette_plot(cluster: any, data: DataFrame, ax: plt.Axes) -> None:
 
     ax.axvline(x=sil_avg, color="red", linestyle="--")
 
-
+@register_method
 def my_cluster_plot(
     estimator: any, data: DataFrame, figsize: tuple = (10, 5), dpi: int = 100
 ) -> None:
@@ -278,7 +278,7 @@ def my_cluster_plot(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_silhouette_plot(
     clusters: list,
     data: DataFrame,
@@ -312,7 +312,7 @@ def my_silhouette_plot(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_kmeans(
     data: DataFrame,
     n_clusters: int | list = 10,
@@ -399,7 +399,7 @@ def my_kmeans(
 
         return best_model
 
-
+@register_method
 def my_dbscan_cluster(
     data: DataFrame,
     eps: float = 0.5,
@@ -442,7 +442,7 @@ def my_dbscan_cluster(
 
     return estimator
 
-
+@register_method
 def my_n_neighbors(
     data: DataFrame,
     k: int = 3,
@@ -486,7 +486,7 @@ def my_n_neighbors(
 
     return best_y
 
-
+@register_method
 def my_knn_dbscan(
     data: DataFrame,
     k: int = 3,
@@ -524,7 +524,7 @@ def my_knn_dbscan(
 
     return estimator
 
-
+@register_method
 def my_dbscan(
     data: DataFrame,
     k: int | list = 3,
@@ -587,7 +587,7 @@ def my_dbscan(
 
     return best_model
 
-
+@register_method
 def my_agg_cluster(
     data: DataFrame,
     n_clusters: int = 2,
@@ -634,7 +634,7 @@ def my_agg_cluster(
 
     return estimator
 
-
+@register_method
 def __dendrogram_source(estimator: AgglomerativeClustering) -> np.ndarray:
     """덴드로그램을 위한 데이터를 생성한다.
 
@@ -663,7 +663,7 @@ def __dendrogram_source(estimator: AgglomerativeClustering) -> np.ndarray:
     # 시각화에 필요한 배열 리턴
     return linkage_matrix
 
-
+@register_method
 def my_dendrogram(
     estimator: AgglomerativeClustering,
     p: int = 0,
@@ -703,7 +703,7 @@ def my_dendrogram(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_agg(
     data: DataFrame,
     n_clusters: int | list = 10,

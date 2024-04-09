@@ -1,6 +1,6 @@
 import inspect
 import sys, os
-
+from pycallgraphix.wrapper import register_method
 import numpy as np
 from pandas import DataFrame, Series
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
@@ -23,7 +23,7 @@ from sklearn.ensemble import (
     GradientBoostingRegressor,
 )
 from tabulate import tabulate
-from xgboost import XGBClassifier
+from xgboost import XGBClassifier, XGBRegressor
 
 __RANDOM_STATE__ = 0
 
@@ -174,8 +174,19 @@ __XGBOOST_CLASSIFICATION_HYPER_PARAMS__ = {
     "reg_lambda": [1, 3, 5, 7, 9]
 }
 
+__XGBOOST_REGRESSION_HYPER_PARAMS__ = {
+    "learning_rate": [0.1, 0.3, 0.5, 0.7, 1],
+    "n_estimators": [100, 200, 300, 400, 500],
+    "min_child_weight": [1, 3, 5, 7, 9],
+    "gamma": [0, 1, 2, 3, 4, 5],
+    "max_depth": [0, 2, 4, 6],
+    "subsample": [0.5, 0.7, 1],
+    "colsample_bytree": [0.6, 0.7, 0.8, 0.9],
+    "reg_alpha": [1, 3, 5, 7, 9],
+    "reg_lambda": [1, 3, 5, 7, 9],
+}
 
-
+@register_method
 def get_estimator(classname: any, est: any = None, **params) -> any:
     """분류분석 추정기 객체를 생성한다. 고정적으로 사용되는 속성들을 일괄 설정한다.
 
@@ -219,7 +230,7 @@ def get_estimator(classname: any, est: any = None, **params) -> any:
     if classname == AdaBoostClassifier:
         args["algorithm"] = "SAMME"
 
-    if classname == XGBClassifier:
+    if classname == XGBClassifier or classname == XGBRegressor:
         # general params
         args["booster"] = "gbtree"
         args["device"] = "cpu"
@@ -232,7 +243,7 @@ def get_estimator(classname: any, est: any = None, **params) -> any:
     return classname(**args)
 
 
-
+@register_method
 def __ml(
     classname: any,
     x_train: DataFrame,
@@ -267,16 +278,20 @@ def __ml(
         if not params:
             params = {}
 
-        if classname == XGBClassifier:
-            classes = y_train.unique()
-            n_classes = len(classes)
+        if classname == XGBClassifier or classname == XGBRegressor:
+            if classname == XGBClassifier:
+                classes = y_train.unique()
+                n_classes = len(classes)
 
-            if n_classes == 2:
-                objective = "binary:logistic"
-                eval_metric = "error"
+                if n_classes == 2:
+                    objective = "binary:logistic"
+                    eval_metric = "error"
+                else:
+                    objective = "multi:softmax"
+                    eval_metric = "merror"
             else:
-                objective = "multi:softmax"
-                eval_metric = "merror"
+                objective = "reg:squarederror"
+                eval_metric = "rmse"
 
             prototype_estimator = get_estimator(
                 classname=classname, objective=objective, eval_metric=eval_metric
@@ -320,7 +335,7 @@ def __ml(
             # )
 
         try:
-            if classname == XGBClassifier:
+            if classname == XGBClassifier or classname == XGBRegressor:
                 grid.fit(
                     X=x_train,
                     y=y_train,
@@ -364,8 +379,36 @@ def __ml(
             print(grid.best_params_)
             print("")
     else:
-        estimator = get_estimator(classname=classname, estimators=estimators)
-        estimator.fit(x_train, y_train)
+        if classname == XGBClassifier or classname == XGBRegressor:
+            if classname == XGBClassifier:
+                classes = y_train.unique()
+                n_classes = len(classes)
+
+                if n_classes == 2:
+                    objective = "binary:logistic"
+                    eval_metric = "error"
+                else:
+                    objective = "multi:softmax"
+                    eval_metric = "merror"
+            else:
+                objective = "reg:squarederror"
+                eval_metric = "rmse"
+
+            estimator = get_estimator(
+                classname=classname, objective=objective, eval_metric=eval_metric
+            )
+        else:
+            estimator = get_estimator(classname=classname, est=est)
+
+        if classname == XGBClassifier:
+            estimator.fit(
+                X=x_train,
+                y=y_train,
+                eval_set=[(x_train, y_train), (x_test, y_test)],
+                verbose=False,
+            )
+        else:
+            estimator.fit(X=x_train, y=y_train)
 
     # ------------------------------------------------------
     # 결과값 생성
@@ -412,7 +455,7 @@ def __ml(
 
     return estimator
 
-
+@register_method
 def get_random_state() -> int:
     """랜덤 시드를 반환한다.
 
@@ -421,7 +464,7 @@ def get_random_state() -> int:
     """
     return __RANDOM_STATE__
 
-
+@register_method
 def get_max_iter() -> int:
     """최대 반복 횟수를 반환한다.
 
@@ -430,7 +473,7 @@ def get_max_iter() -> int:
     """
     return __MAX_ITER__
 
-
+@register_method
 def get_n_jobs() -> int:
     """병렬 처리 개수를 반환한다.
 
@@ -439,7 +482,7 @@ def get_n_jobs() -> int:
     """
     return __N_JOBS__
 
-
+@register_method
 def get_hyper_params(classname: any, key: str = None) -> dict:
     """분류분석 추정기의 하이퍼파라미터를 반환한다.
 
@@ -496,6 +539,8 @@ def get_hyper_params(classname: any, key: str = None) -> dict:
         params = __GRADIENT_BOOSTING_CLASSIFICATION_HYPER_PARAMS__.copy()
     elif classname == XGBClassifier:
         params = __XGBOOST_CLASSIFICATION_HYPER_PARAMS__.copy()
+    elif classname == XGBRegressor:
+        params = __XGBOOST_REGRESSION_HYPER_PARAMS__.copy()
         
     if params:
         key_list = list(params.keys())

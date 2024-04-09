@@ -3,7 +3,7 @@ import numpy as np
 import seaborn as sb
 import matplotlib.pyplot as plt
 import concurrent.futures as futures
-
+from pycallgraphix.wrapper import register_method
 from pandas import DataFrame, Series, concat
 
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, SGDRegressor
@@ -25,13 +25,13 @@ from statsmodels.stats.outliers_influence import variance_inflation_factor
 from statsmodels.stats.stattools import durbin_watson
 from statsmodels.stats.api import het_breuschpagan
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
-
+from xgboost import XGBRegressor
 from scipy.stats import t, f
 from .util import my_pretty_table, my_trend, my_train_test_split
 from .plot import my_residplot, my_qqplot, my_learing_curve, my_barplot
 from .core import __ml, get_estimator, get_hyper_params
 
-
+@register_method
 def __my_regression(
     classname: any,
     x_train: DataFrame,
@@ -134,7 +134,7 @@ def __my_regression(
 
     return estimator
 
-
+@register_method
 def my_auto_linear_regression(df:DataFrame, yname:str, cv:int=5, learning_curve: bool = True, degree : int = 1, plot: bool = True, report=True, resid_test=False, figsize=(10, 4), dpi=150, sort: str = None,order: str = None,p_value_num:float=0.05) -> LinearRegression:
     """선형회귀분석을 수행하고 결과를 출력한다.
 
@@ -421,6 +421,7 @@ def my_auto_linear_regression(df:DataFrame, yname:str, cv:int=5, learning_curve:
     print("")
     return fit
     
+@register_method
 def my_linear_regression(x_train: DataFrame, y_train: Series, x_test: DataFrame = None, y_test: Series = None, cv: int = 5,  learning_curve: bool = True, deg:int = 1,degree : int = 1, plot: bool = True, is_print:bool = True,report=True, resid_test=False, figsize=(10, 4), dpi=150, sort: str = None,order: str = None,p_value_num:float=0.05, **params ) -> LinearRegression:
     """선형회귀분석을 수행하고 결과를 출력한다.
 
@@ -475,6 +476,7 @@ def my_linear_regression(x_train: DataFrame, y_train: Series, x_test: DataFrame 
         **params,
     )
 
+@register_method
 def my_ridge_regression(x_train: DataFrame, y_train: Series, x_test: DataFrame = None, y_test: Series = None, cv: int = 5, learning_curve: bool = True, report=False, plot: bool = False, degree: int = 1, resid_test=False, figsize=(10, 5), dpi: int = 100, sort: str = None, params: dict = {'alpha': [0.01, 0.1, 1, 10, 100]}) -> LinearRegression:
     """릿지회귀분석을 수행하고 결과를 출력한다.
 
@@ -523,6 +525,7 @@ def my_ridge_regression(x_train: DataFrame, y_train: Series, x_test: DataFrame =
         **params,
     )
 
+@register_method
 def my_lasso_regression(    
     x_train: DataFrame,
     y_train: Series,
@@ -586,7 +589,7 @@ def my_lasso_regression(
         **params,
     )
 
-
+@register_method
 def __regression_report_plot(ax: plt.Axes, x, y, xname, yname, y_pred, deg) -> None:
     if deg == 1:
         sb.regplot(x=x, y=y, ci=95, label="관측치", ax=ax)
@@ -611,6 +614,7 @@ def __regression_report_plot(ax: plt.Axes, x, y, xname, yname, y_pred, deg) -> N
     ax.legend()
     ax.grid()
 
+@register_method
 def my_regression_result(
     estimator: any,
     x_train: DataFrame = None,
@@ -680,6 +684,7 @@ def my_regression_result(
     # 결과값을 모델 객체에 포함시킴
     estimator.scores = scores[-1]
 
+    # ------------------------------------------------------
     if is_print:
         print("[회귀분석 성능평가]")
         result_df = DataFrame(scores, index=score_names)
@@ -720,7 +725,30 @@ def my_regression_result(
                     dpi=dpi,
                 )
 
+        if estimator.__class__.__name__ == "XGBRegressor":
+            print("\n[변수 중요도]")
+            my_plot_importance(estimator=estimator)
 
+            feature_important = estimator.get_booster().get_score(
+                importance_type="weight"
+            )
+            keys = list(feature_important.keys())
+            values = list(feature_important.values())
+
+            data = DataFrame(data=values, index=keys, columns=["score"]).sort_values(
+                by="score", ascending=False
+            )
+
+            data["rate"] = data["score"] / data["score"].sum()
+            data["cumsum"] = data["rate"].cumsum()
+
+            my_pretty_table(data)
+
+            # print("\n[TREE]")
+            # my_xgb_tree(booster=estimator)
+
+
+@register_method
 def my_regression_report(
     estimator: any,
     x_train: DataFrame = None,
@@ -974,6 +1002,7 @@ def my_regression_report(
         plt.show()
         plt.close()
 
+@register_method
 def my_resid_normality(y: Series, y_pred: Series) -> None:
     """MSE값을 이용하여 잔차의 정규성 가정을 확인한다.
 
@@ -998,6 +1027,7 @@ def my_resid_normality(y: Series, y_pred: Series) -> None:
     normality = r1 >= 68 and r2 >= 95 and r3 >= 99
     print(f"잔차의 정규성 가정 충족 여부: {normality}")
 
+@register_method
 def my_resid_equal_var(x: DataFrame, y: Series, y_pred: Series, p_value_num:float =0.05) -> None:
     """잔차의 등분산성 가정을 확인한다.
 
@@ -1023,6 +1053,7 @@ def my_resid_equal_var(x: DataFrame, y: Series, y_pred: Series, p_value_num:floa
     print(f"잔차의 등분산성 가정 충족 여부: {bs_result[1] > p_value_num}")
     my_pretty_table(bs_result_df)
 
+@register_method
 def my_resid_independence(y: Series, y_pred: Series) -> None:
     """잔차의 독립성 가정을 확인한다.
 
@@ -1033,6 +1064,7 @@ def my_resid_independence(y: Series, y_pred: Series) -> None:
     dw = durbin_watson(y - y_pred)
     print(f"Durbin-Watson: {dw}, 잔차의 독립성 가정 만족 여부: {1.5 < dw < 2.5}")
     
+@register_method    
 def my_resid_test(x: DataFrame, y: Series, y_pred: Series, figsize: tuple=(10, 4), dpi: int=150, p_value_num:float = 0.05) -> None:
     """잔차의 가정을 확인한다.
 
@@ -1060,7 +1092,7 @@ def my_resid_test(x: DataFrame, y: Series, y_pred: Series, figsize: tuple=(10, 4
     print("\n[잔차의 독립성 가정]")
     my_resid_independence(y, y_pred)
 
-
+@register_method
 def my_ridge_regression(
     x_train: DataFrame,
     y_train: Series,
@@ -1125,6 +1157,7 @@ def my_ridge_regression(
         **params,
     )
 
+@register_method
 def my_lasso_regression(
     x_train: DataFrame,
     y_train: Series,
@@ -1189,6 +1222,7 @@ def my_lasso_regression(
         **params,
     )
 
+@register_method
 def my_knn_regression(
     x_train: DataFrame,
     y_train: Series,
@@ -1252,6 +1286,7 @@ def my_knn_regression(
         **params,
     )
 
+@register_method
 def my_dtree_regression(
     x_train: DataFrame,
     y_train: Series,
@@ -1336,6 +1371,7 @@ def my_dtree_regression(
         **params,
     )
 
+@register_method
 def my_svr_regression(
     x_train: DataFrame,
     y_train: Series,
@@ -1400,6 +1436,7 @@ def my_svr_regression(
         **params,
     )
 
+@register_method
 def my_sgd_regression(
     x_train: DataFrame,
     y_train: Series,
@@ -1464,6 +1501,8 @@ def my_sgd_regression(
         is_print=is_print,
         **params,
     )
+
+@register_method
 def my_rf_regression(
     x_train: DataFrame,
     y_train: Series,
@@ -1528,6 +1567,7 @@ def my_rf_regression(
         **params,
     )
 
+@register_method
 def my_regression(
     x_train: DataFrame,
     y_train: Series,
@@ -1754,7 +1794,7 @@ def my_regression(
 
     return estimators
 
-
+@register_method
 def my_voting_regression(
     x_train: DataFrame,
     y_train: Series,
@@ -1853,6 +1893,7 @@ def my_voting_regression(
         **params,
     )
 
+@register_method
 def my_bagging_regression(
     x_train: DataFrame,
     y_train: Series,
@@ -1947,8 +1988,7 @@ def my_bagging_regression(
         **params,
     )
 
-
-
+@register_method
 def my_ada_regression(
     x_train: DataFrame,
     y_train: Series,
@@ -2043,7 +2083,7 @@ def my_ada_regression(
         **params,
     )
 
-
+@register_method
 def my_gbm_regression(
     x_train: DataFrame,
     y_train: Series,
@@ -2102,5 +2142,73 @@ def my_gbm_regression(
         dpi=dpi,
         sort=sort,
         is_print=True,
+        **params,
+    )
+
+
+@register_method
+def my_xgb_regression(
+    x_train: DataFrame,
+    y_train: Series,
+    x_test: DataFrame = None,
+    y_test: Series = None,
+    cv: int = 5,
+    pruning: bool = False,
+    learning_curve: bool = True,
+    report=True,
+    plot: bool = False,
+    deg: int = 1,
+    resid_test=False,
+    figsize=(10, 5),
+    dpi: int = 100,
+    sort: str = None,
+    is_print: bool = True,
+    **params,
+) -> XGBRegressor:
+    """XGBRegressor 회귀분석을 수행하고 결과를 출력한다.
+
+    Args:
+        x_train (DataFrame): 독립변수에 대한 훈련 데이터
+        y_train (Series): 종속변수에 대한 훈련 데이터
+        x_test (DataFrame): 독립변수에 대한 검증 데이터. Defaults to None.
+        y_test (Series): 종속변수에 대한 검증 데이터. Defaults to None.
+        cv (int, optional): 교차검증 횟수. Defaults to 0.
+        learning_curve (bool, optional): 학습곡선을 출력할지 여부. Defaults to False.
+        report (bool, optional): 회귀분석 결과를 보고서로 출력할지 여부. Defaults to True.
+        plot (bool, optional): 시각화 여부. Defaults to True.
+        deg (int, optional): 다항회귀분석의 차수. Defaults to 1.
+        resid_test (bool, optional): 잔차의 가정을 확인할지 여부. Defaults to False.
+        figsize (tuple, optional): 그래프의 크기. Defaults to (10, 5).
+        dpi (int, optional): 그래프의 해상도. Defaults to 100.
+        sort (bool, optional): 독립변수 결과 보고 표의 정렬 기준 (v, p)
+        is_print (bool, optional): 출력 여부. Defaults to True.
+        pruning (bool, optional): 의사결정나무에서 가지치기의 alpha값을 하이퍼 파라미터 튜닝에 포함 할지 여부. Default to False.
+        **params (dict, optional): 하이퍼파라미터. Defaults to None.
+
+    Returns:
+        XGBRegressor
+    """
+
+    # 교차검증 설정
+    if cv > 0:
+        if not params:
+            params = get_hyper_params(classname=XGBRegressor)
+
+    return __my_regression(
+        classname=XGBRegressor,
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        cv=cv,
+        learning_curve=learning_curve,
+        report=report,
+        plot=plot,
+        deg=deg,
+        resid_test=resid_test,
+        figsize=figsize,
+        dpi=dpi,
+        sort=sort,
+        is_print=is_print,
         **params,
     )

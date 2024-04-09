@@ -1,3 +1,5 @@
+
+from pycallgraphix.wrapper import register_method
 import os
 import sys
 import numpy as np
@@ -24,6 +26,8 @@ import dtreeviz
 import matplotlib.cm as cm
 from .core import get_random_state, get_n_jobs
 from xgboost import plot_importance as xgb_plot_importance, XGBClassifier, to_graphviz
+from IPython import display
+from IPython.display import Image
 
 try:
     import google.colab
@@ -45,6 +49,7 @@ plt.rcParams["figure.figsize"] = (10, 6)
 plt.rcParams["figure.dpi"] = 200
 plt.rcParams["axes.unicode_minus"] = False
 
+@register_method
 def my_boxplot(
     df: DataFrame,
     xname: str = None,
@@ -91,7 +96,7 @@ def my_boxplot(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_lineplot(
     df: DataFrame,
     xname: str = None,
@@ -125,7 +130,7 @@ def my_lineplot(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_kdeplot(
     df: DataFrame,
     xname: str = None,
@@ -190,7 +195,7 @@ def my_kdeplot(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_histplot(
     df: DataFrame,
     xname: str = None,
@@ -239,7 +244,7 @@ def my_histplot(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_stackplot(
     df: DataFrame,
     xname: str,
@@ -307,7 +312,7 @@ def my_stackplot(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_scatterplot(
     df: DataFrame,
     xname: str = None,
@@ -342,7 +347,7 @@ def my_scatterplot(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_regplot(
     df: DataFrame,
     xname: str = None,
@@ -380,7 +385,7 @@ def my_regplot(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_lmplot(
     df: DataFrame,
     xname: str = None,
@@ -414,7 +419,7 @@ def my_lmplot(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_pairplot(
     df: DataFrame,
     diag_kind: str = "auto",
@@ -441,7 +446,7 @@ def my_pairplot(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_countplot(
     df: DataFrame,
     xname: str = None,
@@ -481,7 +486,7 @@ def my_countplot(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_barplot(
     df: DataFrame,
     xname: str = None,
@@ -522,7 +527,7 @@ def my_barplot(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_boxenplot(
     df: DataFrame,
     xname: str = None,
@@ -557,7 +562,7 @@ def my_boxenplot(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_violinplot(
     df: DataFrame,
     xname: str = None,
@@ -592,7 +597,7 @@ def my_violinplot(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_pointplot(
     df: DataFrame,
     xname: str = None,
@@ -626,7 +631,7 @@ def my_pointplot(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_jointplot(
     df: DataFrame,
     xname: str = None,
@@ -661,7 +666,7 @@ def my_jointplot(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_heatmap(
     data: DataFrame,
     cmap="coolwarm",
@@ -690,7 +695,7 @@ def my_heatmap(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_convex_hull(
     data: DataFrame,
     xname: str = None,
@@ -747,7 +752,7 @@ def my_convex_hull(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_kde_confidence_interval(
     data: DataFrame,
     clevel=0.95,
@@ -817,7 +822,7 @@ def my_kde_confidence_interval(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_pvalue_anotation(
     data: DataFrame,
     target: str,
@@ -861,7 +866,7 @@ def my_pvalue_anotation(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_resid_histplot(
     y: np.ndarray,
     y_pred: np.ndarray,
@@ -890,7 +895,7 @@ def my_resid_histplot(
         resid_df, xname="resid", bins=bins, figsize=figsize, dpi=dpi, callback=callback
     )
 
-
+@register_method
 def my_residplot(
     y,
     y_pred,
@@ -994,7 +999,7 @@ def my_residplot(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_qqplot(
     y_pred: np.ndarray, figsize: tuple = (10, 4), dpi: int = 150, callback: any = None
 ) -> None:
@@ -1021,7 +1026,7 @@ def my_qqplot(
     plt.close()
 
 
-
+@register_method
 def my_loss_curve(
     estimator: any,
     figsize: tuple = (10, 5),
@@ -1059,7 +1064,7 @@ def my_loss_curve(
         callback=my_callback,
     )
 
-
+@register_method
 def my_learing_curve(
     estimator: any,
     data: DataFrame,
@@ -1090,7 +1095,7 @@ def my_learing_curve(
             callback=callback,
         )
 
-
+@register_method
 def my_ml_learing_curve(
     estimator: any,
     data: DataFrame,
@@ -1283,7 +1288,7 @@ def my_ml_learing_curve(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_loss_curve(
     estimator: any,
     figsize: tuple = (10, 5),
@@ -1305,7 +1310,7 @@ def my_loss_curve(
         id_vars="epoch", var_name="dataset", value_name="error"
     )
 
-
+@register_method
 def my_confusion_matrix(
     y: np.ndarray,
     y_pred: np.ndarray,
@@ -1352,7 +1357,7 @@ def my_confusion_matrix(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_roc_curve_binary(
     estimator: any,
     x: DataFrame,
@@ -1486,7 +1491,7 @@ def my_roc_curve_binary(
     plt.show()
     plt.close()
 
-
+@register_method
 def my_roc_curve_multiclass_ovo(
     estimator: any,
     x: DataFrame,
@@ -1662,7 +1667,7 @@ def my_roc_curve_multiclass_ovo(
     if auc_list:
         print(f"mean roc auc ovo: {sum(auc_list)/len(auc_list):.4f}")
 
-
+@register_method
 def my_roc_curve_multiclass_ovr(
     estimator: any,
     x: DataFrame,
@@ -1824,7 +1829,7 @@ def my_roc_curve_multiclass_ovr(
     if auc_list:
         print(f"mean roc auc ovo: {sum(auc_list)/len(auc_list):.4f}")
 
-
+@register_method
 def my_roc_curve(
     estimator: any,
     x: DataFrame,
@@ -1873,7 +1878,7 @@ def my_roc_curve(
                 estimator, x, y, hist, roc, pr, figsize, dpi, callback
             )
 
-
+@register_method
 def my_distribution_by_class(
     data: DataFrame,
     xnames: list = None,
@@ -1941,7 +1946,7 @@ def my_distribution_by_class(
                 callback=callback,
             )
 
-
+@register_method
 def my_scatter_by_class(
     data: DataFrame,
     group: list = None,
@@ -1990,7 +1995,7 @@ def my_scatter_by_class(
         for i, v in enumerate(group):
             my_scatterplot(data, v[0], v[1], hue, palette, figsize, dpi, callback)
 
-
+@register_method
 def my_tree(estimator: DecisionTreeClassifier, save: bool = False) -> None:
     """의사결정나무를 출력한다.
 
@@ -2031,7 +2036,7 @@ def my_tree(estimator: DecisionTreeClassifier, save: bool = False) -> None:
             )
         )
 
-
+@register_method
 def my_dtreeviz(
     estimator: DecisionTreeClassifier,
     x_train: DataFrame,
@@ -2063,6 +2068,7 @@ def my_dtreeviz(
         fontname="AppleGothic" if sys.platform == "darwin" else "Malgun Gothic",
     )
 
+@register_method
 def my_plot_importance(estimator: any, importance_type: str = "weight", figsize: tuple = (10, 5), dpi: int = 100) -> None:
     fig = plt.figure(figsize=figsize, dpi=dpi)
     ax = fig.gca()
@@ -2071,6 +2077,7 @@ def my_plot_importance(estimator: any, importance_type: str = "weight", figsize:
     plt.show()
     plt.close()
 
+@register_method
 def my_xgb_tree(booster: XGBClassifier) -> None:
     image = to_graphviz(booster=booster)
     image.graph_attr = {"dpi": "400"}
