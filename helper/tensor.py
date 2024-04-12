@@ -42,7 +42,9 @@ def tf_train(
     x_test: np.ndarray = None,
     y_test: np.ndarray = None,
     epochs: int = 500,
+    patience: int = 10,
     batch_size: int = 32,
+    factor: float = 0.1,
     early_stopping: bool = True,
     reduce_lr: bool = True,
     verbose: int = 0,
@@ -52,11 +54,13 @@ def tf_train(
 
     if early_stopping:
         callbacks.append(
-            EarlyStopping(patience=10, restore_best_weights=True, verbose=verbose)
+            EarlyStopping(patience=patience, restore_best_weights=True, verbose=verbose)
         )
 
     if reduce_lr:
-        callbacks.append(ReduceLROnPlateau(factor=0.1, patience=5, verbose=verbose))
+        callbacks.append(
+            ReduceLROnPlateau(factor=factor, patience=patience // 2, verbose=verbose)
+        )
 
     history = model.fit(
         x_train,
