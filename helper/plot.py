@@ -2,6 +2,8 @@
 from pycallgraphix.wrapper import register_method
 import os
 import sys
+import graphviz
+import dtreeviz
 import numpy as np
 import seaborn as sb
 import matplotlib.pyplot as plt
@@ -21,11 +23,11 @@ from sklearn.metrics import (
 from sklearn.model_selection import learning_curve
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
-import graphviz
-import dtreeviz
+
 import matplotlib.cm as cm
 from .core import get_random_state, get_n_jobs
 from xgboost import plot_importance as xgb_plot_importance, XGBClassifier, to_graphviz
+from lightgbm import plot_importance as lgb_plot_importance
 from IPython import display
 from IPython.display import Image
 

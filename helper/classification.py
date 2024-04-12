@@ -30,7 +30,7 @@ from .plot import my_learing_curve, my_confusion_matrix, my_roc_curve, my_tree, 
 from .core import __ml, get_hyper_params, get_estimator
 
 from xgboost import XGBClassifier
-
+from lightgbm import LGBMClassifier
 
 import matplotlib.pyplot as plt
 import sys
@@ -1847,6 +1847,49 @@ def my_xgb_classification(
 
     return __my_classification(
         classname=XGBClassifier,
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        conf_matrix=conf_matrix,
+        cv=cv,
+        hist=hist,
+        roc=roc,
+        pr=pr,
+        multiclass=multiclass,
+        learning_curve=learning_curve,
+        report=report,
+        figsize=figsize,
+        dpi=dpi,
+        sort=sort,
+        is_print=True,
+        **params,
+    )
+
+
+@register_method
+def my_lgbm_classification(
+    x_train: DataFrame,
+    y_train: Series,
+    x_test: DataFrame = None,
+    y_test: Series = None,
+    conf_matrix: bool = True,
+    cv: int = 5,
+    hist: bool = True,
+    roc: bool = True,
+    pr: bool = True,
+    multiclass: str = None,
+    learning_curve=True,
+    report: bool = True,
+    figsize=(10, 5),
+    dpi: int = 100,
+    sort: str = "v",
+    **params,
+) -> LGBMClassifier:
+    params = get_hyper_params(classname=LGBMClassifier)
+
+    return __my_classification(
+        classname=LGBMClassifier,
         x_train=x_train,
         y_train=y_train,
         x_test=x_test,

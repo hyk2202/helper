@@ -1,7 +1,9 @@
 import inspect
 import sys, os
-from pycallgraphix.wrapper import register_method
 import numpy as np
+from pycallgraphix.wrapper import register_method
+
+from tabulate import tabulate
 from pandas import DataFrame, Series
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
@@ -22,14 +24,17 @@ from sklearn.ensemble import (
     GradientBoostingClassifier,
     GradientBoostingRegressor,
 )
-from tabulate import tabulate
 from xgboost import XGBClassifier, XGBRegressor
+from lightgbm import LGBMClassifier, LGBMRegressor
+
 
 __RANDOM_STATE__ = 0
 
 __MAX_ITER__ = 1000
 
 __N_JOBS__ = -1
+
+__EARLY_STOPPING_ROUNDS__ = 10
 
 __LINEAR_REGRESSION_HYPER_PARAMS__ = {"fit_intercept": [True, False]}
 
@@ -138,7 +143,7 @@ __RANDOM_FOREST_CLASSIFICATION_HYPER_PARAMS__ = {
     "n_estimators": [10, 20, 50, 100],
     "criterion": ["gini", "entropy"],
     "max_features": ["sqrt", "log2", None],
-    "max_depth": [10, 20, None],
+    "max_depth": [10, 20, 50, None],
 }
 
 __ADA_BOOSTING_CLASSIFICATION_HYPER_PARAMS__ = {
@@ -162,6 +167,7 @@ __GRADIENT_BOOSTING_REGRESSION_HYPER_PARAMS__ = {
     "learning_rate": [0.001, 0.01, 0.1, 1],
     "subsample": [0.5, 0.7, 1.0],
 }
+
 __XGBOOST_CLASSIFICATION_HYPER_PARAMS__ = {
     "learning_rate": [0.1, 0.3, 0.5, 0.7, 1],
     "n_estimators": [100, 200, 300, 400, 500],
@@ -171,7 +177,7 @@ __XGBOOST_CLASSIFICATION_HYPER_PARAMS__ = {
     "subsample": [0.5, 0.7, 1],
     "colsample_bytree": [0.6, 0.7, 0.8, 0.9],
     "reg_alpha": [1, 3, 5, 7, 9],
-    "reg_lambda": [1, 3, 5, 7, 9]
+    "reg_lambda": [1, 3, 5, 7, 9],
 }
 
 __XGBOOST_REGRESSION_HYPER_PARAMS__ = {
@@ -186,8 +192,37 @@ __XGBOOST_REGRESSION_HYPER_PARAMS__ = {
     "reg_lambda": [1, 3, 5, 7, 9],
 }
 
+__LIGHTGBM_CLASSIFICATION_HYPER_PARAMS__ = {
+    "learning_rate": [0.1, 0.3, 0.5, 0.7, 1],
+    "n_estimators": [100, 200, 300, 400, 500],
+    "min_child_weight": [1, 3, 5, 7, 9],
+    "max_depth": [0, 2, 4, 6],
+    "subsample": [0.5, 0.7, 1],
+    "colsample_bytree": [0.6, 0.7, 0.8, 0.9],
+    "lambda_l1": [0, 1, 3, 5, 7],
+    "lambda_l2": [0, 1, 3, 5, 7],
+}
+
+__LIGHTGBM_REGRESSION_HYPER_PARAMS__ = {
+    "learning_rate": [0.1, 0.3, 0.5, 0.7, 1],
+    "n_estimators": [100, 200, 300, 400, 500],
+    "min_child_weight": [1, 3, 5, 7, 9],
+    "max_depth": [0, 2, 4, 6],
+    "subsample": [0.5, 0.7, 1],
+    "colsample_bytree": [0.6, 0.7, 0.8, 0.9],
+    "lambda_l1": [0, 1, 3, 5, 7],
+    "lambda_l2": [0, 1, 3, 5, 7],
+}
+
+
 @register_method
-def get_estimator(classname: any, est: any = None, **params) -> any:
+def get_estimator(
+    classname: any,
+    est: any = None,
+    objective: str = None,
+    eval_metric: str = None,
+    **params,
+) -> any:
     """분류분석 추정기 객체를 생성한다. 고정적으로 사용되는 속성들을 일괄 설정한다.
 
     Args:
@@ -207,6 +242,14 @@ def get_estimator(classname: any, est: any = None, **params) -> any:
     # BaggingClassifier, BaggingRegressor
     if "estimator" in dict(inspect.signature(obj=classname.__init__).parameters):
         args["estimator"] = est
+
+    if "early_stopping_rounds" in dict(
+        inspect.signature(obj=classname.__init__).parameters
+    ):
+        args["early_stopping_rounds"] = __EARLY_STOPPING_ROUNDS__
+
+    if "eval_metric" in dict(inspect.signature(obj=classname.__init__).parameters):
+        args["eval_metric"] = eval_metric
 
     # 공통 속성들
     if "n_jobs" in dict(inspect.signature(obj=classname.__init__).parameters):
@@ -231,11 +274,13 @@ def get_estimator(classname: any, est: any = None, **params) -> any:
         args["algorithm"] = "SAMME"
 
     if classname == XGBClassifier or classname == XGBRegressor:
-        # general params
-        args["booster"] = "gbtree"
         args["device"] = "cpu"
         args["verbosity"] = 0
-        args["early_stopping_rounds"] = 10
+        args["objective"] = objective
+
+    if classname == LGBMClassifier or classname == LGBMRegressor:
+        args["device"] = "cpu"
+        args["verbose"] = -1
 
     if params:
         args.update(params)
@@ -272,143 +317,127 @@ def __ml(
     Returns:
         any: 분류분석 모델
     """
+    if cv < 2:
+        cv = 2
 
     # 교차검증 설정
-    if cv > 0:
-        if not params:
-            params = {}
+    if not params:
+        params = {}
 
-        if classname == XGBClassifier or classname == XGBRegressor:
-            if classname == XGBClassifier:
-                classes = y_train.unique()
-                n_classes = len(classes)
+    objective = None
+    eval_metric = None
 
-                if n_classes == 2:
-                    objective = "binary:logistic"
-                    eval_metric = "error"
-                else:
-                    objective = "multi:softmax"
-                    eval_metric = "merror"
+    if classname in [XGBClassifier, XGBRegressor, LGBMClassifier, LGBMRegressor]:
+        if classname == XGBClassifier or classname == LGBMClassifier:
+            classes = y_train.unique()
+            n_classes = len(classes)
+
+            if n_classes == 2:
+                objective = "binary:logistic"
+                eval_metric = "error"
             else:
-                objective = "reg:squarederror"
-                eval_metric = "rmse"
-
-            prototype_estimator = get_estimator(
-                classname=classname, objective=objective, eval_metric=eval_metric
-            )
+                objective = "multi:softmax"
+                eval_metric = "merror"
         else:
-            prototype_estimator = get_estimator(classname=classname, est=est)
+            objective = "reg:squarederror"
+            eval_metric = "rmse"
 
-        if scoring is None:
-            grid = RandomizedSearchCV(
-                estimator=prototype_estimator,
-                param_distributions=params,
-                cv=cv,
-                n_jobs=__N_JOBS__,
-                # n_iter=__MAX_ITER__,
-                random_state=__RANDOM_STATE__,
-                verbose=0,
-            )
-            # grid = GridSearchCV(
-            #     estimator=prototype_estimator,
-            #     param_grid=params,
-            #     cv=cv,
-            #     n_jobs=__N_JOBS__,
-            # )
-        else:
-            grid = RandomizedSearchCV(
-                estimator=prototype_estimator,
-                param_distributions=params,
-                cv=cv,
-                n_jobs=__N_JOBS__,
-                # n_iter=__MAX_ITER__,
-                random_state=__RANDOM_STATE__,
-                scoring=scoring,
-                verbose=0,
-            )
-            # grid = GridSearchCV(
-            #     estimator=prototype_estimator,
-            #     param_grid=params,
-            #     cv=cv,
-            #     n_jobs=__N_JOBS__,
-            #     scoring=scoring,
-            # )
+    prototype_estimator = get_estimator(
+        classname=classname, est=est, objective=objective, eval_metric=eval_metric
+    )
 
-        try:
-            if classname == XGBClassifier or classname == XGBRegressor:
-                grid.fit(
-                    X=x_train,
-                    y=y_train,
-                    eval_set=[(x_train, y_train), (x_test, y_test)],
-                    verbose=True,
-                )
-            else:
-                grid.fit(X=x_train, y=y_train)
-        except Exception as e:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(
-                f"\033[91m[{fname}:{exc_tb.tb_lineno}] {str(object=exc_type)} {exc_obj}\033[0m"
-            )
-            return None
-
-        result_df = DataFrame(data=grid.cv_results_["params"])
-
-        if "mean_test_score" in grid.cv_results_:
-            result_df["mean_test_score"] = grid.cv_results_["mean_test_score"]
-            result_df = result_df.dropna(subset=["mean_test_score"])
-            result_df = result_df.sort_values(by="mean_test_score", ascending=False)
-
-        estimator = grid.best_estimator_
-        estimator.best_params = grid.best_params_
-
-        if is_print:
-            print("[교차검증 TOP5]")
-            print(
-                tabulate(
-                    tabular_data=result_df.head().reset_index(drop=True),
-                    headers="keys",
-                    tablefmt="psql",
-                    showindex=True,
-                    numalign="right",
-                )
-            )
-            print("")
-
-            print("[Best Params]")
-            print(grid.best_params_)
-            print("")
+    if scoring is None:
+        grid = RandomizedSearchCV(
+            estimator=prototype_estimator,
+            param_distributions=params,
+            cv=cv,
+            n_jobs=__N_JOBS__,
+            # n_iter=__MAX_ITER__,
+            random_state=__RANDOM_STATE__,
+            verbose=0,
+        )
+        # grid = GridSearchCV(
+        #     estimator=prototype_estimator,
+        #     param_grid=params,
+        #     cv=cv,
+        #     n_jobs=__N_JOBS__,
+        # )
     else:
-        if classname == XGBClassifier or classname == XGBRegressor:
-            if classname == XGBClassifier:
-                classes = y_train.unique()
-                n_classes = len(classes)
+        grid = RandomizedSearchCV(
+            estimator=prototype_estimator,
+            param_distributions=params,
+            cv=cv,
+            n_jobs=__N_JOBS__,
+            # n_iter=__MAX_ITER__,
+            random_state=__RANDOM_STATE__,
+            scoring=scoring,
+            verbose=0,
+        )
+        # grid = GridSearchCV(
+        #     estimator=prototype_estimator,
+        #     param_grid=params,
+        #     cv=cv,
+        #     n_jobs=__N_JOBS__,
+        #     scoring=scoring,
+        # )
 
-                if n_classes == 2:
-                    objective = "binary:logistic"
-                    eval_metric = "error"
-                else:
-                    objective = "multi:softmax"
-                    eval_metric = "merror"
-            else:
-                objective = "reg:squarederror"
-                eval_metric = "rmse"
-
-            estimator = get_estimator(
-                classname=classname, objective=objective, eval_metric=eval_metric
-            )
-        else:
-            estimator = get_estimator(classname=classname, est=est)
-
-        if classname == XGBClassifier:
-            estimator.fit(
+    try:
+        if classname in [
+            XGBClassifier,
+            XGBRegressor,
+        ]:
+            grid.fit(
                 X=x_train,
                 y=y_train,
                 eval_set=[(x_train, y_train), (x_test, y_test)],
                 verbose=False,
             )
+        elif classname in [
+            LGBMClassifier,
+            LGBMRegressor,
+        ]:
+            grid.fit(
+                X=x_train,
+                y=y_train,
+                eval_metric=eval_metric,
+                eval_set=[(x_train, y_train), (x_test, y_test)],
+            )
         else:
-            estimator.fit(X=x_train, y=y_train)
+            grid.fit(X=x_train, y=y_train)
+    except Exception as e:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(
+            f"\033[91m[{fname}:{exc_tb.tb_lineno}] {str(object=exc_type)} {exc_obj}\033[0m"
+        )
+        return None
+
+    result_df = DataFrame(data=grid.cv_results_["params"])
+
+    if "mean_test_score" in grid.cv_results_:
+        result_df["mean_test_score"] = grid.cv_results_["mean_test_score"]
+        result_df = result_df.dropna(subset=["mean_test_score"])
+        result_df = result_df.sort_values(by="mean_test_score", ascending=False)
+
+    estimator = grid.best_estimator_
+    estimator.best_params = grid.best_params_
+
+    if is_print:
+        print("[교차검증 TOP5]")
+        print(
+            tabulate(
+                tabular_data=result_df.head().reset_index(drop=True),
+                headers="keys",
+                tablefmt="psql",
+                showindex=True,
+                numalign="right",
+            )
+        )
+        print("")
+
+        print("[Best Params]")
+        print(grid.best_params_)
+        print("")
 
     # ------------------------------------------------------
     # 결과값 생성
@@ -455,6 +484,7 @@ def __ml(
 
     return estimator
 
+
 @register_method
 def get_random_state() -> int:
     """랜덤 시드를 반환한다.
@@ -463,6 +493,7 @@ def get_random_state() -> int:
         int: 랜덤 시드
     """
     return __RANDOM_STATE__
+
 
 @register_method
 def get_max_iter() -> int:
@@ -473,6 +504,7 @@ def get_max_iter() -> int:
     """
     return __MAX_ITER__
 
+
 @register_method
 def get_n_jobs() -> int:
     """병렬 처리 개수를 반환한다.
@@ -481,6 +513,7 @@ def get_n_jobs() -> int:
         int: 병렬 처리 개수
     """
     return __N_JOBS__
+
 
 @register_method
 def get_hyper_params(classname: any, key: str = None) -> dict:
@@ -541,7 +574,11 @@ def get_hyper_params(classname: any, key: str = None) -> dict:
         params = __XGBOOST_CLASSIFICATION_HYPER_PARAMS__.copy()
     elif classname == XGBRegressor:
         params = __XGBOOST_REGRESSION_HYPER_PARAMS__.copy()
-        
+    elif classname == LGBMClassifier:
+        params = __LIGHTGBM_CLASSIFICATION_HYPER_PARAMS__.copy()
+    elif classname == LGBMRegressor:
+        params = __LIGHTGBM_REGRESSION_HYPER_PARAMS__.copy()
+
     if params:
         key_list = list(params.keys())
 
