@@ -1,10 +1,22 @@
 import numpy as np
-from tensorflow.keras.models import Sequential
+
+from tensorflow.random import set_seed
+from tensorflow.keras.initializers import GlorotUniform
+from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense
-from tensorflow.keras.callbacks import History, EarlyStopping, ReduceLROnPlateau
+from tensorflow.keras.callbacks import (
+    History,
+    EarlyStopping,
+    ReduceLROnPlateau,
+    TensorBoard,
+)
 from pandas import DataFrame
 from matplotlib import pyplot as plt
 from .util import my_pretty_table
+from .core import get_random_state
+
+set_seed(get_random_state())
+__initializer__ = GlorotUniform(seed=get_random_state())
 
 
 def tf_create(
@@ -12,24 +24,35 @@ def tf_create(
     optimizer: str = "adam",
     loss: str = None,
     metrics: list = None,
+    load_model: str = None,
 ) -> Sequential:
+
+    if load_model:
+        return load_model(load_model)
 
     if not dense or not loss or not metrics:
         raise ValueError("dense, loss, and metrics are required arguments")
 
     model = Sequential()
 
-    for i, v in enumerate(iterable=dense):
+    for i, v in enumerate(dense):
         if "input_shape" in v:
             model.add(
                 Dense(
                     units=v["units"],
                     input_shape=v["input_shape"],
                     activation=v["activation"],
+                    kernel_initializer=__initializer__,
                 )
             )
         else:
-            model.add(Dense(units=v["units"], activation=v["activation"]))
+            model.add(
+                Dense(
+                    units=v["units"],
+                    activation=v["activation"],
+                    kernel_initializer=__initializer__,
+                )
+            )
 
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
     return model
@@ -42,11 +65,11 @@ def tf_train(
     x_test: np.ndarray = None,
     y_test: np.ndarray = None,
     epochs: int = 500,
-    patience: int = 10,
     batch_size: int = 32,
-    factor: float = 0.1,
     early_stopping: bool = True,
     reduce_lr: bool = True,
+    checkpoint_path: str = None,
+    tensorboard_path: str = None,
     verbose: int = 0,
 ) -> History:
 
@@ -54,12 +77,25 @@ def tf_train(
 
     if early_stopping:
         callbacks.append(
-            EarlyStopping(patience=patience, restore_best_weights=True, verbose=verbose)
+            EarlyStopping(patience=10, restore_best_weights=True, verbose=verbose)
         )
 
     if reduce_lr:
+        callbacks.append(ReduceLROnPlateau(factor=0.1, patience=5, verbose=verbose))
+
+    if checkpoint_path:
         callbacks.append(
-            ReduceLROnPlateau(factor=factor, patience=patience // 2, verbose=verbose)
+            ModelCheckpoint(
+                filepath=checkpoint_path,
+                save_best_only=True,
+                save_weights_only=True,
+                verbose=verbose,
+            )
+        )
+
+    if tensorboard_path:
+        callbacks.append(
+            TensorBoard(log_dir=tensorboard_path, histogram_freq=1, write_graph=True)
         )
 
     history = model.fit(
@@ -89,7 +125,12 @@ def tf_train(
     return history
 
 
-def tf_result(result: History, figsize: tuple = (7, 5), dpi: int = 100) -> dict:
+def tf_result(
+    result: History,
+    history_table: bool = False,
+    figsize: tuple = (7, 5),
+    dpi: int = 100,
+) -> Sequential:
     result_df = DataFrame(result.history)
     result_df["epochs"] = result_df.index + 1
     result_df.set_index("epochs", inplace=True)
@@ -130,4 +171,111 @@ def tf_result(result: History, figsize: tuple = (7, 5), dpi: int = 100) -> dict:
     plt.show()
     plt.close()
 
-    my_pretty_table(result_df)
+    if history_table:
+        my_pretty_table(result_df)
+
+
+def my_tf(
+    x_train: np.ndarray,
+    y_train: np.ndarray,
+    x_test: np.ndarray = None,
+    y_test: np.ndarray = None,
+    dense: list = [],
+    optimizer: str = "adam",
+    loss: str = None,
+    metrics: list = None,
+    epochs: int = 500,
+    batch_size: int = 32,
+    early_stopping: bool = True,
+    reduce_lr: bool = True,
+    checkpoint_path: str = None,
+    load_model: str = None,
+    tensorboard_path: str = None,
+    verbose: int = 0,
+    history_table: bool = False,
+    figsize: tuple = (7, 5),
+    dpi: int = 100,
+) -> Sequential:
+
+    model = tf_create(dense=dense, optimizer=optimizer, loss=loss, metrics=metrics)
+
+    result = tf_train(
+        model=model,
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        epochs=epochs,
+        batch_size=batch_size,
+        early_stopping=early_stopping,
+        reduce_lr=reduce_lr,
+        checkpoint_path=checkpoint_path,
+        tensorboard_path=tensorboard_path,
+        verbose=verbose,
+    )
+
+    tf_result(result=result, history_table=history_table, figsize=figsize, dpi=dpi)
+
+    return model
+
+
+def my_tf_linear(
+    x_train: np.ndarray,
+    y_train: np.ndarray,
+    x_test: np.ndarray = None,
+    y_test: np.ndarray = None,
+    dense_units: list = [64, 32],
+    optimizer="adam",
+    loss="mse",
+    metrics=["mae"],
+    epochs: int = 500,
+    batch_size: int = 32,
+    early_stopping: bool = True,
+    reduce_lr: bool = True,
+    load_model: str = None,
+    checkpoint_path: str = None,
+    tensorboard_path: str = None,
+    verbose: int = 0,
+    history_table: bool = False,
+    figsize: tuple = (7, 5),
+    dpi: int = 100,
+) -> Sequential:
+
+    dense = []
+
+    s = len(dense_units)
+    for i, v in enumerate(iterable=dense_units):
+        if i == 0:
+            dense.append(
+                {
+                    "units": v,
+                    "input_shape": (x_train.shape[1],),
+                    "activation": "relu",
+                }
+            )
+        else:
+            dense.append({"units": v, "activation": "relu"})
+
+    dense.append({"units": 1, "activation": "linear"})
+
+    return my_tf(
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        dense=dense,
+        optimizer=optimizer,
+        loss=loss,
+        metrics=metrics,
+        epochs=epochs,
+        batch_size=batch_size,
+        early_stopping=early_stopping,
+        reduce_lr=reduce_lr,
+        checkpoint_path=checkpoint_path,
+        load_model=load_model,
+        tensorboard_path=tensorboard_path,
+        verbose=verbose,
+        history_table=history_table,
+        figsize=figsize,
+        dpi=dpi,
+    )
