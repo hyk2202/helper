@@ -8,12 +8,18 @@ from pandas import DataFrame, Series
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
 
-from sklearn.linear_model import LinearRegression, Ridge, Lasso, LogisticRegression
+from sklearn.linear_model import (
+    LinearRegression,
+    Ridge,
+    Lasso,
+    LogisticRegression,
+    SGDRegressor,
+    SGDClassifier,
+)
 from sklearn.neighbors import KNeighborsRegressor, KNeighborsClassifier
 from sklearn.svm import SVR, LinearSVC, SVC
 from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
-from sklearn.linear_model import SGDRegressor, SGDClassifier
 from sklearn.ensemble import (
     BaggingClassifier,
     BaggingRegressor,

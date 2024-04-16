@@ -2,13 +2,16 @@ from setuptools import setup, find_packages
 
 setup(
     name="helper",
-    version="0.1.0",
+    version="0.1.5",
     description="hyk_test_pip",
     author="Kim Han-Youl",
     author_email="hyk2202@gmail.com",
     license="MIT",
     packages=find_packages(exclude=[]),
-    keywords=["data",  "helper", ],
+    keywords=[
+        "data",
+        "helper",
+    ],
     python_requires=">=3.10",
     zip_safe=False,
     url="https://github.com/hyk2202/helper",
@@ -30,5 +33,10 @@ setup(
         "dtreeviz",
         "pca",
         "statannotations",
+        "pycallgraphix",
+        "xgboost",
+        "lightgbm",
+        "tensorflow",
+        "keras-tuner",
     ],
 )
