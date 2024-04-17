@@ -27,6 +27,7 @@ from tensorflow.keras.callbacks import (
     ModelCheckpoint,
 )
 from tensorflow.keras.optimizers import Adam, RMSprop
+from tensorflow.keras.utils import to_categorical
 
 # -------------------------------------------------------------
 from kerastuner import Hyperband
@@ -55,6 +56,84 @@ def __get_project_name(src) -> str:
     return "tf_%s" % dt.now().strftime("%y%m%d_%H%M%S")
 
 
+def __tf_stack_layers(model: Sequential, layer: list, hp: Hyperband = None):
+    for i, v in enumerate(layer):
+        # 층의 종류가 없을 경우 기본값을 dense로 설정
+        if "type" not in v:
+            v["type"] = "dense"
+
+        # 층의 종류가 dense일 경우
+        if v["type"].lower() == "dense":
+            # 활성화 함수가 없을 경우 기본값 None으로 설정
+            if "activation" not in v:
+                v["input_shape"] = None
+
+            print(v)
+
+            if hp is not None:
+                newrun = Dense(
+                    units=(
+                        hp.Choice("units", values=v["units"])
+                        if type(v["units"]) == list
+                        else v["units"]
+                    ),
+                    activation=v["activation"],
+                    kernel_initializer=__initializer__,
+                )
+            else:
+                newrun = Dense(
+                    units=v["units"],
+                    activation=v["activation"],
+                    kernel_initializer=__initializer__,
+                )
+
+            # 입력 모양이 있을 경우 추가 설정
+            if "input_shape" in v:
+                newrun.input_shape = v["input_shape"]
+
+        model.add(newrun)
+
+    return model
+
+
+# -------------------------------------------------------------
+@register_method
+def tf_create(
+    layer: list = [],
+    optimizer: any = "adam",
+    loss: str = None,
+    metrics: list = None,
+    model_path: str = None,
+) -> Sequential:
+    """
+    지정된 밀집 레이어, 최적화 프로그램, 손실 함수 및 측정항목을 사용하여 TensorFlow Sequential 모델을 생성하고 컴파일한다.
+
+    Args:
+        layer (list, optional): 각 사전이 생성될 신경망 모델의 레이어를 나타내는 사전 목록. Defaults to [].
+        optimizer (any, optional): 훈련 중에 사용할 최적화 알고리즘. Defaults to "adam".
+        loss (str, optional): 신경망 모델 학습 중에 최적화할 손실 함수를 지정. Defaults to None.
+        metrics (list, optional): 모델 학습 중에 모니터링하려는 평가 측정항목. Defaults to None.
+        model_path (str, optional): 로드하고 반환하려는 저장된 모델의 경로. Defaults to None.
+
+    Raises:
+        ValueError: dense, loss 및 metrics는 필수 인수
+
+    Returns:
+        Sequential: 컴파일 된 TensorFlow Sequential 모델
+    """
+
+    if model_path:
+        return load_model(model_path)
+
+    if not layer or not loss or not metrics:
+        raise ValueError("layer, loss, and metrics are required arguments")
+
+    model = Sequential()
+    model = __tf_stack_layers(model=model, layer=layer)
+    model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
+    return model
+
+
 # -------------------------------------------------------------
 @register_method
 def tf_tune(
@@ -62,7 +141,7 @@ def tf_tune(
     y_train: np.ndarray,
     x_test: np.ndarray = None,
     y_test: np.ndarray = None,
-    dense_tune: list = [],
+    layer: list = [],
     optimizer: any = "adam",
     learning_rate: list = [1e-2, 1e-3, 1e-4],
     loss: str = None,
@@ -74,55 +153,9 @@ def tf_tune(
     directory: str = __HB_DIR__,
     project_name: str = None,
 ) -> Sequential:
-    """_summary_
-
-    Args:
-        x_train (np.ndarray): _description_
-        y_train (np.ndarray): _description_
-        x_test (np.ndarray, optional): _description_. Defaults to None.
-        y_test (np.ndarray, optional): _description_. Defaults to None.
-        dense (list, optional): _description_. Defaults to [].
-        optimizer (any, optional): _description_. Defaults to "adam".
-        learning_rate (list, optional): _description_. Defaults to [1e-2, 1e-3, 1e-4].
-        loss (str, optional): _description_. Defaults to None.
-        metrics (list, optional): _description_. Defaults to None.
-        epochs (int, optional): _description_. Defaults to 10.
-        factor (int, optional): _description_. Defaults to 3.
-        seed (_type_, optional): _description_. Defaults to get_random_state().
-        directory (str, optional): _description_. Defaults to "./tensor_hyperband".
-        project_name (_type_, optional): _description_. Defaults to "tf_hyperband_%s"%dt.now().strftime("%Y%m%d%H%M%S").
-
-    Returns:
-        Sequential: _description_
-    """
-
     def __tf_build(hp) -> Sequential:
         model = Sequential()
-
-        for d in dense_tune:
-            if "input_shape" in d:
-                model.add(
-                    Dense(
-                        units=(
-                            hp.Choice("units", values=d["units"])
-                            if type(d["units"]) == list
-                            else d["units"]
-                        ),
-                        input_shape=d["input_shape"],
-                        activation=d["activation"],
-                    )
-                )
-            else:
-                model.add(
-                    Dense(
-                        units=(
-                            hp.Choice("units", values=d["units"])
-                            if type(d["units"]) == list
-                            else d["units"]
-                        ),
-                        activation=d["activation"],
-                    )
-                )
+        model = __tf_stack_layers(model=model, layer=layer, hp=hp)
 
         opt = None
 
@@ -164,63 +197,6 @@ def tf_tune(
         raise ValueError("No best hyperparameters found.")
 
     model = tuner.hypermodel.build(best_hps[0])
-    return model
-
-
-# -------------------------------------------------------------
-@register_method
-def tf_create(
-    dense: list = [],
-    optimizer: any = "adam",
-    loss: str = None,
-    metrics: list = None,
-    model_path: str = None,
-) -> Sequential:
-    """
-    지정된 밀집 레이어, 최적화 프로그램, 손실 함수 및 측정항목을 사용하여 TensorFlow Sequential 모델을 생성하고 컴파일한다.
-
-    Args:
-        dense (list, optional): 각 사전이 생성될 신경망 모델의 레이어를 나타내는 사전 목록. Defaults to [].
-        optimizer (any, optional): 훈련 중에 사용할 최적화 알고리즘. Defaults to "adam".
-        loss (str, optional): 신경망 모델 학습 중에 최적화할 손실 함수를 지정. Defaults to None.
-        metrics (list, optional): 모델 학습 중에 모니터링하려는 평가 측정항목. Defaults to None.
-        model_path (str, optional): 로드하고 반환하려는 저장된 모델의 경로. Defaults to None.
-
-    Raises:
-        ValueError: dense, loss 및 metrics는 필수 인수
-
-    Returns:
-        Sequential: 컴파일 된 TensorFlow Sequential 모델
-    """
-
-    if model_path:
-        return load_model(model_path)
-
-    if not dense or not loss or not metrics:
-        raise ValueError("dense, loss, and metrics are required arguments")
-
-    model = Sequential()
-
-    for i, v in enumerate(dense):
-        if "input_shape" in v:
-            model.add(
-                Dense(
-                    units=v["units"],
-                    input_shape=v["input_shape"],
-                    activation=v["activation"],
-                    kernel_initializer=__initializer__,
-                )
-            )
-        else:
-            model.add(
-                Dense(
-                    units=v["units"],
-                    activation=v["activation"],
-                    kernel_initializer=__initializer__,
-                )
-            )
-
-    model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
     return model
 
 
@@ -381,7 +357,7 @@ def my_tf(
     y_train: np.ndarray,
     x_test: np.ndarray = None,
     y_test: np.ndarray = None,
-    dense: list = [],
+    layer: list = [],
     optimizer: any = "adam",
     loss: str = None,
     metrics: list = None,
@@ -397,7 +373,7 @@ def my_tf(
     figsize: tuple = (7, 5),
     dpi: int = 100,
     # hyperband parameters
-    dense_tune: list = [],
+    tune: bool = False,
     learning_rate: list = [1e-2, 1e-3, 1e-4],
     factor=3,
     seed=get_random_state(),
@@ -431,13 +407,13 @@ def my_tf(
     Returns:
         Sequential: 훈련된 TensorFlow Sequential 모델
     """
-    if dense_tune is not None and len(dense_tune) > 0:
+    if tune == True:
         model = tf_tune(
             x_train=x_train,
             y_train=y_train,
             x_test=x_test,
             y_test=y_test,
-            dense_tune=dense_tune,
+            layer=layer,
             optimizer=optimizer,
             learning_rate=learning_rate,
             loss=loss,
@@ -451,7 +427,7 @@ def my_tf(
         )
     else:
         model = tf_create(
-            dense=dense,
+            layer=layer,
             optimizer=optimizer,
             loss=loss,
             metrics=metrics,
@@ -485,122 +461,56 @@ def my_tf_linear(
     y_train: np.ndarray,
     x_test: np.ndarray = None,
     y_test: np.ndarray = None,
-    dense_units: list = [64, 32],
-    optimizer: any = "adam",
-    loss: any = "mse",
-    metrics=["mae"],
-    epochs: int = 500,
-    batch_size: int = 32,
-    early_stopping: bool = True,
-    reduce_lr: bool = True,
-    model_path: str = None,
-    checkpoint_path: str = None,
-    tensorboard_path: str = None,
-    verbose: int = 0,
-    history_table: bool = False,
-    deg: int = 1,
-    figsize: tuple = (7, 5),
-    dpi: int = 100,
-    # hyperband parameters
-    dense_tune: list = [
+    layer: list = [
         {"units": [128, 64, 32, 16, 8], "activation": "relu", "input_shape": (0,)},
         {"units": [64, 32, 16, 8, 4], "activation": "relu"},
         {"units": 1, "activation": "linear"},
     ],
     learning_rate: list = [1e-2, 1e-3, 1e-4],
+    optimizer: any = "adam",
+    loss: any = "mse",
+    metrics=["mae"],
+    epochs: int = 500,
+    batch_size: int = 32,
     factor=3,
     seed=get_random_state(),
     directory=__HB_DIR__,
     project_name=None,
-    plot: bool = True,
+    tensorboard_path: str = None,
+    verbose: int = 0,
+    history_table: bool = False,
+    figsize: tuple = (7, 5),
+    dpi: int = 100,
 ) -> Sequential:
-    if dense_tune is not None and len(dense_tune) > 0:
-        dense_tune[0]["input_shape"] = (x_train.shape[1],)
 
-        model = my_tf(
-            x_train=x_train,
-            y_train=y_train,
-            x_test=x_test,
-            y_test=y_test,
-            optimizer=optimizer,
-            loss=loss,
-            metrics=metrics,
-            epochs=epochs,
-            batch_size=batch_size,
-            tensorboard_path=tensorboard_path,
-            verbose=verbose,
-            history_table=history_table,
-            figsize=figsize,
-            dpi=dpi,
-            # hyperband parameters
-            dense_tune=dense_tune,
-            learning_rate=learning_rate,
-            factor=factor,
-            seed=seed,
-            directory=directory,
-            project_name=__get_project_name(project_name),
-        )
-    else:
-        dense = []
+    for l in layer:
+        if "input_shape" in l:
+            l["input_shape"] = (x_train.shape[1],)
 
-        s = len(dense_units)
-        for i, v in enumerate(iterable=dense_units):
-            if i == 0:
-                dense.append(
-                    {
-                        "units": v,
-                        "input_shape": (x_train.shape[1],),
-                        "activation": "relu",
-                    }
-                )
-            else:
-                dense.append({"units": v, "activation": "relu"})
-
-        dense.append({"units": 1, "activation": "linear"})
-
-        model = my_tf(
-            x_train=x_train,
-            y_train=y_train,
-            x_test=x_test,
-            y_test=y_test,
-            dense=dense,
-            optimizer=optimizer,
-            loss=loss,
-            metrics=metrics,
-            epochs=epochs,
-            batch_size=batch_size,
-            early_stopping=early_stopping,
-            reduce_lr=reduce_lr,
-            checkpoint_path=checkpoint_path,
-            model_path=model_path,
-            tensorboard_path=tensorboard_path,
-            verbose=verbose,
-            history_table=history_table,
-            figsize=figsize,
-            dpi=dpi,
-        )
-
-    # my_regression_result(
-    #     estimator=model,
-    #     x_train=x_train,
-    #     y_train=y_train,
-    #     x_test=x_test,
-    #     y_test=y_test,
-    #     figsize=figsize,
-    #     dpi=dpi,
-    # )
-
-    # my_regression_report(
-    #     estimator=model,
-    #     x_train=x_train,
-    #     y_train=y_train,
-    #     x_test=x_test,
-    #     y_test=y_test,
-    #     plot=plot,
-    #     figsize=figsize,
-    #     dpi=dpi,
-    #     deg=deg,
-    # )
+    model = my_tf(
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        layer=layer,
+        optimizer=optimizer,
+        loss=loss,
+        metrics=metrics,
+        epochs=epochs,
+        batch_size=batch_size,
+        tensorboard_path=tensorboard_path,
+        verbose=verbose,
+        history_table=history_table,
+        figsize=figsize,
+        dpi=dpi,
+        # hyperband parameters
+        tune=True,
+        learning_rate=learning_rate,
+        factor=factor,
+        seed=seed,
+        directory=directory,
+        project_name=__get_project_name(project_name),
+    )
 
     return model
 
@@ -612,111 +522,55 @@ def my_tf_sigmoid(
     y_train: np.ndarray,
     x_test: np.ndarray = None,
     y_test: np.ndarray = None,
-    dense_units: list = [64, 32],
+    layer: list = [
+        {"units": [256, 128, 64, 32], "activation": "relu", "input_shape": (0,)},
+        {"units": 1, "activation": "sigmoid"},
+    ],
+    learning_rate: list = [1e-2, 1e-3, 1e-4],
     optimizer: any = "rmsprop",
     loss: any = "binary_crossentropy",
     metrics=["acc"],
     epochs: int = 500,
     batch_size: int = 32,
-    early_stopping: bool = True,
-    reduce_lr: bool = True,
-    model_path: str = None,
-    checkpoint_path: str = None,
+    factor=3,
+    seed=get_random_state(),
+    directory=__HB_DIR__,
+    project_name=None,
     tensorboard_path: str = None,
     verbose: int = 0,
     history_table: bool = False,
     figsize: tuple = (7, 5),
     dpi: int = 100,
-    # hyperband parameters
-    dense_tune: list = [
-        {"units": [256, 128, 64, 32], "activation": "relu", "input_shape": (0,)},
-        {"units": 1, "activation": "sigmoid"},
-    ],
-    learning_rate: list = [1e-2, 1e-3, 1e-4],
-    factor=3,
-    seed=get_random_state(),
-    directory=__HB_DIR__,
-    project_name=None,
 ) -> Sequential:
-    if dense_tune is not None and len(dense_tune) > 0:
-        dense_tune[0]["input_shape"] = (x_train.shape[1],)
 
-        model = my_tf(
-            x_train=x_train,
-            y_train=y_train,
-            x_test=x_test,
-            y_test=y_test,
-            optimizer=optimizer,
-            loss=loss,
-            metrics=metrics,
-            epochs=epochs,
-            batch_size=batch_size,
-            tensorboard_path=tensorboard_path,
-            verbose=verbose,
-            history_table=history_table,
-            figsize=figsize,
-            dpi=dpi,
-            # hyperband parameters
-            dense_tune=dense_tune,
-            learning_rate=learning_rate,
-            factor=factor,
-            seed=seed,
-            directory=directory,
-            project_name=__get_project_name(project_name),
-        )
-    else:
-        dense = []
+    for l in layer:
+        if "input_shape" in l:
+            l["input_shape"] = (x_train.shape[1],)
 
-        s = len(dense_units)
-        for i, v in enumerate(iterable=dense_units):
-            if i == 0:
-                dense.append(
-                    {
-                        "units": v,
-                        "input_shape": (x_train.shape[1],),
-                        "activation": "relu",
-                    }
-                )
-            else:
-                dense.append({"units": v, "activation": "relu"})
-
-        dense.append({"units": 1, "activation": "sigmoid"})
-
-        model = my_tf(
-            x_train=x_train,
-            y_train=y_train,
-            x_test=x_test,
-            y_test=y_test,
-            dense=dense,
-            optimizer=optimizer,
-            loss=loss,
-            metrics=metrics,
-            epochs=epochs,
-            batch_size=batch_size,
-            early_stopping=early_stopping,
-            reduce_lr=reduce_lr,
-            checkpoint_path=checkpoint_path,
-            model_path=model_path,
-            tensorboard_path=tensorboard_path,
-            verbose=verbose,
-            history_table=history_table,
-            figsize=figsize,
-            dpi=dpi,
-        )
-
-    # my_classification_result(
-    #     estimator=model,
-    #     x_train=x_train,
-    #     y_train=y_train,
-    #     x_test=x_test,
-    #     y_test=y_test,
-    #     figsize=figsize,
-    #     dpi=dpi,
-    # )
-
-    # my_classification_report(
-    #     estimator=model, x_train=x_train, y_train=y_train, x_test=x_test, y_test=y_test
-    # )
+    model = my_tf(
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        layer=layer,
+        optimizer=optimizer,
+        loss=loss,
+        metrics=metrics,
+        epochs=epochs,
+        batch_size=batch_size,
+        tensorboard_path=tensorboard_path,
+        verbose=verbose,
+        history_table=history_table,
+        figsize=figsize,
+        dpi=dpi,
+        # hyperband parameters
+        tune=True,
+        learning_rate=learning_rate,
+        factor=factor,
+        seed=seed,
+        directory=directory,
+        project_name=__get_project_name(project_name),
+    )
 
     return model
 
@@ -728,97 +582,62 @@ def my_tf_softmax(
     y_train: np.ndarray,
     x_test: np.ndarray = None,
     y_test: np.ndarray = None,
-    dense_units: list = [64, 32],
+    layer: list = [
+        {"units": [256, 128, 64, 32], "activation": "relu", "input_shape": (0,)},
+        {"units": 1, "activation": "softmax"},
+    ],
+    learning_rate: list = [1e-2, 1e-3, 1e-4],
     optimizer: any = "rmsprop",
     loss: any = "categorical_crossentropy",
     metrics=["acc"],
     epochs: int = 500,
     batch_size: int = 32,
-    early_stopping: bool = True,
-    reduce_lr: bool = True,
-    model_path: str = None,
-    checkpoint_path: str = None,
+    factor=3,
+    seed=get_random_state(),
+    directory=__HB_DIR__,
+    project_name=None,
     tensorboard_path: str = None,
     verbose: int = 0,
     history_table: bool = False,
     figsize: tuple = (7, 5),
     dpi: int = 100,
-    # hyperband parameters
-    dense_tune: list = [
-        {"units": [256, 128, 64, 32], "activation": "relu", "input_shape": (0,)},
-        {"units": 1, "activation": "softmax"},
-    ],
-    learning_rate: list = [1e-2, 1e-3, 1e-4],
-    factor=3,
-    seed=get_random_state(),
-    directory=__HB_DIR__,
-    project_name=None,
 ) -> Sequential:
-    if dense_tune is not None and len(dense_tune) > 0:
-        dense_tune[0]["input_shape"] = (x_train.shape[1],)
-        dense_tune[-1]["units"] = len(y_train[0])
 
-        model = my_tf(
-            x_train=x_train,
-            y_train=y_train,
-            x_test=x_test,
-            y_test=y_test,
-            optimizer=optimizer,
-            loss=loss,
-            metrics=metrics,
-            epochs=epochs,
-            batch_size=batch_size,
-            tensorboard_path=tensorboard_path,
-            verbose=verbose,
-            history_table=history_table,
-            figsize=figsize,
-            dpi=dpi,
-            # hyperband parameters
-            dense_tune=dense_tune,
-            learning_rate=learning_rate,
-            factor=factor,
-            seed=seed,
-            directory=directory,
-            project_name=__get_project_name(project_name),
-        )
-    else:
-        dense = []
+    for l in layer:
+        if "input_shape" in l:
+            l["input_shape"] = (x_train.shape[1],)
 
-        s = len(dense_units)
-        for i, v in enumerate(iterable=dense_units):
-            if i == 0:
-                dense.append(
-                    {
-                        "units": v,
-                        "input_shape": (x_train.shape[1],),
-                        "activation": "relu",
-                    }
-                )
-            else:
-                dense.append({"units": v, "activation": "relu"})
+    if type(y_train[0]) == np.int64:
+        y_train = to_categorical(y_train)
 
-        dense.append({"units": len(y_train[0]), "activation": "softmax"})
+    if y_test is not None and type(y_test[0]) == np.int64:
+        y_test = to_categorical(y_test)
 
-        model = my_tf(
-            x_train=x_train,
-            y_train=y_train,
-            x_test=x_test,
-            y_test=y_test,
-            dense=dense,
-            optimizer=optimizer,
-            loss=loss,
-            metrics=metrics,
-            epochs=epochs,
-            batch_size=batch_size,
-            early_stopping=early_stopping,
-            reduce_lr=reduce_lr,
-            checkpoint_path=checkpoint_path,
-            model_path=model_path,
-            tensorboard_path=tensorboard_path,
-            verbose=verbose,
-            history_table=history_table,
-            figsize=figsize,
-            dpi=dpi,
-        )
+    layer[-1]["units"] = len(y_train[0])
+
+    model = my_tf(
+        x_train=x_train,
+        y_train=y_train,
+        x_test=x_test,
+        y_test=y_test,
+        layer=layer,
+        optimizer=optimizer,
+        loss=loss,
+        metrics=metrics,
+        epochs=epochs,
+        batch_size=batch_size,
+        tensorboard_path=tensorboard_path,
+        verbose=verbose,
+        history_table=history_table,
+        figsize=figsize,
+        dpi=dpi,
+        # hyperband parameters
+        tune=True,
+        learning_rate=learning_rate,
+        factor=factor,
+        seed=seed,
+        directory=directory,
+        project_name=__get_project_name(project_name),
+    )
 
     return model

@@ -1333,7 +1333,10 @@ def my_confusion_matrix(
     """
 
     # 이진분류인지 다항분류인지 구분
-    labels = sorted(list(y.unique()))
+    if hasattr(y, "unique"):
+        labels = sorted(list(y.unique()))
+    else:
+        labels = sorted(list(set(y)))
     is_binary = len(labels) == 2
 
     if is_binary:
