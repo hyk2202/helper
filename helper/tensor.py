@@ -18,7 +18,15 @@ from matplotlib import pyplot as plt
 from tensorflow.random import set_seed
 from tensorflow.keras.initializers import GlorotUniform
 from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import (
+    Dense,
+    BatchNormalization,
+    Dropout,
+    Activation,
+    Conv2D,
+    MaxPool2D,
+    Flatten,
+)
 from tensorflow.keras.callbacks import (
     History,
     EarlyStopping,
@@ -62,36 +70,115 @@ def __tf_stack_layers(model: Sequential, layer: list, hp: Hyperband = None):
         if "type" not in v:
             v["type"] = "dense"
 
-        # 층의 종류가 dense일 경우
-        if v["type"].lower() == "dense":
-            # 활성화 함수가 없을 경우 기본값 None으로 설정
-            if "activation" not in v:
-                v["input_shape"] = None
+        # 활성화 함수가 없을 경우 기본값 설정
+        # if "activation" not in v:
+        #     v["activation"] = "relu"
 
-            print(v)
+        print(v)
+
+        layer_type = v["type"].lower()
+        params = v.copy()
+        del params["type"]
+
+        # ------------------------------------------------
+        # 층의 종류가 dense일 경우
+        if layer_type == "dense":
+            units = v["units"] if "units" in v else 0
+            del params["units"]
 
             if hp is not None:
-                newrun = Dense(
+                neurons = Dense(
                     units=(
-                        hp.Choice("units", values=v["units"])
-                        if type(v["units"]) == list
-                        else v["units"]
+                        hp.Choice("units", values=units)
+                        if type(units) == list
+                        else units
                     ),
-                    activation=v["activation"],
                     kernel_initializer=__initializer__,
+                    **params,
                 )
             else:
-                newrun = Dense(
-                    units=v["units"],
-                    activation=v["activation"],
-                    kernel_initializer=__initializer__,
+                neurons = Dense(
+                    units=units, kernel_initializer=__initializer__, **params
                 )
 
-            # 입력 모양이 있을 경우 추가 설정
-            if "input_shape" in v:
-                newrun.input_shape = v["input_shape"]
+        # ------------------------------------------------
+        elif layer_type == "conv2d":
+            filters = v["filters"] if "filters" in v else 0
+            del params["filters"]
 
-        model.add(newrun)
+            kernel_size = v["kernel_size"] if "kernel_size" in v else 0
+            del params["kernel_size"]
+
+            if hp is not None:
+                neurons = Conv2D(
+                    filters=(
+                        hp.Choice("filters", values=filters)
+                        if type(filters) == list
+                        else filters
+                    ),
+                    kernel_size=(
+                        hp.Choice("kernel_size", values=kernel_size)
+                        if type(kernel_size) == list
+                        else kernel_size
+                    ),
+                    kernel_initializer=__initializer__,
+                    **params,
+                )
+            else:
+                neurons = Conv2D(
+                    filters=filters,
+                    kernel_size=kernel_size,
+                    kernel_initializer=__initializer__,
+                    **params,
+                )
+
+        # ------------------------------------------------
+        elif layer_type == "maxpool2d" or layer_type == "maxpooling":
+            pool_size = v["pool_size"] if "pool_size" in v else 0
+            del params["pool_size"]
+
+            if hp is not None:
+                neurons = MaxPool2D(
+                    pool_size=(
+                        hp.Choice("pool_size", values=pool_size)
+                        if type(pool_size) == list
+                        else pool_size
+                    ),
+                    **params,
+                )
+            else:
+                neurons = MaxPool2D(pool_size=pool_size, **params)
+
+        # ------------------------------------------------
+        elif layer_type == "flatten":
+            neurons = Flatten(**params)
+
+        # ------------------------------------------------
+        elif layer_type == "batchnorm":
+            neurons = BatchNormalization(**params)
+
+        # ------------------------------------------------
+        elif layer_type == "dropout":
+            rate = v["rate"] if "rate" in v else 0
+            del params["rate"]
+
+            if hp is not None:
+                neurons = Dropout(
+                    rate=(
+                        hp.Choice("rate", values=rate) if type(rate) == list else rate
+                    ),
+                    **params,
+                )
+            else:
+                neurons = Dropout(rate=rate, **params)
+
+        # ------------------------------------------------
+        elif layer_type == "activation":
+            function = v["function"] if "function" in v else 0
+            del params["function"]
+            neurons = Activation(activation=function, **params)
+
+        model.add(neurons)
 
     return model
 
@@ -204,8 +291,8 @@ def tf_tune(
 @register_method
 def tf_train(
     model: Sequential,
-    x_train: np.ndarray,
-    y_train: np.ndarray,
+    x_train: np.ndarray = None,
+    y_train: np.ndarray = None,
     x_test: np.ndarray = None,
     y_test: np.ndarray = None,
     epochs: int = 500,
@@ -215,6 +302,7 @@ def tf_train(
     checkpoint_path: str = None,
     tensorboard_path: str = None,
     verbose: int = 0,
+    **params,
 ) -> History:
     """파라미터로 전달된 tensroflow 모델을 사용하여 지정된 데이터로 훈련을 수행하고 결과를 반환한다.
 
@@ -261,26 +349,46 @@ def tf_train(
             TensorBoard(log_dir=tensorboard_path, histogram_freq=1, write_graph=True)
         )
 
+    test_set = None
+
+    if x_test is not None and y_test is not None:
+        test_set = (x_test, y_test)
+    elif x_test is not None:
+        test_set = x_test
+
     history = model.fit(
-        x_train,
-        y_train,
+        x=x_train,
+        y=y_train,
         epochs=epochs,
         batch_size=batch_size,
-        validation_data=(x_test, y_test) if x_test is not None else None,
+        validation_data=test_set,
         verbose=verbose,
         callbacks=callbacks,
+        **params,
     )
 
     dataset = []
     result_set = []
 
-    if x_train is not None and y_train is not None:
+    if x_train is not None:
         dataset.append("train")
-        result_set.append(model.evaluate(x_train, y_train, verbose=0, return_dict=True))
 
-    if x_test is not None and y_test is not None:
+        if y_train is not None:
+            result_set.append(
+                model.evaluate(x_train, y_train, verbose=0, return_dict=True)
+            )
+        else:
+            result_set.append(model.evaluate(x_train, verbose=0, return_dict=True))
+
+    if x_test is not None:
         dataset.append("test")
-        result_set.append(model.evaluate(x_test, y_test, verbose=0, return_dict=True))
+
+        if y_test is not None:
+            result_set.append(
+                model.evaluate(x_test, y_test, verbose=0, return_dict=True)
+            )
+        else:
+            result_set.append(model.evaluate(x_test, verbose=0, return_dict=True))
 
     result_df = DataFrame(result_set, index=dataset)
     my_pretty_table(result_df)

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# -------------------------------------------------------------
 def init(package: bool = False, mecab: bool = False) -> None:
     import warnings, os, sys
 
@@ -34,7 +36,13 @@ def init(package: bool = False, mecab: bool = False) -> None:
         print("package installation start!!!")
 
         # Google Colab 환경인 경우 필요한 패키지 설치
-        addon_packages = ["pca", "pingouin", "statannotations"]
+        addon_packages = [
+            "pca",
+            "pingouin",
+            "statannotations",
+            "pycallgraphix",
+            "keras-tuner",
+        ]
         l = len(addon_packages)
 
         for i, v in enumerate(iterable=addon_packages):
@@ -62,5 +70,6 @@ def init(package: bool = False, mecab: bool = False) -> None:
     return IN_COLAB
 
 
+# -------------------------------------------------------------
 if __name__ == "__main__":
     IN_COLAB = init()

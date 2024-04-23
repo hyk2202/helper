@@ -20,8 +20,18 @@ from statsmodels.stats.outliers_influence import variance_inflation_factor
 import sys
 from pca import pca
 from matplotlib import pyplot as plt
-
+from typing import Literal
+from PIL import Image, ImageEnhance
+import requests
 from .core import *
+
+# 형태소 분석 엔진 -> Okt
+# from konlpy.tag import Okt
+
+# 형태소 분석 엔진 -> Mecab
+from konlpy.tag import Mecab
+
+from tensorflow.keras.preprocessing.text import Tokenizer
 
 
 @register_method
@@ -965,3 +975,180 @@ def my_trace() -> cProfile.Profile:
 
     profiler.clear()
     profiler.disable()
+
+
+@register_method
+def tune_image(
+    img: Image,
+    mode: Literal["RGB", "color", "L", "gray"] = "RGB",
+    size: tuple = None,
+    color: float = None,
+    contrast: int = None,
+    brightness: float = None,
+    sharpness: float = None,
+) -> Image:
+    """이미지를 튜닝한다.
+
+    Args:
+        img (Image): 이미지 객체
+        mode (Literal['RGB', 'color', 'L', 'gray'], optional): 이미지 색상/흑백 모드
+        size (tuple, optional): 이미지 크기. Defaults to None.
+        color (float, optional): 이미지의 색상 균형을 조정한다. 0 부터 1 사이의 실수값으로 이미지의 색상을 조절 한다. 0 에 가까울 수록 색이 빠진 흑백에 가깝게 되고 1 이 원본 값이되고 1이 넘어가면 색이 더해진다. Defaults to None.
+        contrast (int, optional): 이미지의 대비를 조정한다.  0에 가까울 수록 대비가 없는 회색 이미지에 가깝게 되고 1 이 원본 값이되고 1이 넘어가면 대비가 강해진다. Defaults to None.
+        brightness (float, optional): 이미지의 밝기를 조정한다.  0에 가까울 수록 그냥 검정 이미지에 가깝게 되고 1 이 원본 값이되고 1이 넘어가면 밝기가 강해진다. Defaults to None.
+        sharpness (float, optional): 이미지의 선명도를 조정한다. 0 에 가까울 수록 이미지는 흐릿한 이미지에 가깝게 되고 1 이 원본 값이고 1이 넘어가면 원본에 비해 선명도가 강해진다. Defaults to None.
+
+    Returns:
+        Image: 튜닝된 이미지
+    """
+    if mode:
+        if mode == "color":
+            mode = "RGB"
+        elif mode == "gray":
+            mode = "L"
+
+        img = img.convert(mode=mode)
+
+    if size:
+        w = size[0] if size[0] > 0 else 0
+        h = size[1] if size[1] > 0 else 0
+        img = img.resize(size=(w, h))
+
+    if color:
+        if color < 0:
+            color = 0
+        img = ImageEnhance.Color(image=img).enhance(factor=color)
+
+    if contrast:
+        img = ImageEnhance.Contrast(image=img).enhance(
+            factor=contrast if contrast > 0 else 0
+        )
+
+    if brightness:
+        img = ImageEnhance.Brightness(image=img).enhance(
+            factor=brightness if brightness > 0 else 0
+        )
+
+    if sharpness:
+        img = ImageEnhance.Sharpness(image=img).enhance(
+            factor=sharpness if sharpness > 0 else 0
+        )
+
+    img.array = np.array(img)
+
+    return img
+
+
+@register_method
+def load_image(
+    path: str,
+    mode: Literal["RGB", "L"] = None,
+    size: tuple = None,
+    color: float = None,
+    contrast: int = None,
+    brightness: float = None,
+    sharpness: float = None,
+) -> Image:
+    """이미지 파일을 로드한다. 필요한 경우 로드한 이미지에 대해 튜닝을 수행한다. 최종 로드된 이미지에 대한 배열 데이터를 array 속성에 저장한다.
+
+    Args:
+        path (str): 이미지 파일 경로
+        mode (Literal['RGB', 'color', 'L', 'gray'], optional): 이미지 색상/흑백 모드
+        size (tuple, optional): 이미지 크기. Defaults to None.
+        color (float, optional): 이미지의 색상 균형을 조정한다. 0 부터 1 사이의 실수값으로 이미지의 색상을 조절 한다. 0 에 가까울 수록 색이 빠진 흑백에 가깝게 되고 1 이 원본 값이되고 1이 넘어가면 색이 더해진다. Defaults to None.
+        contrast (int, optional): 이미지의 대비를 조정한다.  0에 가까울 수록 대비가 없는 회색 이미지에 가깝게 되고 1 이 원본 값이되고 1이 넘어가면 대비가 강해진다. Defaults to None.
+        brightness (float, optional): 이미지의 밝기를 조정한다.  0에 가까울 수록 그냥 검정 이미지에 가깝게 되고 1 이 원본 값이되고 1이 넘어가면 밝기가 강해진다. Defaults to None.
+        sharpness (float, optional): 이미지의 선명도를 조정한다. 0 에 가까울 수록 이미지는 흐릿한 이미지에 가깝게 되고 1 이 원본 값이고 1이 넘어가면 원본에 비해 선명도가 강해진다. Defaults to None.
+
+    Returns:
+        Image: 로드된 이미지
+    """
+    img = Image.open(fp=path)
+    img = tune_image(
+        img=img,
+        mode=mode,
+        size=size,
+        color=color,
+        contrast=contrast,
+        brightness=brightness,
+        sharpness=sharpness,
+    )
+
+    return img
+
+
+@register_method
+def my_stopwords() -> list:
+    session = requests.Session()
+    session.headers.update(
+        {
+            "Referer": "",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        }
+    )
+
+    stopwords = None
+
+    try:
+        r = session.get("https://data.hossam.kr/tmdata/stopwords-ko.txt")
+
+        # HTTP 상태값이 200이 아닌 경우는 에러로 간주한다.
+        if r.status_code != 200:
+            msg = "[%d Error] %s 에러가 발생함" % (r.status_code, r.reason)
+            raise Exception(msg)
+
+        r.encoding = "utf-8"
+        stopwords = r.text.split("\n")
+    except Exception as e:
+        print(e)
+
+    return stopwords
+
+
+# -------------------------------------------------------------
+@register_method
+def my_text_morph(
+    source: str, mode: str = "nouns", stopwords: list = None, dicpath: str = None
+) -> list:
+    """Mecab을 사용하여 텍스트를 형태소 분석한다.
+
+    Args:
+        source (str): 텍스트
+        mode (str, optional): 분석 모드. Defaults to 'nouns'.
+
+    Returns:
+        list: 형태소 분석 결과
+    """
+    desc = None
+    mecab = Mecab(dicpath=dicpath)
+
+    if mode == "nouns":
+        desc = mecab.nouns(phrase=source)
+    elif mode == "morphs":
+        desc = mecab.morphs(phrase=source)
+    elif mode == "pos":
+        desc = mecab.pos(phrase=source)
+    else:
+        desc = mecab.nouns(phrase=source)
+
+    if stopwords:
+        desc = [w for w in desc if w not in stopwords]
+
+    return desc
+
+
+# -------------------------------------------------------------
+@register_method
+def my_tokenizer(
+    source: any, num_words: int = None, oov_token: str = "<OOV>", stopwords: list = None
+):
+    if type(source) == str:
+        source = my_text_morph(source=source, stopwords=stopwords)
+
+    if num_words is None:
+        num_words = len(set(source))
+
+    tokenizer = Tokenizer(num_words=num_words, oov_token=oov_token)
+    tokenizer.fit_on_texts(source)
+
+    return tokenizer
