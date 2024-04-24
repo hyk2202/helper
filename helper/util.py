@@ -1,6 +1,7 @@
 import cProfile
 import joblib
 from pycallgraphix.wrapper import register_method, MethodChart
+from nltk.corpus import stopwords as stw
 from datetime import datetime as dt
 import re
 import requests
