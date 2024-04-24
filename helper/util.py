@@ -1082,29 +1082,34 @@ def load_image(
 
 
 @register_method
-def my_stopwords() -> list:
-    session = requests.Session()
-    session.headers.update(
-        {
-            "Referer": "",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        }
-    )
-
+def my_stopwords(lang: str = "ko") -> list:
     stopwords = None
 
-    try:
-        r = session.get("https://data.hossam.kr/tmdata/stopwords-ko.txt")
+    if lang == "ko":
+        session = requests.Session()
+        session.headers.update(
+            {
+                "Referer": "",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            }
+        )
 
-        # HTTP 상태값이 200이 아닌 경우는 에러로 간주한다.
-        if r.status_code != 200:
-            msg = "[%d Error] %s 에러가 발생함" % (r.status_code, r.reason)
-            raise Exception(msg)
+        try:
+            r = session.get("https://data.hossam.kr/tmdata/stopwords-ko.txt")
 
-        r.encoding = "utf-8"
-        stopwords = r.text.split("\n")
-    except Exception as e:
-        print(e)
+            # HTTP 상태값이 200이 아닌 경우는 에러로 간주한다.
+            if r.status_code != 200:
+                msg = "[%d Error] %s 에러가 발생함" % (r.status_code, r.reason)
+                raise Exception(msg)
+
+            r.encoding = "utf-8"
+            stopwords = r.text.split("\n")
+        except Exception as e:
+            print(e)
+
+    elif lang == "en":
+        nltk.download("stopwords")
+        stopwords = list(stw.words("english"))
 
     return stopwords
 
