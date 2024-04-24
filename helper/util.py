@@ -1,7 +1,6 @@
 import cProfile
 import joblib
 from pycallgraphix.wrapper import register_method, MethodChart
-from nltk.corpus import stopwords as stw
 from datetime import datetime as dt
 import re
 import requests
@@ -16,6 +15,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, PolynomialFeatures, MinMaxScaler
 from sklearn.impute import SimpleImputer
 from scipy.stats import normaltest
+from nltk.corpus import stopwords as stw
 
 from imblearn.over_sampling import SMOTE, RandomOverSampler
 from imblearn.under_sampling import RandomUnderSampler
@@ -374,70 +374,86 @@ def my_minmax_scaler(data: DataFrame, yname: str = None) -> DataFrame:
 
 @register_method
 def my_train_test_split(
-    data: DataFrame,
+    data: any,
     yname: str = None,
     test_size: float = 0.2,
     random_state: int = get_random_state(),
     scalling: bool = False,
+    save_path: str = None,
+    load_path: str = None,
+    ydata: any = None,
+    categorical: bool = False,
 ) -> tuple:
     """데이터프레임을 학습용 데이터와 테스트용 데이터로 나눈다.
 
     Args:
-        data (DataFrame): 데이터프레임 객체
+        data (any): 데이터프레임 객체
+        ydata (any, optional): 종속변수 데이터. Defaults to None.
         yname (str, optional): 종속변수의 컬럼명. Defaults to None.
         test_size (float, optional): 검증 데이터의 비율(0~1). Defaults to 0.3.
         random_state (int, optional): 난수 시드. Defaults to 123.
         scalling (bool, optional): True일 경우 표준화를 수행한다. Defaults to False.
+        save_path (str, optional): 스케일러 저장 경로. Defaults to None.
+        load_path (str, optional): 스케일러 로드 경로. Defaults to None.
 
     Returns:
         tuple: x_train, x_test, y_train, y_test
-
     """
-    if yname is not None and yname not in data.columns:
-        raise Exception(f"\x1b[31m종속변수 {yname}가 존재하지 않습니다.\x1b[0m")
+    x_train, x_test, y_train, y_test = None, None, None, None
 
     if yname is not None:
-        x = data.drop(yname, axis=1)
+        if yname not in data.columns:
+            raise Exception(f"\x1b[31m종속변수 {yname}가 존재하지 않습니다.\x1b[0m")
+
+        x = data.drop(labels=yname, axis=1)
         y = data[yname]
+
+        if categorical:
+            res = np.zeros((len(y), len(y.unique())), dtype=int)
+            res[np.arange(len(y)), y] = 1
+            y = res
+
         x_train, x_test, y_train, y_test = train_test_split(
             x, y, test_size=test_size, random_state=random_state
         )
+    elif ydata is not None:
+        if categorical:
+            res = np.zeros((len(ydata), len(ydata.unique())), dtype=int)
+            res[np.arange(len(ydata)), ydata] = 1
+            ydata = res
 
-        if scalling:
-            scaler = StandardScaler()
-            x_train = DataFrame(
-                scaler.fit_transform(x_train),
-                index=x_train.index,
-                columns=x_train.columns,
-            )
-            x_test = DataFrame(
-                scaler.transform(x_test), index=x_test.index, columns=x_test.columns
-            )
-
-        return (x_train, x_test, y_train, y_test)
-    else:
-        if "y" in data.columns:
-            return my_train_test_split(
-                data=data,
-                yname="y",
-                test_size=test_size,
-                random_state=random_state,
-                scalling=scalling,
-            )
-        train, test = train_test_split(
-            x, test_size=test_size, random_state=random_state
+        x_train, x_test, y_train, y_test = train_test_split(
+            data, ydata, test_size=test_size, random_state=random_state
         )
-        if scalling:
+    else:
+        x_train, x_test = train_test_split(
+            data, test_size=test_size, random_state=random_state
+        )
+
+    if scalling:
+        if load_path:
+            scaler = joblib.load(filename=load_path)
+            x_train_std = scaler.transform(x_train)
+            x_test_std = scaler.transform(x_test)
+        else:
             scaler = StandardScaler()
-            train = DataFrame(
-                scaler.fit_transform(train),
-                index=x_train.index,
-                columns=x_train.columns,
-            )
-            test = DataFrame(
-                scaler.transform(test), index=x_test.index, columns=x_test.columns
-            )
-        return train, test
+            x_train_std = scaler.fit_transform(X=x_train)
+            x_test_std = scaler.transform(x_test)
+
+        x_train = DataFrame(
+            data=x_train_std,
+            index=x_train.index,
+            columns=x_train.columns,
+        )
+        x_test = DataFrame(x_test_std, index=x_test.index, columns=x_test.columns)
+
+        if save_path:
+            joblib.dump(value=scaler, filename=save_path)
+
+    if y_train is not None and y_test is not None:
+        return x_train, x_test, y_train, y_test
+    else:
+        return x_train, x_test
 
 
 @register_method
