@@ -7,9 +7,10 @@ import dtreeviz
 import numpy as np
 import seaborn as sb
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 from math import sqrt
 from scipy.stats import t
-from pandas import DataFrame, Series
+from pandas import DataFrame, Series, concat
 from scipy.spatial import ConvexHull
 from statannotations.Annotator import Annotator
 from scipy.stats import zscore, probplot
@@ -38,10 +39,10 @@ try:
 except:
     IN_COLAB = False
 
-__FONT_NAME__ = "Malgun Gothic"
-
 if sys.platform == "darwin":
     __FONT_NAME__ = "AppleGothic"
+elif sys.platform in ["linux", "linux2"]:
+    __FONT_NAME__ = "NanumGothic"
 elif IN_COLAB:
     __FONT_NAME__ = "NanumGothic"
 

@@ -38,5 +38,6 @@ setup(
         "lightgbm",
         "tensorflow",
         "keras-tuner",
+        "nltk",
     ],
 )

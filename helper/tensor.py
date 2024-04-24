@@ -15,6 +15,9 @@ from pandas import DataFrame
 from matplotlib import pyplot as plt
 
 # -------------------------------------------------------------
+from tqdm.keras import TqdmCallback
+
+# -------------------------------------------------------------
 from tensorflow.random import set_seed
 from tensorflow.keras.initializers import GlorotUniform
 from tensorflow.keras.models import Sequential, load_model
@@ -26,6 +29,10 @@ from tensorflow.keras.layers import (
     Conv2D,
     MaxPool2D,
     Flatten,
+    Embedding,
+    SimpleRNN,
+    LSTM,
+    GRU,
 )
 from tensorflow.keras.callbacks import (
     History,
@@ -177,6 +184,95 @@ def __tf_stack_layers(model: Sequential, layer: list, hp: Hyperband = None):
             function = v["function"] if "function" in v else 0
             del params["function"]
             neurons = Activation(activation=function, **params)
+
+        # ------------------------------------------------
+        elif layer_type == "embedding":
+            input_dim = v["input_dim"] if "input_dim" in v else 0
+            del params["input_dim"]
+
+            output_dim = v["output_dim"] if "output_dim" in v else 0
+            del params["output_dim"]
+
+            if hp is not None:
+                neurons = Embedding(
+                    input_dim=(
+                        hp.Choice("input_dim", values=input_dim)
+                        if type(input_dim) == list
+                        else input_dim
+                    ),
+                    output_dim=(
+                        hp.Choice("output_dim", values=output_dim)
+                        if type(output_dim) == list
+                        else output_dim
+                    ),
+                    **params,
+                )
+            else:
+                neurons = Embedding(
+                    input_dim=input_dim,
+                    output_dim=output_dim,
+                    **params,
+                )
+
+        # ------------------------------------------------
+        elif layer_type == "rnn":
+            units = v["units"] if "units" in v else 0
+            del params["units"]
+
+            if hp is not None:
+                neurons = SimpleRNN(
+                    units=(
+                        hp.Choice("units", values=units)
+                        if type(units) == list
+                        else units
+                    ),
+                    kernel_initializer=__initializer__,
+                    **params,
+                )
+            else:
+                neurons = SimpleRNN(
+                    units=units, kernel_initializer=__initializer__, **params
+                )
+
+        # ------------------------------------------------
+        elif layer_type == "lstm":
+            units = v["units"] if "units" in v else 0
+            del params["units"]
+
+            if hp is not None:
+                neurons = LSTM(
+                    units=(
+                        hp.Choice("units", values=units)
+                        if type(units) == list
+                        else units
+                    ),
+                    kernel_initializer=__initializer__,
+                    **params,
+                )
+            else:
+                neurons = LSTM(
+                    units=units, kernel_initializer=__initializer__, **params
+                )
+
+        # ------------------------------------------------
+        elif layer_type == "gru":
+            units = v["units"] if "units" in v else 0
+            del params["units"]
+
+            if hp is not None:
+                neurons = GRU(
+                    units=(
+                        hp.Choice("units", values=units)
+                        if type(units) == list
+                        else units
+                    ),
+                    kernel_initializer=__initializer__,
+                    **params,
+                )
+            else:
+                neurons = GRU(
+                    units=units, kernel_initializer=__initializer__, **params
+                )
 
         model.add(neurons)
 
@@ -349,6 +445,9 @@ def tf_train(
             TensorBoard(log_dir=tensorboard_path, histogram_freq=1, write_graph=True)
         )
 
+    if verbose is not None:
+        callbacks.append(TqdmCallback(verbose=verbose))
+
     test_set = None
 
     if x_test is not None and y_test is not None:
@@ -362,7 +461,7 @@ def tf_train(
         epochs=epochs,
         batch_size=batch_size,
         validation_data=test_set,
-        verbose=verbose,
+        verbose=0,
         callbacks=callbacks,
         **params,
     )
