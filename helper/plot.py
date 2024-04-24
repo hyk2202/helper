@@ -39,6 +39,7 @@ try:
 except:
     IN_COLAB = False
 
+__FONT_NAME__ = "NanumGothic"
 if sys.platform == "darwin":
     __FONT_NAME__ = "AppleGothic"
 elif sys.platform in ["linux", "linux2"]:
