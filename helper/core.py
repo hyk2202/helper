@@ -367,6 +367,7 @@ def __ml(
         #     param_grid=params,
         #     cv=cv,
         #     n_jobs=__N_JOBS__,
+        #     random_state=__RANDOM_STATE__,
         # )
     else:
         grid = RandomizedSearchCV(
