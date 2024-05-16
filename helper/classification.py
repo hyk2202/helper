@@ -1,6 +1,7 @@
 import inspect
 
 from pycallgraphix.wrapper import register_method
+
 # import logging
 import numpy as np
 import concurrent.futures as futures
@@ -22,11 +23,25 @@ from sklearn.naive_bayes import GaussianNB
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import SGDClassifier
-from sklearn.ensemble import AdaBoostClassifier, GradientBoostingClassifier, VotingClassifier,BaggingClassifier, RandomForestClassifier
+from sklearn.ensemble import (
+    AdaBoostClassifier,
+    GradientBoostingClassifier,
+    VotingClassifier,
+    BaggingClassifier,
+    RandomForestClassifier,
+)
 from scipy.stats import norm
 
 from .util import my_pretty_table
-from .plot import my_learing_curve, my_confusion_matrix, my_roc_curve, my_tree, my_barplot,my_plot_importance,my_xgb_tree
+from .plot import (
+    my_learing_curve,
+    my_confusion_matrix,
+    my_roc_curve,
+    my_tree,
+    my_barplot,
+    my_plot_importance,
+    my_xgb_tree,
+)
 from .core import __ml, get_hyper_params, get_estimator
 
 from xgboost import XGBClassifier
@@ -42,6 +57,7 @@ plt.rcParams["font.size"] = 10
 plt.rcParams["figure.figsize"] = (10, 6)
 plt.rcParams["figure.dpi"] = 200
 plt.rcParams["axes.unicode_minus"] = False
+
 
 @register_method
 def __my_classification(
@@ -129,6 +145,7 @@ def __my_classification(
         my_classification_report(estimator, x_train, y_train, x_test, y_test, sort)
 
     return estimator
+
 
 @register_method
 def my_classification_result(
@@ -497,6 +514,7 @@ def my_classification_report(
                 estimator, x=x_train, y=y_train, sort=sort
             )
 
+
 @register_method
 def my_classification_binary_report(
     estimator: any, x: DataFrame = None, y: Series = None, sort: str = None
@@ -606,6 +624,7 @@ def my_classification_binary_report(
                 result_df = result_df.sort_values("VIF", ascending=False).reset_index()
 
         my_pretty_table(result_df)
+
 
 @register_method
 def my_classification_multiclass_report(
@@ -724,6 +743,7 @@ def my_classification_multiclass_report(
 
             my_pretty_table(result_df)
 
+
 @register_method
 def my_logistic_classification(
     x_train: DataFrame,
@@ -793,6 +813,7 @@ def my_logistic_classification(
         is_print=is_print,
         **params,
     )
+
 
 @register_method
 def my_knn_classification(
@@ -864,6 +885,7 @@ def my_knn_classification(
         **params,
     )
 
+
 @register_method
 def my_nb_classification(
     x_train: DataFrame,
@@ -928,6 +950,7 @@ def my_nb_classification(
         is_print=is_print,
         **params,
     )
+
 
 @register_method
 def my_dtree_classification(
@@ -998,6 +1021,7 @@ def my_dtree_classification(
         **params,
     )
 
+
 @register_method
 def my_linear_svc_classification(
     x_train: DataFrame,
@@ -1060,6 +1084,7 @@ def my_linear_svc_classification(
         is_print=is_print,
         **params,
     )
+
 
 @register_method
 def my_svc_classification(
@@ -1133,6 +1158,7 @@ def my_svc_classification(
         **params,
     )
 
+
 @register_method
 def my_sgd_classification(
     x_train: DataFrame,
@@ -1198,6 +1224,7 @@ def my_sgd_classification(
         is_print=is_print,
         **params,
     )
+
 
 @register_method
 def my_rf_classification(
@@ -1347,7 +1374,7 @@ def my_classification(
     score_fields = []
 
     for s in scoring:
-        if s == "r2":   
+        if s == "r2":
             score_fields.append("의사결정계수(Pseudo R2)")
         elif s == "accuracy":
             score_fields.append("정확도(Accuracy)")
@@ -1452,6 +1479,7 @@ def my_classification(
 
     return estimators
 
+
 @register_method
 def my_voting_classification(
     x_train: DataFrame,
@@ -1555,6 +1583,7 @@ def my_voting_classification(
         estimators=estimators,
         **params,
     )
+
 
 @register_method
 def my_bagging_classification(
@@ -1758,6 +1787,7 @@ def my_ada_classification(
         **params,
     )
 
+
 @register_method
 def my_gbm_classification(
     x_train: DataFrame,
@@ -1824,6 +1854,7 @@ def my_gbm_classification(
         **params,
     )
 
+
 @register_method
 def my_xgb_classification(
     x_train: DataFrame,
@@ -1841,7 +1872,8 @@ def my_xgb_classification(
     figsize=(10, 5),
     dpi: int = 100,
     sort: str = "v",
-    **params
+    is_print=True,
+    **params,
 ) -> XGBClassifier:
     params = get_hyper_params(classname=XGBClassifier)
 
@@ -1862,7 +1894,7 @@ def my_xgb_classification(
         figsize=figsize,
         dpi=dpi,
         sort=sort,
-        is_print=True,
+        is_print=is_print,
         **params,
     )
 
